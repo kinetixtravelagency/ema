@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HowRouteImport } from './routes/how'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as TrustRouteImport } from './routes/trust'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedApplyRouteImport } from './routes/_authenticated/apply'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -52,6 +53,11 @@ const HowRoute = HowRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrustRoute = TrustRouteImport.update({
+  id: '/trust',
+  path: '/trust',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/how': typeof HowRoute
   '/pricing': typeof PricingRoute
+  '/trust': typeof TrustRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/apply': typeof AuthenticatedApplyRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/how': typeof HowRoute
   '/pricing': typeof PricingRoute
+  '/trust': typeof TrustRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/apply': typeof AuthenticatedApplyRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/how': typeof HowRoute
   '/pricing': typeof PricingRoute
+  '/trust': typeof TrustRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/apply': typeof AuthenticatedApplyRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/how'
     | '/pricing'
+    | '/trust'
     | '/admin'
     | '/apply'
     | '/dashboard'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/how'
     | '/pricing'
+    | '/trust'
     | '/admin'
     | '/apply'
     | '/dashboard'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/how'
     | '/pricing'
+    | '/trust'
     | '/_authenticated/admin'
     | '/_authenticated/apply'
     | '/_authenticated/dashboard'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   HowRoute: typeof HowRoute
   PricingRoute: typeof PricingRoute
+  TrustRoute: typeof TrustRoute
   CountriesSlugRoute: typeof CountriesSlugRoute
   PartnersJoinRoute: typeof PartnersJoinRoute
   PartnersLoginRoute: typeof PartnersLoginRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trust': {
+      id: '/trust'
+      path: '/trust'
+      fullPath: '/trust'
+      preLoaderRoute: typeof TrustRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -350,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   HowRoute: HowRoute,
   PricingRoute: PricingRoute,
+  TrustRoute: TrustRoute,
   CountriesSlugRoute: CountriesSlugRoute,
   PartnersJoinRoute: PartnersJoinRoute,
   PartnersLoginRoute: PartnersLoginRoute,

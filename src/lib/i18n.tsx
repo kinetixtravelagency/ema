@@ -4,7 +4,7 @@ export type Lang = "en" | "ar";
 
 const dict = {
   en: {
-    countries: "Countries", how: "How it works", pricing: "Pricing", partners: "Partners", faq: "FAQ",
+    countries: "Countries", how: "How it works", pricing: "Pricing", partners: "Partners", faq: "FAQ", trustGate: "Trust Gate",
     applyNow: "Apply now", signIn: "Sign in", dashboard: "Dashboard", signOut: "Sign out",
     heroEyebrow: "International career mobility",
     heroTitle1: "Your next career move", heroTitle2: "starts here.",
@@ -107,7 +107,7 @@ const dict = {
     depositPaid: "Deposit paid", plan: "Plan", track: "Track", view: "View", required: "Required",
   },
   ar: {
-    countries: "الدول", how: "كيف نعمل", pricing: "الأسعار", partners: "الشركاء", faq: "الأسئلة الشائعة",
+    countries: "الدول", how: "كيف نعمل", pricing: "الأسعار", partners: "الشركاء", faq: "الأسئلة الشائعة", trustGate: "بوابة الثقة",
     applyNow: "قدّم الآن", signIn: "تسجيل الدخول", dashboard: "لوحتي", signOut: "تسجيل الخروج",
     heroEyebrow: "التنقّل المهني الدولي",
     heroTitle1: "خطوتك المهنية القادمة", heroTitle2: "تبدأ من هنا.",

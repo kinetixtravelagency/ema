@@ -200,6 +200,7 @@ export function Nav({ solid = false }: { solid?: boolean }) {
   const links = [
     { href: "/countries", label: t("countries") },
     { href: "/how", label: t("how") },
+    { href: "/trust", label: t("trustGate") },
     { href: "/pricing", label: t("pricing") },
     { href: "/partners", label: t("partners") },
     { href: "/faq", label: t("faq") },
@@ -322,6 +323,7 @@ export function Footer() {
         </div>
         <div className="text-sm">
           <p className="eyebrow mb-4 text-beige">{t("legal")}</p>
+          <Link to="/trust" className="block py-1.5 font-medium text-beige hover:underline">{t("trustGate")}</Link>
           <p className="py-1.5">{t("terms")}</p><p className="py-1.5">{t("privacy")}</p><p className="py-1.5">{t("refund")}</p>
         </div>
       </div>

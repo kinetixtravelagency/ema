@@ -2,9 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowRight, ArrowUpRight, Compass, FileCheck2, PlaneTakeoff, Wallet, ShieldCheck, Eye,
-  CalendarClock, Users, Plus, Minus, Gift, MapPin, Sparkles, Globe,
+  CalendarClock, Users, Plus, Minus, Gift, MapPin, Sparkles, Globe, Building2, Receipt, BadgeCheck, FileCheck, Camera,
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
+import commRegImg from "@/assets/trustgate/commercial_registration.jpeg";
+import taxCardImg from "@/assets/trustgate/tax_card.jpeg";
+import hqReceptionImg from "@/assets/trustgate/hq_reception_counter.jpeg";
+import hqEntranceImg from "@/assets/trustgate/hq_entrance_marble.jpeg";
+import hqConsultingImg from "@/assets/trustgate/hq_executive_consulting.jpeg";
+import hqStoneImg from "@/assets/trustgate/hq_entrance_stone.jpeg";
 import { Nav, Footer } from "@/components/site/SiteChrome";
 import { Reveal } from "@/components/site/Reveal";
 import { countries, fromPrice, fromDeposit, eur } from "@/lib/catalog";
@@ -35,6 +41,7 @@ function Index() {
       <Featured />
       <How />
       <Why />
+      <TrustGateHomeSection />
       <Pricing />
       <Partners />
       <Faq />
@@ -210,6 +217,228 @@ function Why() {
               <p className="mt-2 text-sm text-ivory/60">{d}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TrustGateHomeSection() {
+  const { lang } = useLang();
+  const ar = lang === "ar";
+  const tr = (en: string, arText: string) => (ar ? arText : en);
+
+  return (
+    <section className="relative isolate overflow-hidden bg-gradient-to-b from-navy via-navy-soft to-navy py-24 text-ivory md:py-32 border-y border-ivory/10">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-96 w-96 rounded-full bg-beige/10 blur-[130px] pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow text-beige mb-3">
+              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
+              {tr("Official Legal Accreditation", "بوابة الثقة والاعتماد القانوني")}
+            </p>
+            <h2 className="text-3xl font-semibold leading-[1.05] md:text-5xl">
+              {tr("Legally Registered in Egypt.", "تراخيص حكومية رسمية وموثقة.")}{" "}
+              <span className="block mt-1 font-display text-beige">
+                {tr("Full Protection for Your Future.", "أمان قانوني كامل لرحلتك.")}
+              </span>
+            </h2>
+            <p className="mt-4 text-base text-ivory/70 leading-relaxed">
+              {tr(
+                "Kinetix is a government-registered limited liability recruitment consultancy. Review our authentic Commercial Register and Tax Card before taking any step.",
+                "نحن في كينتيكس شركة مصرية ذات مسؤولية محدودة مقيدة رسمياً لممارسة نشاط استشارات السفر وإلحاق العمالة بالخارج. نوفر لك وثائقنا الرسمية لحمايتك وضمان حقوقك المالية والقانونية."
+              )}
+            </p>
+          </Reveal>
+
+          <Reveal className="shrink-0">
+            <Link
+              to="/trust"
+              className="group inline-flex items-center gap-2 rounded-full bg-beige px-7 py-3.5 font-medium text-navy transition-transform hover:-translate-y-0.5"
+            >
+              <span>{tr("Explore Trust Gate", "الدخول لبوابة الثقة وفحص المستندات")}</span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" strokeWidth={1.5} />
+            </Link>
+          </Reveal>
+        </div>
+
+        {/* Two Featured Document Teaser Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Commercial Register Preview Card */}
+          <Reveal className="group relative rounded-3xl border border-ivory/15 bg-navy/60 p-6 md:p-8 backdrop-blur-xl transition-all duration-300 hover:border-beige/50 hover:bg-navy/80 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <p className="eyebrow text-beige">{tr("Valid through 2028", "ساري حتى 2028/09/07")}</p>
+                <span className="text-sm font-semibold text-beige">
+                  {tr("Reg No.", "رقم السجل:")} 22944
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-semibold font-display text-ivory">
+                {tr("Commercial Registration Certificate", "مستخرج السجل التجاري الرسمي")}
+              </h3>
+              <p className="text-sm text-ivory/60 mt-1">
+                {tr("Ministry of Supply and Internal Trade — New Valley Register Office", "وزارة التموين والتجارة الداخلية — مكتب سجل الوادي الجديد")}
+              </p>
+
+              <div className="mt-5 relative aspect-[16/10] overflow-hidden rounded-2xl border border-ivory/15 bg-navy/90 p-2">
+                <img
+                  src={commRegImg}
+                  alt="السجل التجاري"
+                  className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover:scale-102"
+                />
+              </div>
+
+              <p className="mt-4 text-sm text-ivory/70 leading-relaxed">
+                {tr(
+                  "Activity: Overseas workforce placement and international employment consultations.",
+                  "النشاط المرخص: إلحاق العمالة المصرية بالخارج وتقديم استشارات فنية لفرص العمل والتأشيرات."
+                )}
+              </p>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-ivory/10 flex items-center justify-between">
+              <span className="text-xs text-ivory/50">{tr("Facility Code:", "الرقم القومي للمنشأة:")} 241518876</span>
+              <Link to="/trust" className="inline-flex items-center gap-1.5 text-sm font-medium text-beige hover:underline">
+                <span>{tr("View Details", "فحص المستند")}</span>
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.25} />
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Tax Card Preview Card */}
+          <Reveal className="group relative rounded-3xl border border-ivory/15 bg-navy/60 p-6 md:p-8 backdrop-blur-xl transition-all duration-300 hover:border-beige/50 hover:bg-navy/80 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between gap-3 mb-5">
+                <p className="eyebrow text-beige">{tr("Valid through 2028", "سارية حتى 2028/09/10")}</p>
+                <span className="text-sm font-semibold text-beige">
+                  {tr("Tax Card", "البطاقة الضريبية")}
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-semibold font-display text-ivory">
+                {tr("Official Tax Registration Card", "البطاقة الضريبية الرسمية")}
+              </h3>
+              <p className="text-sm text-ivory/60 mt-1">
+                {tr("Ministry of Finance — Egyptian Tax Authority (Dakhla Office)", "وزارة المالية — مصلحة الضرائب المصرية (مأمورية الداخلة)")}
+              </p>
+
+              <div className="mt-5 relative aspect-[16/10] overflow-hidden rounded-2xl border border-ivory/15 bg-navy/90 p-2">
+                <img
+                  src={taxCardImg}
+                  alt="البطاقة الضريبية"
+                  className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover:scale-102"
+                />
+              </div>
+
+              <p className="mt-4 text-sm text-ivory/70 leading-relaxed">
+                {tr(
+                  "Registered Entity: Kinetix for Overseas Employment LLC — Tax Reg: 2669476241204859",
+                  "الكيان: كينتيكس لإلحاق العمالة بالخارج ذ.م.م — رقم التسجيل: 2669476241204859"
+                )}
+              </p>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-ivory/10 flex items-center justify-between">
+              <span className="text-xs text-ivory/50">{tr("Tax File:", "الملف الضريبي:")} 202-500-292</span>
+              <Link to="/trust" className="inline-flex items-center gap-1.5 text-sm font-medium text-beige hover:underline">
+                <span>{tr("View Details", "فحص المستند")}</span>
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.25} />
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Large Headquarters Showcase Strip with Side Blue Gradient */}
+        <div className="mt-16">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <p className="eyebrow text-beige mb-2">
+                <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
+                {tr("Physical Presence", "مقر واستقبال الشركة الميداني")}
+              </p>
+              <h3 className="text-2xl md:text-3xl font-semibold font-display text-ivory">
+                {tr("Step Inside Kinetix Official Office", "صور حقيقية من داخل مقر كينتيكس")}
+              </h3>
+            </div>
+            <Link to="/trust" className="text-sm text-beige hover:underline flex items-center gap-1 font-medium">
+              <span>{tr("View all photos in full detail", "عرض كافة الصور بدقة عالية")}</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.25} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                img: hqReceptionImg,
+                title: tr("Client Reception Desk", "مكتب استقبال المشتركين والعملاء"),
+                badge: tr("Customer Service", "مكتب الاستقبال والترحيب"),
+                desc: tr("Illuminated neon Kinetix emblem and European destination flags.", "شعار كينتيكس المضيء وأعلام الدول الأوروبية المعتمدة لخدمتكم.")
+              },
+              {
+                img: hqConsultingImg,
+                title: tr("Executive Mobility Advisory Office", "مكتب استشارات السفر وتنسيق العقود"),
+                badge: tr("Consulting Lounge", "غرفة الاستشارات وتجهيز الملفات"),
+                desc: tr("Spacious advisory room dedicated for candidate counseling sessions.", "مساحة مخصصة لجلسات الإرشاد المهني ومراجعة العقود وجهاً لوجه.")
+              },
+            ].map((item, i) => (
+              <Link
+                key={i}
+                to="/trust"
+                className="group relative overflow-hidden rounded-3xl border border-ivory/15 bg-navy shadow-xl min-h-[420px] transition-all duration-300 hover:border-beige/50"
+              >
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                {/* Blue gradient from the side */}
+                <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r md:rtl:bg-gradient-to-l from-navy via-navy/90 md:via-navy/75 to-transparent via-55%" />
+
+                {/* Text Content */}
+                <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-6 md:p-8">
+                  <p className="eyebrow text-beige mb-2">
+                    <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
+                    {item.badge}
+                  </p>
+                  <p className="text-xl md:text-2xl font-semibold font-display text-ivory group-hover:text-beige transition-colors">
+                    {item.title}
+                  </p>
+                  <p className="text-sm text-ivory/70 mt-2 line-clamp-2">
+                    {item.desc}
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-beige mt-4">
+                    <Eye className="h-4 w-4" strokeWidth={1.25} />
+                    <span>{tr("View Photo", "تكبير وفحص الصورة")}</span>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Trust Badges Strip */}
+        <div className="mt-14 rounded-2xl border border-ivory/10 bg-ivory/[0.03] p-6 backdrop-blur-sm grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <p className="font-display text-base font-semibold text-beige">{tr("100% Legal Entity", "كيان قانوني معتمد 100%")}</p>
+            <p className="text-xs text-ivory/50 mt-1">{tr("Registered LLC in Egypt", "شركة ذات مسؤولية محدودة")}</p>
+          </div>
+          <div>
+            <p className="font-display text-base font-semibold text-beige">{tr("Bilateral Contracts", "عقود وساطة موثقة")}</p>
+            <p className="text-xs text-ivory/50 mt-1">{tr("Clear Rights & Safeguards", "بنود ملزمة تحفظ حقوقك")}</p>
+          </div>
+          <div>
+            <p className="font-display text-base font-semibold text-beige">{tr("Official Receipts", "إيصالات سداد معتمدة")}</p>
+            <p className="text-xs text-ivory/50 mt-1">{tr("Instant Proof of Every Payment", "إيصال فوري لكل دفعة")}</p>
+          </div>
+          <div>
+            <p className="font-display text-base font-semibold text-beige">{tr("Direct Support", "دعم ومتابعة مباشرة")}</p>
+            <p className="text-xs text-ivory/50 mt-1">{tr("Live Advisor & Tracking", "مستشارك معك في كل خطوة")}</p>
+          </div>
         </div>
       </div>
     </section>
