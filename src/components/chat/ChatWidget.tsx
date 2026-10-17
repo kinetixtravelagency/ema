@@ -11,12 +11,13 @@ import {
   ChevronRight,
   AlertCircle,
   CreditCard,
+  Bell,
 } from "lucide-react";
 import { getClientChat, sendClientMessage, type ChatMessage } from "@/lib/chat.functions";
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
 import { useSession } from "@/lib/useSession";
 import { useLang } from "@/lib/i18n";
-import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
+import { playChatChime, sendBrowserNotification, requestNotificationPermission, triggerHapticFeedback } from "@/lib/chatSound";
 import logoImg from "@/assets/pics/logo.png";
 
 const VISITOR_KEY = "kinetix_chat_visitor_id";
@@ -44,6 +45,8 @@ export function ChatWidget() {
   const [inputText, setInputText] = useState("");
   const [busy, setBusy] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [mobileToast, setMobileToast] = useState<{ text: string; time: string } | null>(null);
+  const [notifGranted, setNotifGranted] = useState<boolean>(false);
 
   // Visitor identity
   const [visitorId, setVisitorId] = useState<string>("");
@@ -93,7 +96,18 @@ export function ChatWidget() {
     } else {
       setInfoStep("collecting");
     }
+
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifGranted(Notification.permission === "granted");
+    }
   }, [user]);
+
+  // Auto-dismiss mobile toast notification
+  useEffect(() => {
+    if (!mobileToast) return;
+    const t = setTimeout(() => setMobileToast(null), 8000);
+    return () => clearTimeout(t);
+  }, [mobileToast]);
 
   // Listen for open-kinetix-chat event
   useEffect(() => {
@@ -157,17 +171,26 @@ export function ChatWidget() {
             setUnread(newUnread);
             if (newUnread > 0 && newUnread > prevUnreadRef.current) {
               playChatChime("client");
+              triggerHapticFeedback([180, 80, 180]);
+              const preview =
+                latestAdmin?.text?.slice(0, 90) ??
+                (ar ? "لديك رسالة جديدة من المستشار" : "You have a new message from our advisor");
+
               sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
-                body:
-                  latestAdmin?.text?.slice(0, 90) ??
-                  (ar ? "لديك رسالة جديدة من المستشار" : "You have a new message from our advisor"),
+                body: preview,
                 onClick: () => setIsOpen(true),
+              });
+
+              setMobileToast({
+                text: preview,
+                time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
               });
             }
           } else {
             // Chat is currently open
             if (latestAdmin && latestAdmin.id !== lastAdminMsgIdRef.current && lastAdminMsgIdRef.current !== "") {
               playChatChime("client");
+              triggerHapticFeedback([120, 60, 120]);
               if (typeof document !== "undefined" && document.hidden) {
                 sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
                   body: latestAdmin.text.slice(0, 90),
@@ -404,13 +427,29 @@ export function ChatWidget() {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsOpen(false)}
-              className="rounded-full p-2 text-ivory/70 hover:bg-white/10 hover:text-ivory transition-colors active:scale-95"
-              title="Close"
-            >
-              <X className="h-4 w-4" strokeWidth={2.5} />
-            </button>
+            <div className="flex items-center gap-1.5">
+              {!notifGranted && typeof window !== "undefined" && "Notification" in window && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const perm = await requestNotificationPermission();
+                    if (perm === "granted") setNotifGranted(true);
+                  }}
+                  className="flex items-center gap-1 rounded-full bg-beige/20 hover:bg-beige/30 text-beige px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95"
+                  title={ar ? "تفعيل إشعارات الهاتف" : "Enable Phone Notifications"}
+                >
+                  <Bell className="h-3.5 w-3.5 text-beige animate-pulse" />
+                  <span className="hidden xs:inline">{ar ? "تفعيل الإشعارات" : "Alerts"}</span>
+                </button>
+              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="rounded-full p-2 text-ivory/70 hover:bg-white/10 hover:text-ivory transition-colors active:scale-95"
+                title="Close"
+              >
+                <X className="h-4 w-4" strokeWidth={2.5} />
+              </button>
+            </div>
           </div>
 
           {/* ── INFO COLLECTION SCREEN (guests who haven't provided info yet) ── */}
@@ -616,6 +655,50 @@ export function ChatWidget() {
             </>
           )}
         </div>
+      )}
+
+      {/* Floating Push Notification Banner for Mobile */}
+      {mobileToast && !isOpen && (
+        <aside
+          role="status"
+          aria-label={ar ? "إشعار رسالة جديدة" : "New message notification"}
+          className="fixed top-3 inset-x-3 sm:hidden z-[9999] animate-in slide-in-from-top duration-300"
+        >
+          <div
+            onClick={() => {
+              setIsOpen(true);
+              setMobileToast(null);
+            }}
+            className="flex items-center gap-3 rounded-2xl border border-beige/40 bg-navy/95 text-ivory p-3.5 shadow-2xl backdrop-blur-md cursor-pointer active:scale-98 transition-transform"
+          >
+            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-beige/40 bg-white p-1 shadow-sm">
+              <img src={logoImg} alt="Kinetix" className="h-full w-full object-contain" />
+              <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-navy" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-xs font-bold text-beige flex items-center gap-1 truncate">
+                  <Sparkles className="h-3 w-3 text-beige shrink-0" />
+                  {ar ? "رسالة من كينتيكس" : "Kinetix Advisory"}
+                </span>
+                <span className="text-[10px] text-ivory/50 shrink-0">{mobileToast.time}</span>
+              </div>
+              <p className="text-xs text-ivory/90 truncate mt-0.5 font-medium">
+                {mobileToast.text}
+              </p>
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMobileToast(null);
+              }}
+              className="text-ivory/50 hover:text-ivory p-1 rounded-lg shrink-0"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </aside>
       )}
     </>
   );

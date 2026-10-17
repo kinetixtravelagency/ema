@@ -43,6 +43,8 @@ import {
   EtisalatLogo,
 } from "./PaymentBrandLogos";
 
+import { Link } from "@tanstack/react-router";
+
 type Doc = {
   id: string;
   doc_type: string;
@@ -60,6 +62,42 @@ interface ApplicationProgressTrackerProps {
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
+function parseTrackerNotes(raw: any) {
+  if (!raw) return { meta: {} as Record<string, any>, rejectionReason: "" };
+  if (typeof raw === "object") {
+    return {
+      meta: raw,
+      rejectionReason: String(raw["rejection_reason"] || raw["rejectionReason"] || ""),
+    };
+  }
+  const text = String(raw).trim();
+  let rejectionReason = "";
+  let meta: Record<string, any> = {};
+
+  const rejMatch = text.match(/\[REJECTION_REASON:\s*([^\]]+)\]/i);
+  if (rejMatch && rejMatch[1]) {
+    rejectionReason = rejMatch[1].trim();
+  }
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      meta = JSON.parse(jsonMatch[0]);
+      if (meta["rejection_reason"] && !rejectionReason) {
+        rejectionReason = String(meta["rejection_reason"]);
+      }
+    } catch {}
+  } else {
+    try {
+      meta = JSON.parse(text);
+      if (meta["rejection_reason"] && !rejectionReason) {
+        rejectionReason = String(meta["rejection_reason"]);
+      }
+    } catch {}
+  }
+  return { meta, rejectionReason };
+}
+
 export function ApplicationProgressTracker({ application, onDocChange }: ApplicationProgressTrackerProps) {
   const { t, lang } = useLang();
   const ar = lang === "ar";
@@ -67,16 +105,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
 
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [uploadSuccessMsg, setUploadSuccessMsg] = useState<string | null>(null);
 
-  // Parse notes metadata if available
-  let notesData: Record<string, any> = {};
-  try {
-    if (application.notes) {
-      notesData = typeof application.notes === "string" ? JSON.parse(application.notes) : application.notes;
-    }
-  } catch {
-    notesData = {};
-  }
+  // Parse notes and rejection metadata
+  const { meta: notesData, rejectionReason } = parseTrackerNotes(application.notes);
+  const isRejected = application.status === "rejected";
 
   // 6 Journey Milestones
   const stage = Number(application.stage ?? 0);
@@ -320,6 +353,8 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
         file_name: file.name.slice(0, 200),
       });
       if (insErr) throw insErr;
+      setUploadSuccessMsg(ar ? `تم رفع ملف "${docType}" بنجاح وجاري تدقيقه من الإدارة.` : `Document "${docType}" uploaded successfully and is pending review.`);
+      setTimeout(() => setUploadSuccessMsg(null), 6000);
       if (onDocChange) onDocChange();
     } catch (e: any) {
       setErr(e.message || "Failed to upload file");
@@ -339,9 +374,176 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   };
 
   const progressPercent = Math.min(100, Math.max(0, (effectiveStage / 5) * 100));
+  const rejectedDocs = docs.filter((d) => d.status === "rejected");
 
   return (
     <div className="space-y-6">
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* 0. STATUS & ALERTS BANNER (REJECTION, NOTIFICATIONS, ADMIN)    */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SUCCESS UPLOAD NOTIFICATION */}
+      {uploadSuccessMsg && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-900 shadow-sm dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200 animate-in fade-in slide-in-from-top-1">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span>{uploadSuccessMsg}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setUploadSuccessMsg(null)}
+            className="text-xs opacity-60 hover:opacity-100"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* PROMINENT REJECTION & CLOSURE BANNER (IF REJECTED) */}
+      {isRejected && (
+        <div className="relative overflow-hidden rounded-3xl border-2 border-red-500/80 bg-gradient-to-br from-red-500/10 via-card to-red-500/5 p-5 sm:p-6 shadow-lg shadow-red-500/10 ring-1 ring-red-500/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 pb-4 border-b border-red-200 dark:border-red-900/40">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-white shadow-md">
+                <XCircle className="h-6 w-6 stroke-[2.5]" />
+              </div>
+              <div>
+                <span className="inline-block rounded-full bg-red-600/10 px-2.5 py-0.5 text-[11px] font-bold text-red-600 dark:text-red-400">
+                  {ar ? "تم إغلاق ملف التقديم" : "Application Closed"}
+                </span>
+                <h3 className="font-display text-base sm:text-lg font-bold text-red-700 dark:text-red-300">
+                  {ar ? "تم إغلاق ورفض هذا الطلب نهائياً" : "This Application Has Been Rejected and Closed"}
+                </h3>
+              </div>
+            </div>
+
+            <span className="rounded-full border border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-950/60 px-3 py-1 text-xs font-bold text-red-800 dark:text-red-200 shrink-0">
+              {ar ? "حالة الطلب: مرفوض ❌" : "Status: Rejected ❌"}
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <div className="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/70 dark:bg-red-950/40 p-4">
+              <span className="block text-xs font-bold text-red-900 dark:text-red-200 mb-1">
+                {ar ? "سبب الرفض الصادر من إدارة كينتيكس:" : "Official Rejection Reason:"}
+              </span>
+              <p className="text-sm font-semibold text-red-800 dark:text-red-300 leading-relaxed">
+                {rejectionReason || (ar ? "لم يستوفِ الطلب أحد المعايير أو الشروط الإلزامية الخاصة بجهة العمل الأوروبية المستضيفة." : "The application did not fulfill specific requirements for this European placement.")}
+              </p>
+            </div>
+
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {ar
+                ? "نأسف لعدم تمكننا من قبول هذا الطلب في هذا البرنامج المحدد. يمكنك دائماً التقديم على برامج أخرى تتناسب مع مؤهلاتك أو التحدث مع فريق الاستشارات لمساعدتك في اختيار البرنامج البديل المناسب."
+                : "We are unable to proceed with this application. You may explore alternative programs or speak to an advisor for guidance."}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <Link
+                to="/apply"
+                className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-xs font-bold text-ivory hover:opacity-90 shadow-sm"
+              >
+                <span>{ar ? "استكشاف برامج أخرى والتقديم مجدداً" : "Browse Other Programs & Re-Apply"}</span>
+                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN STATUS BANNER (WHEN NOT REJECTED) */}
+      {!isRejected && (
+        <div className={`rounded-2xl border p-4 text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs ${
+          application.status === "approved"
+            ? "border-emerald-300 bg-emerald-50/80 text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200"
+            : application.status === "documents"
+            ? "border-amber-300 bg-amber-50/80 text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+            : application.status === "in_review"
+            ? "border-blue-300 bg-blue-50/80 text-blue-950 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-200"
+            : "border-border bg-secondary/30 text-foreground"
+        }`}>
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-bold ${
+              application.status === "approved"
+                ? "bg-emerald-600 text-white"
+                : application.status === "documents"
+                ? "bg-amber-600 text-white"
+                : application.status === "in_review"
+                ? "bg-blue-600 text-white"
+                : "bg-navy text-ivory"
+            }`}>
+              {application.status === "approved" ? <CheckCircle2 className="h-4 w-4" /> : application.status === "documents" ? <AlertCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
+            </span>
+            <div className="min-w-0">
+              <span className="block font-bold">
+                {application.status === "approved"
+                  ? (ar ? "حالة الطلب: تمت الموافقة المبدئية ✓" : "Status: Preliminary Approved ✓")
+                  : application.status === "documents"
+                  ? (ar ? "حالة الطلب: مطلوب استكمال أو إعادة رفع مستندات ⚠️" : "Status: Documents Action Required ⚠️")
+                  : application.status === "in_review"
+                  ? (ar ? "حالة الطلب: قيد المراجعة والتدقيق 🔍" : "Status: Under Active Review 🔍")
+                  : (ar ? "حالة الطلب: تم استلام الطلب وبانتظار المراجعة ⏳" : "Status: Application Received ⏳")}
+              </span>
+              <span className="text-[11px] opacity-80 block truncate">
+                {application.status === "approved"
+                  ? (ar ? "تم قبول ملفك المبدئي. يرجى إتمام سداد الديبوزت لتثبيت المقعد ومباشرة إجراءات المقابلات." : "Your application passed initial screening. Complete deposit to confirm seat.")
+                  : application.status === "documents"
+                  ? (ar ? "يرجى مراجعة قسم المستندات أدناه وإعادة رفع الملفات المطلوبة بالصيغة الصحيحة." : "Please check documents section below and re-upload required items.")
+                  : application.status === "in_review"
+                  ? (ar ? "يقوم مسؤولو التوظيف بمطابقة بياناتك وسيرتك الذاتية مع متطلبات جهة العمل." : "Team is actively evaluating your file against host requirements.")
+                  : (ar ? "طلبك مسجل في النظام وسيتم فحصه من قبل مستشار كينتيكس خلال 24 ساعة عمل." : "Application received and queued for review within 24 business hours.")}
+              </span>
+            </div>
+          </div>
+
+          {application.status === "documents" && (
+            <button
+              type="button"
+              onClick={() => setActiveSection(2)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-amber-700 shadow-xs"
+            >
+              <span>{ar ? "مراجعة المستندات" : "Review Docs"}</span>
+              <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+            </button>
+          )}
+
+          {application.status === "approved" && !depositPaid && (
+            <button
+              type="button"
+              onClick={() => setActiveSection(3)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-xs"
+            >
+              <span>{ar ? "سداد الديبوزت الآن" : "Pay Deposit Now"}</span>
+              <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* REJECTED DOCUMENTS WARNING ALERT */}
+      {rejectedDocs.length > 0 && !isRejected && (
+        <div className="rounded-2xl border border-red-300 bg-red-50/90 dark:border-red-900/60 dark:bg-red-950/40 p-4 text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <XCircle className="h-5 w-5 text-red-600 shrink-0" />
+            <div>
+              <span className="font-bold text-red-800 dark:text-red-200 block">
+                {ar ? `تنبيه: تم رفض ${rejectedDocs.length} من المستندات المرفوعة` : `Alert: ${rejectedDocs.length} document(s) were rejected`}
+              </span>
+              <span className="text-[11px] text-red-700 dark:text-red-300">
+                {ar ? "يرجى التوجه إلى قسم المستندات لإعادة رفع الملفات المطلوبة وتصحيحها." : "Please go to the documents section to re-upload the required files."}
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveSection(2)}
+            className="inline-flex items-center gap-1 rounded-full bg-red-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-red-700 shadow-xs"
+          >
+            <span>{ar ? "الذهاب للمستندات" : "Go to Documents"}</span>
+            <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+          </button>
+        </div>
+      )}
+
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* 1. FIXED 6 CIRCLES JOURNEY MILESTONES TIMELINE TRACKER        */}
       {/* ══════════════════════════════════════════════════════════════ */}
@@ -567,9 +769,12 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               {ar ? (pr?.category_ar || catProg?.categoryAr || "ضيافة وسياحة") : (pr?.category_en || catProg?.category || "Hospitality")}
             </span>
 
-            <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-foreground flex items-center gap-1">
-              <Clock className="h-3 w-3 text-muted-foreground" />
-              {notesData["contract_duration"] || catProg?.duration || (pr?.track === "student" ? "3–6 months" : "9–24 months")}
+            <span className="rounded-full bg-navy/10 text-navy dark:bg-beige/10 dark:text-beige px-3 py-1 text-xs font-bold flex items-center gap-1.5 border border-navy/20 dark:border-beige/20">
+              <Clock className="h-3.5 w-3.5 text-beige" />
+              <span>{ar ? "مدة العقد المختارة:" : "Contract Duration:"}</span>
+              <span className="font-extrabold underline decoration-beige">
+                {notesData["contract_duration"] || catProg?.duration || (pr?.track === "student" ? "3–6 months" : "12 months")}
+              </span>
             </span>
 
             <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 text-navy dark:bg-beige/10 dark:text-beige px-3 py-1 text-xs font-semibold">
@@ -633,6 +838,23 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   ? (ar ? "دفعة واحدة بالكامل (Full)" : "Full Payment")
                   : (ar ? `أقساط شهرية ميسرة على ${application.installments || 6} أشهر` : `Installments over ${application.installments || 6} months`)}
               </span>
+            </div>
+
+            <div className="sm:col-span-2 rounded-xl border border-beige/40 bg-beige/10 p-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-bold text-foreground flex items-center gap-1.5 text-xs">
+                  <Clock className="h-4 w-4 text-beige" />
+                  {ar ? "مدة العقد وفترة الإقامة الرسمية:" : "Official Placement & Contract Period:"}
+                </span>
+                <span className="rounded-full bg-navy text-ivory dark:bg-beige dark:text-navy px-3 py-0.5 text-xs font-extrabold">
+                  {notesData["contract_duration"] || catProg?.duration || (ar ? "عقد سنوي (12 شهر)" : "12 Months Contract")}
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">
+                {ar
+                  ? "فترة العقد محددة ومعتمدة في تصريح العمل وفيزا الشنغن، مع إمكانية التمديد والتجديد التلقائي بموافقة صاحب العمل."
+                  : "Contract period is officially certified in the work permit and visa, with extension options upon employer agreement."}
+              </p>
             </div>
           </div>
 
@@ -808,6 +1030,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   <p className="text-xs text-muted-foreground">
                     {cvDoc ? (ar ? "تم رفع الملف ومتاح للمعاينة ومراجعة أصحاب العمل" : "Uploaded and ready for employer review") : (ar ? "صيغ مقبولة: PDF, Word — بحد أقصى 15 ميجابايت" : "Accepted: PDF, Word — Max 15MB")}
                   </p>
+                  {cvDoc?.status === "rejected" && cvDoc.note && (
+                    <p className="mt-1 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-100/70 dark:bg-red-950/60 px-2.5 py-1 rounded-lg">
+                      ⚠️ {ar ? `ملاحظة الإدارة على الـ CV: ${cvDoc.note}` : `Admin note: ${cvDoc.note}`}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -871,11 +1098,18 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{dt}</p>
                         {doc ? (
-                          <p className={`flex items-center gap-1 text-xs ${isApproved ? "text-emerald-700 dark:text-emerald-400" : isRejected ? "text-destructive" : "text-muted-foreground"}`}>
-                            {isApproved ? <Check className="h-3 w-3" /> : isRejected ? <XCircle className="h-3 w-3" /> : null}
-                            {isApproved ? t("docApproved") : isRejected ? t("docRejected") : t("docPending")} ·{" "}
-                            <span className="truncate">{doc.file_name}</span>
-                          </p>
+                          <div className="space-y-0.5">
+                            <p className={`flex items-center gap-1 text-xs ${isApproved ? "text-emerald-700 dark:text-emerald-400" : isRejected ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                              {isApproved ? <Check className="h-3 w-3" /> : isRejected ? <XCircle className="h-3 w-3" /> : null}
+                              {isApproved ? t("docApproved") : isRejected ? t("docRejected") : t("docPending")} ·{" "}
+                              <span className="truncate">{doc.file_name}</span>
+                            </p>
+                            {isRejected && doc.note && (
+                              <p className="text-[11px] font-semibold text-red-600 dark:text-red-400 bg-red-100/70 dark:bg-red-950/60 rounded-lg px-2 py-0.5 inline-block">
+                                ⚠️ {ar ? `سبب الرفض: ${doc.note}` : `Reason: ${doc.note}`}
+                              </p>
+                            )}
+                          </div>
                         ) : (
                           <p className="text-xs text-muted-foreground">{t("required")}</p>
                         )}

@@ -291,7 +291,7 @@ export function ProgramDetailPage() {
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Link
               to="/apply"
-              search={{ program: p.slug }}
+              search={{ program: p.slug, duration: selectedDuration }}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-beige px-8 py-4 font-semibold text-navy transition-transform hover:-translate-y-0.5 shadow-lg text-sm sm:text-base"
             >
               <span>{ar ? "قدّم الآن على هذه الوظيفة" : "Apply for this Position"}</span>
@@ -886,7 +886,7 @@ export function ProgramDetailPage() {
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/apply"
-                search={{ program: p.slug }}
+                search={{ program: p.slug, duration: selectedDuration }}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-beige px-8 py-4 font-semibold text-navy transition-transform hover:-translate-y-0.5 shadow-lg"
               >
                 <span>{ar ? "ابدأ التقديم على هذه الوظيفة" : "Start Application"}</span>

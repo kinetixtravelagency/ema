@@ -1,0 +1,21 @@
+{
+  "name": "Kinetix Travel & Work",
+  "short_name": "Kinetix",
+  "description": "Work abroad with transparent costs and flexible payment plans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1A2C",
+  "theme_color": "#0F1A2C",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

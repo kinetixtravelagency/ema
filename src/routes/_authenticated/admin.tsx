@@ -12,7 +12,7 @@ import {
 } from "@/lib/account.functions";
 import { adminDeletePartner, adminSetWithdrawalStatus } from "@/lib/partner.functions";
 import { getAdminChats } from "@/lib/chat.functions";
-import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
+import { playChatChime, sendBrowserNotification, requestNotificationPermission, triggerHapticFeedback } from "@/lib/chatSound";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { Logo } from "@/components/site/SiteChrome";
@@ -23,7 +23,7 @@ import {
   TrendingUp, Plus, Pencil, Save, X, Eye, ShieldCheck, Ban, AlertCircle, MessageSquare,
   Mail, Phone, MapPin, Calendar, Copy, Check, ExternalLink, Link2, Trash2, RefreshCw,
   Sparkles, Filter, Layers, CheckSquare, Loader2, CreditCard, BookOpen, Send, User,
-  FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck,
+  FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck, FileBadge,
   Mic, Info, ArrowRight, type LucideIcon,
 } from "lucide-react";
 import { AdminChatTab } from "@/components/admin/AdminChatTab";
@@ -83,6 +83,13 @@ function Admin() {
 
   const refetch = () => qc.invalidateQueries({ queryKey: ["admin-full"] });
 
+  // Auto-dismiss incoming chat alert after 8 seconds
+  useEffect(() => {
+    if (!latestIncomingChat) return;
+    const t = setTimeout(() => setLatestIncomingChat(null), 8000);
+    return () => clearTimeout(t);
+  }, [latestIncomingChat]);
+
   // Poll chat messages for Admin dashboard notifications
   useEffect(() => {
     let mounted = true;
@@ -97,6 +104,7 @@ function Admin() {
 
         if (prevUnreadCountRef.current !== -1 && total > prevUnreadCountRef.current) {
           playChatChime("admin");
+          triggerHapticFeedback([200, 100, 200]);
           const unreadConvs = (res.conversations || []).filter((c: any) => (c.unreadCount || 0) > 0);
           const topConv = unreadConvs[0];
           if (topConv) {
@@ -177,6 +185,60 @@ function Admin() {
           ))}
         </nav>
       </header>
+
+      {/* Floating Incoming Chat Alert Toast (Mobile & Desktop) */}
+      {latestIncomingChat && (
+        <aside
+          role="status"
+          aria-label="رسالة دردشة جديدة"
+          className="fixed top-14 inset-x-3 sm:inset-x-auto sm:right-6 sm:top-16 z-50 sm:max-w-md animate-in slide-in-from-top duration-300"
+        >
+          <div className="rounded-2xl border border-beige/40 bg-navy/95 text-ivory p-3.5 shadow-2xl backdrop-blur-md flex items-start gap-3">
+            <div className="relative mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-beige text-navy font-bold text-sm shadow-xs">
+              <MessageSquare className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-bold text-beige truncate">
+                  💬 {latestIncomingChat.clientName}
+                </p>
+                <span className="text-[10px] text-ivory/50 shrink-0">الآن</span>
+              </div>
+              <p className="mt-0.5 text-xs text-ivory/90 line-clamp-2 leading-relaxed">
+                {latestIncomingChat.text}
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setTab("chat");
+                    setLatestIncomingChat(null);
+                  }}
+                  className="rounded-lg bg-beige hover:bg-beige/90 text-navy px-3 py-1 text-xs font-bold transition-all shadow-xs active:scale-95"
+                >
+                  فتح المحادثة والرد ←
+                </button>
+                <button
+                  onClick={() => setLatestIncomingChat(null)}
+                  className="rounded-lg bg-white/10 hover:bg-white/20 text-ivory/80 px-2.5 py-1 text-xs transition-colors"
+                >
+                  تجاهل
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => setLatestIncomingChat(null)}
+              className="text-ivory/60 hover:text-ivory p-1 -mr-1 -mt-1 rounded-lg transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </aside>
+      )}
 
       <div className="mx-auto max-w-7xl px-3 sm:px-5 py-5 sm:py-8">
 
@@ -368,6 +430,59 @@ const STAGE_ICONS: LucideIcon[] = [ClipboardList, DollarSign, FileText, Mic, Fil
 const STAGE_LABELS_EN = ["Application & Docs", "Deposit", "Pre-Interview", "Interview", "Permit & Visa", "Ready to Travel"];
 const STAGE_LABELS_AR = ["تقديم ومستندات", "ديبوزت", "بري انترفيو", "انترفيو", "التصريح والتأشيرة", "جاهز للسفر"];
 
+const PREDEFINED_REJECTION_REASONS = [
+  "عدم استيفاء الشروط الأساسية أو المؤهلات المطلوبة لهذا البرنامج",
+  "المستندات أو الأوراق المرفقة غير واضحة أو ناقصة (مثل الجواز أو شهادة التخرج)",
+  "عدم توافق المؤهل الدراسي أو الخبرة العملية مع شروط دولة العمل المستضيفة",
+  "تم اكتمال العدد المطلوب والمقاعد المتاحة لهذا البرنامج في الوقت الحالي",
+  "جواز السفر غير سارٍ أو متبقي عليه مدة صلاحية أقل من 12 شهراً",
+  "الموقف من التجنيد غير مكتمل أو لا يسمح بالسفر في الفترة الحالية",
+  "عدم اجتياز متطلبات المقابلة الشخصية أو مستوى اللغة المطلوب",
+  "custom",
+];
+
+interface ApplicantMeta {
+  first_name?: string;
+  second_name?: string;
+  national_id?: string;
+  education_level?: string;
+  university?: string;
+  faculty?: string;
+  academic_year?: string;
+  graduation_year?: string;
+  current_city?: string;
+  current_address?: string;
+  hometown_city?: string;
+  hometown_address?: string;
+  gender?: string;
+  military_status?: string;
+  birth_date?: string;
+  flight_included?: boolean | string;
+  contract_duration?: string;
+  rejection_reason?: string;
+}
+
+function parseAppNotes(notes: string | null | undefined): { meta: ApplicantMeta; rejectionReason: string | null } {
+  if (!notes) return { meta: {}, rejectionReason: null };
+  let meta: ApplicantMeta = {};
+  let rejectionReason: string | null = null;
+
+  const rejMatch = notes.match(/\[REJECTION_REASON:\s*([^\]]+)\]/);
+  if (rejMatch && rejMatch[1]) {
+    rejectionReason = rejMatch[1].trim();
+  }
+
+  const jsonMatch = notes.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      meta = JSON.parse(jsonMatch[0]);
+      if (meta.rejection_reason) rejectionReason = meta.rejection_reason;
+    } catch {}
+  }
+
+  return { meta, rejectionReason };
+}
+
 function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void }) {
   const setStatus   = useServerFn(adminUpdateApplicationStatus);
   const upd         = useServerFn(adminUpdateApplication);
@@ -385,6 +500,12 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const [notesDraft,  setNotesDraft]  = useState<Record<string, string>>({});
   const [savingNotes, setSavingNotes] = useState(false);
   const [copied,      setCopied]      = useState<string | null>(null);
+
+  // Rejection modal state
+  const [rejectionModal, setRejectionModal] = useState<{ id: string; name: string; currentReason: string } | null>(null);
+  const [rejectionSelect, setRejectionSelect] = useState<string>(PREDEFINED_REJECTION_REASONS[0] ?? "");
+  const [rejectionCustomText, setRejectionCustomText] = useState<string>("");
+  const [savingRejection, setSavingRejection] = useState(false);
 
   const statuses = ["all", "submitted", "in_review", "documents", "approved", "rejected"];
 
@@ -422,6 +543,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
   const filtered = apps.filter(a => {
     const eff = getEff(a);
+    const { meta } = parseAppNotes(eff.notes);
     if (filter === "payments" && !isPaymentApp(a)) return false;
     if (filter !== "all" && filter !== "payments" && eff.status !== filter) return false;
     if (stageFilter !== "all" && eff.stage !== stageFilter) return false;
@@ -431,7 +553,9 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       (a.phone ?? "").includes(q) ||
       (a.promo_code ?? "").toLowerCase().includes(q) ||
       (a.user_email ?? "").toLowerCase().includes(q) ||
-      (a.passport_number ?? "").toLowerCase().includes(q);
+      (a.passport_number ?? "").toLowerCase().includes(q) ||
+      (meta.national_id ?? "").includes(q) ||
+      (meta.university ?? "").toLowerCase().includes(q);
   });
 
   const openDoc = async (path: string) => {
@@ -451,11 +575,50 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const rollback = (appId: string, key: string) =>
     setOptimistic(prev => { const c = { ...prev }; if (c[appId]) delete (c[appId] as any)[key]; return c; });
 
-  const doStatus = async (appId: string, newStatus: string) => {
+  const doStatus = async (appId: string, newStatus: string, applicantName?: string) => {
+    if (newStatus === "rejected") {
+      const app = apps.find(x => x.id === appId);
+      const { rejectionReason } = parseAppNotes(app?.notes);
+      setRejectionModal({
+        id: appId,
+        name: applicantName || app?.full_name || "Applicant",
+        currentReason: rejectionReason || "",
+      });
+      setRejectionSelect(PREDEFINED_REJECTION_REASONS[0] ?? "");
+      setRejectionCustomText(rejectionReason || "");
+      return;
+    }
+
     patch(appId, { status: newStatus }); setUpdatingId(appId);
     try { await setStatus({ data: { id: appId, status: newStatus } }); onChange(); }
     catch (e: any) { alert(e?.message); rollback(appId, "status"); }
     finally { setUpdatingId(null); }
+  };
+
+  const handleConfirmRejection = async () => {
+    if (!rejectionModal) return;
+    const reason = rejectionSelect === "custom"
+      ? rejectionCustomText.trim()
+      : rejectionSelect + (rejectionCustomText.trim() ? ` — ${rejectionCustomText.trim()}` : "");
+
+    if (!reason) {
+      alert("الرجاء اختيار أو كتابة سبب الرفض الموجه للمتقدم");
+      return;
+    }
+
+    const appId = rejectionModal.id;
+    setSavingRejection(true);
+    patch(appId, { status: "rejected" });
+    try {
+      await setStatus({ data: { id: appId, status: "rejected", rejection_reason: reason } });
+      setRejectionModal(null);
+      onChange();
+    } catch (e: any) {
+      alert(e?.message || "Failed to update rejection");
+      rollback(appId, "status");
+    } finally {
+      setSavingRejection(false);
+    }
   };
 
   const doStage = async (appId: string, newStage: number) => {
@@ -503,12 +666,12 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   return (
     <div className="space-y-4">
 
-      {/* ══ 1. Search — always at the very top ══ */}
+      {/* ══ 1. Search Bar ══ */}
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
           className="w-full rounded-2xl border border-input bg-card pl-11 pr-4 py-3 text-sm placeholder:text-muted-foreground outline-none focus:border-navy shadow-xs"
-          placeholder="Search by name, phone, email, passport number, or promo code…"
+          placeholder="Search by name, National ID, phone, email, passport number, or promo code…"
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -520,7 +683,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
         )}
       </div>
 
-      {/* ══ 2. Stage stats cards ══ */}
+      {/* ══ 2. Stage Filter Cards ══ */}
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
         {STAGE_LABELS_EN.map((label, i) => {
           const Icon = (STAGE_ICONS[i] ?? ClipboardList) as LucideIcon;
@@ -539,7 +702,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
         })}
       </div>
 
-      {/* ══ 3. Status filter pills + meta ══ */}
+      {/* ══ 3. Status Filter Pills ══ */}
       <div className="flex flex-wrap items-center gap-1.5">
         {statuses.map(s => (
           <button key={s} onClick={() => setFilter(s)}
@@ -568,8 +731,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
         </span>
       </div>
 
-      {/* ══ 4. Applications list ══ */}
-      <div className="space-y-2">
+      {/* ══ 4. Applications List ══ */}
+      <div className="space-y-3">
         {filtered.map(a => {
           const eff        = getEff(a);
           const expanded   = exp === a.id;
@@ -580,57 +743,113 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
           const curTab     = getTab(a.id);
           const StageIcon  = STAGE_ICONS[eff.stage] ?? ClipboardList;
 
+          const { meta, rejectionReason } = parseAppNotes(eff.notes);
+          const contractDuration = meta.contract_duration || a.programs?.duration || "Standard Contract";
+
           return (
             <div key={a.id} className={`rounded-3xl border bg-card overflow-hidden transition-all ${
-              hasPayment ? "border-amber-400/70 shadow-md" : "border-border shadow-xs hover:shadow-sm"
+              eff.status === "rejected"
+                ? "border-red-300/80 dark:border-red-900/50 shadow-xs"
+                : hasPayment
+                ? "border-amber-400/70 shadow-md"
+                : "border-border shadow-xs hover:shadow-sm"
             }`}>
 
-              {/* ── Summary row (clickable) ── */}
+              {/* ── Summary Row (Clickable) ── */}
               <button
-                className="flex w-full items-center gap-4 p-4 text-start hover:bg-secondary/20 transition-colors"
+                type="button"
+                className="flex w-full items-center gap-3.5 p-4 text-start hover:bg-secondary/20 transition-colors"
                 onClick={() => setExp(expanded ? null : a.id)}>
 
-                {/* Stage icon pill */}
-                <div className={`shrink-0 flex h-10 w-10 items-center justify-center rounded-2xl ${
-                  eff.deposit ? "bg-emerald-100 text-emerald-700" : "bg-secondary text-muted-foreground"
+                {/* Status indicator avatar */}
+                <div className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-2xl shadow-xs ${
+                  eff.status === "rejected"
+                    ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-400"
+                    : eff.deposit
+                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300"
+                    : "bg-secondary text-muted-foreground"
                 }`}>
-                  <StageIcon className="h-5 w-5" />
+                  {eff.status === "rejected" ? <XCircle className="h-5 w-5" /> : <StageIcon className="h-5 w-5" />}
                 </div>
 
                 {/* Main info */}
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                    <p className="font-semibold text-sm text-foreground">{a.full_name ?? a.profiles?.full_name ?? "—"}</p>
-                    <span className={`${pill} ${statusColor(eff.status)} text-[11px]`}>{eff.status}</span>
-                    {/* unified deposit badge */}
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <p className="font-bold text-sm text-foreground">{a.full_name ?? a.profiles?.full_name ?? "Applicant"}</p>
+
+                    {/* Status Pill */}
+                    <span className={`${pill} ${statusColor(eff.status)} text-[11px] font-bold`}>
+                      {eff.status === "rejected" ? "✕ Rejected" : eff.status}
+                    </span>
+
+                    {/* Contract Duration Badge */}
+                    <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 dark:bg-beige/10 border border-navy/20 dark:border-beige/20 px-2.5 py-0.5 text-[11px] font-bold text-navy dark:text-beige">
+                      <Clock className="h-3 w-3" />
+                      <span>{contractDuration}</span>
+                    </span>
+
+                    {/* National ID Badge if available */}
+                    {meta.national_id && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
+                        🪪 {meta.national_id}
+                      </span>
+                    )}
+
+                    {/* Unified deposit badge */}
                     {eff.deposit && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[11px] font-bold text-emerald-800">
                         <CheckCircle2 className="h-3 w-3" /> Deposit Paid
                       </span>
                     )}
+
                     {hasPayment && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 text-[11px] font-bold text-amber-800">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 text-[11px] font-bold text-amber-800 animate-pulse">
                         <CreditCard className="h-3 w-3" /> Payment Request
                       </span>
                     )}
+
                     {isBusy && <Loader2 className="h-3.5 w-3.5 animate-spin text-beige" />}
                   </div>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
-                    {a.programs?.countries?.name_en && <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{a.programs.countries.name_en}</span>}
-                    {a.programs?.track && <span className="flex items-center gap-1"><GraduationCap className="h-3 w-3" />{a.programs.track}</span>}
-                    {a.programs?.price && <span className="font-bold text-beige">{eur(a.programs.price)}</span>}
-                    {a.phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{a.phone}</span>}
-                    {partner && <span className="flex items-center gap-1 text-navy font-semibold"><User className="h-3 w-3" />{partner}</span>}
-                    {a.promo_code && <span className="flex items-center gap-1"><Tag className="h-3 w-3 text-beige" />{a.promo_code}</span>}
-                    <span className="flex items-center gap-1 ml-auto"><Calendar className="h-3 w-3" />{new Date(a.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
+
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11.5px] text-muted-foreground">
+                    {a.programs?.countries?.name_en && (
+                      <span className="flex items-center gap-1 font-semibold text-foreground/90">
+                        <Globe className="h-3 w-3 text-beige" />
+                        {a.programs.countries.name_en} — {a.programs?.title_en || a.programs?.track}
+                      </span>
+                    )}
+                    {a.phone && (
+                      <span className="flex items-center gap-1 font-mono">
+                        <Phone className="h-3 w-3" />
+                        {a.phone}
+                      </span>
+                    )}
+                    {meta.university && (
+                      <span className="flex items-center gap-1 text-muted-foreground truncate max-w-[200px]">
+                        <GraduationCap className="h-3 w-3" />
+                        {meta.university}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1 ml-auto">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(a.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                    </span>
                   </div>
+
+                  {/* Rejection Banner in summary if rejected */}
+                  {eff.status === "rejected" && rejectionReason && (
+                    <div className="mt-2 flex items-center gap-1.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 px-2.5 py-1 text-xs text-red-700 dark:text-red-300">
+                      <AlertCircle className="h-3.5 w-3.5 text-red-600 shrink-0" />
+                      <span className="font-bold">سبب الرفض:</span>
+                      <span className="truncate">{rejectionReason}</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Stage label + stage # */}
+                {/* Stage progression label */}
                 <div className="shrink-0 hidden sm:flex flex-col items-end gap-0.5 text-right">
                   <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Stage</span>
                   <span className="text-xs font-bold text-foreground">{STAGE_LABELS_EN[eff.stage]}</span>
-                  {/* mini progress dots */}
                   <div className="flex gap-0.5 mt-1">
                     {STAGE_LABELS_EN.map((_, i) => (
                       <div key={i} className={`h-1.5 w-4 rounded-full transition-all ${
@@ -644,22 +863,22 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                 <ChevronDown className={`shrink-0 h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
               </button>
 
-              {/* ── Expanded dossier ── */}
+              {/* ── Expanded Dossier (Full Data View) ── */}
               {expanded && (
                 <div className="border-t border-border">
-                  {/* Tab nav */}
-                  <div className="flex gap-0 border-b border-border bg-secondary/20 overflow-x-auto">
+                  {/* Tab Navigation */}
+                  <div className="flex gap-0 border-b border-border bg-secondary/30 overflow-x-auto">
                     {[
-                      { id: "overview",  label: "Overview",   Icon: LayoutDashboard },
-                      { id: "applicant", label: "Applicant",  Icon: User },
-                      { id: "program",   label: "Program",    Icon: Briefcase },
+                      { id: "overview",  label: "Workflow & Actions", Icon: LayoutDashboard },
+                      { id: "applicant", label: "Full Applicant Data", Icon: User },
+                      { id: "program",   label: "Contract & Program", Icon: Briefcase },
                       { id: "documents", label: `Docs (${(a.application_documents ?? []).length})`, Icon: FileText },
-                      { id: "notes",     label: "Notes",      Icon: ClipboardList },
+                      { id: "notes",     label: "Notes & Chat",       Icon: ClipboardList },
                     ].map(t => (
                       <button key={t.id} onClick={() => setTab(a.id, t.id)}
-                        className={`flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-all ${
+                        className={`flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all ${
                           curTab === t.id
-                            ? "border-navy text-navy bg-card"
+                            ? "border-navy text-navy bg-card dark:border-beige dark:text-beige"
                             : "border-transparent text-muted-foreground hover:text-foreground hover:bg-card/60"
                         }`}>
                         <t.Icon className="h-3.5 w-3.5" /> {t.label}
@@ -667,15 +886,36 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     ))}
                   </div>
 
-                  <div className="p-5 space-y-4">
+                  <div className="p-5 space-y-5">
 
-                    {/* ══ OVERVIEW ══ */}
+                    {/* ══ TAB 1: OVERVIEW & WORKFLOW ══ */}
                     {curTab === "overview" && (
                       <div className="space-y-4">
-                        {/* Status & Workflow card */}
+                        {/* Status update + Rejection banner */}
+                        {eff.status === "rejected" && (
+                          <div className="rounded-2xl border-2 border-red-500/40 bg-red-50 dark:bg-red-950/30 p-4 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <p className="text-xs font-bold text-red-900 dark:text-red-200 flex items-center gap-1.5">
+                                <AlertCircle className="h-4 w-4 text-red-600" />
+                                <span>طلب مرفوض — يظهر هذا الإشعار للمتقدم على لوحة حسابه:</span>
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => doStatus(a.id, "rejected", a.full_name)}
+                                className="text-xs font-semibold text-red-700 dark:text-red-300 underline hover:no-underline"
+                              >
+                                تعديل سبب الرفض
+                              </button>
+                            </div>
+                            <p className="text-xs font-semibold text-red-950 dark:text-red-100 bg-white/70 dark:bg-black/20 p-2.5 rounded-xl border border-red-200 dark:border-red-900/50">
+                              {rejectionReason || "عدم استيفاء شروط البرنامج"}
+                            </p>
+                          </div>
+                        )}
+
                         <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
                           <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-3">
-                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Status & Workflow</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Application Controls</p>
                             <div className="flex items-center gap-2">
                               {isBusy && <Loader2 className="h-4 w-4 animate-spin text-beige" />}
                               <button
@@ -691,22 +931,40 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             </div>
                           </div>
 
-                          {/* Status + Deposit row */}
+                          {/* Status + Deposit Controls */}
                           <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-muted-foreground font-medium">Status:</span>
-                              <select value={eff.status} onChange={e => doStatus(a.id, e.target.value)} disabled={isBusy}
-                                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-semibold outline-none focus:border-navy disabled:opacity-50 cursor-pointer">
-                                {["submitted","in_review","documents","approved","rejected"].map(s => (
-                                  <option key={s} value={s}>{s}</option>
-                                ))}
+                              <select
+                                value={eff.status}
+                                onChange={e => doStatus(a.id, e.target.value, a.full_name)}
+                                disabled={isBusy}
+                                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-bold outline-none focus:border-navy cursor-pointer disabled:opacity-50"
+                              >
+                                <option value="submitted">submitted (استلام الطلب)</option>
+                                <option value="in_review">in_review (قيد المراجعة)</option>
+                                <option value="documents">documents (مطلوب مستندات)</option>
+                                <option value="approved">approved (موافقة مبدئية)</option>
+                                <option value="rejected">rejected (رفض الطلب ✕)</option>
                               </select>
                               <span className={`${pill} ${statusColor(eff.status)} text-[11px]`}>{eff.status}</span>
                             </div>
 
-                            {/* Deposit toggle — single source of truth */}
+                            {/* Direct Reject Button */}
+                            {eff.status !== "rejected" && (
+                              <button
+                                type="button"
+                                onClick={() => doStatus(a.id, "rejected", a.full_name)}
+                                className="inline-flex items-center gap-1 rounded-xl border border-red-300 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 px-3 py-1.5 text-xs font-bold text-red-700 dark:text-red-400 hover:bg-red-100 transition-colors"
+                              >
+                                <XCircle className="h-3.5 w-3.5" />
+                                <span>رفض الطلب مع تحديد السبب</span>
+                              </button>
+                            )}
+
+                            {/* Deposit toggle */}
                             <button onClick={() => doDeposit(a.id, Boolean(eff.deposit))} disabled={isBusy}
-                              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 ${
+                              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 ml-auto ${
                                 eff.deposit
                                   ? "bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200"
                                   : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-emerald-400 hover:text-emerald-700"
@@ -717,24 +975,25 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             </button>
                           </div>
 
-                          {/* Stage progression — deposit state drives stage 1 highlight */}
+                          {/* Stage progression buttons */}
                           <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">Stage — click to advance:</p>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
+                              Relocation Stage (Click to Advance):
+                            </p>
                             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
                               {STAGE_LABELS_EN.map((label, i) => {
                                 const SIcon = (STAGE_ICONS[i] ?? ClipboardList) as LucideIcon;
                                 const isCurr = eff.stage === i;
-                                // deposit drives stage 1 completed state (unified with effDeposit)
                                 const isPast = eff.stage > i || (i === 1 && eff.deposit);
                                 return (
                                   <button key={i} onClick={() => doStage(a.id, i)} disabled={isBusy}
-                                    className={`flex flex-col items-center gap-1 rounded-2xl p-3 text-xs border transition-all disabled:opacity-50 ${
-                                      isCurr ? "bg-navy text-ivory border-navy shadow ring-2 ring-beige/30"
+                                    className={`flex flex-col items-center gap-1 rounded-2xl p-2.5 text-xs border transition-all disabled:opacity-50 ${
+                                      isCurr ? "bg-navy text-ivory border-navy shadow ring-2 ring-beige/30 dark:bg-beige dark:text-navy"
                                       : isPast ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:border-emerald-400"
                                       : "bg-card text-muted-foreground border-border hover:border-beige"
                                     }`}>
                                     <span className={`flex h-7 w-7 items-center justify-center rounded-full ${
-                                      isCurr ? "bg-beige text-navy" : isPast ? "bg-emerald-500 text-white" : "bg-secondary text-muted-foreground"
+                                      isCurr ? "bg-beige text-navy dark:bg-navy dark:text-beige" : isPast ? "bg-emerald-500 text-white" : "bg-secondary text-muted-foreground"
                                     }`}>
                                       {isPast && !isCurr ? <Check className="h-3.5 w-3.5" /> : <SIcon className="h-3.5 w-3.5" />}
                                     </span>
@@ -747,21 +1006,21 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           </div>
                         </div>
 
-                        {/* Quick info grid */}
+                        {/* Quick Data Highlights Grid */}
                         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                           {[
-                            { label: "Full Name",    value: a.full_name ?? "—",                Icon: User },
-                            { label: "Phone",        value: a.phone ?? "—",                   Icon: Phone, copy: a.phone, wa: a.phone },
-                            { label: "Country",      value: a.programs?.countries?.name_en ?? "—", Icon: Globe },
-                            { label: "Stage",        value: STAGE_LABELS_EN[eff.stage],       Icon: ArrowRight },
-                            { label: "Submitted",    value: new Date(a.created_at).toLocaleDateString("en-GB"), Icon: Calendar },
-                            { label: "Partner",      value: partner ?? "Direct",              Icon: User },
-                            { label: "Promo Code",   value: a.promo_code ?? "None",           Icon: Tag },
-                            { label: "Payment Plan", value: a.payment_plan === "full" ? "Full Payment" : `${a.installments}× Install.`, Icon: CreditCard },
+                            { label: "Full Name",        value: a.full_name ?? "—",               Icon: User },
+                            { label: "National ID",      value: meta.national_id ?? "—",         Icon: FileBadge, copy: meta.national_id },
+                            { label: "Contract Duration",value: contractDuration,                 Icon: Clock },
+                            { label: "Phone",            value: a.phone ?? "—",                  Icon: Phone, copy: a.phone, wa: a.phone },
+                            { label: "Passport",         value: a.passport_number ?? "—",        Icon: Plane, copy: a.passport_number },
+                            { label: "Country & Track",  value: `${a.programs?.countries?.name_en ?? "—"} (${a.programs?.track ?? "—"})`, Icon: Globe },
+                            { label: "Payment Plan",     value: a.payment_plan === "full" ? "Full Payment" : `${a.installments}× Installments`, Icon: CreditCard },
+                            { label: "Partner & Code",   value: partner ? `${partner} (${a.promo_code || "Code"})` : (a.promo_code || "Direct"), Icon: Tag },
                           ].map((item, idx) => (
                             <div key={idx} className="rounded-xl border border-border bg-card p-3">
                               <p className="flex items-center gap-1 text-[10px] uppercase font-semibold text-muted-foreground tracking-wider mb-1">
-                                <item.Icon className="h-3 w-3" /> {item.label}
+                                <item.Icon className="h-3 w-3 text-beige" /> {item.label}
                               </p>
                               <div className="flex items-center gap-1.5">
                                 <p className="text-xs font-bold text-foreground truncate flex-1">{item.value}</p>
@@ -781,174 +1040,260 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       </div>
                     )}
 
-                    {/* ══ APPLICANT ══ */}
+                    {/* ══ TAB 2: FULL APPLICANT DATA (COMPREHENSIVE DOSSIER) ══ */}
                     {curTab === "applicant" && (
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                            <User className="h-3.5 w-3.5 text-beige" /> Personal Details
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {/* 1. Identity & Personal Info */}
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
+                            <FileBadge className="h-4 w-4 text-beige" />
+                            <span>الهوية والبيانات الشخصية (Civil Identity)</span>
                           </p>
-                          {[
-                            ["Full Name",       a.full_name ?? a.profiles?.full_name ?? "—"],
-                            ["Date of Birth",   a.birth_date ?? "—"],
-                            ["Passport Number", a.passport_number ?? "—"],
-                            ["Education",       a.education ?? "—"],
-                            ["Gender",          a.profiles?.gender ?? "—"],
-                            ["Nationality",     a.profiles?.nationality ?? a.profiles?.governorate ?? "—"],
-                          ].map(([l, v]) => (
-                            <div key={l} className="flex justify-between items-start gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
-                              <span className="text-muted-foreground font-medium shrink-0">{l}</span>
-                              <span className="font-semibold text-foreground text-right">{v}</span>
+                          <div className="space-y-2.5 text-xs">
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">الاسم الكامل</span>
+                              <span className="font-bold text-foreground">{a.full_name || `${meta.first_name || ""} ${meta.second_name || ""}`.trim() || "—"}</span>
                             </div>
-                          ))}
-                        </div>
-
-                        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                            <Phone className="h-3.5 w-3.5 text-beige" /> Contact & Referral
-                          </p>
-                          <div className="space-y-3 text-xs">
-                            <div>
-                              <p className="text-muted-foreground font-medium mb-1">Phone / WhatsApp</p>
-                              {a.phone ? (
-                                <div className="flex items-center gap-2">
-                                  <span className="font-bold font-mono">{a.phone}</span>
-                                  <button onClick={() => copyText(a.phone, `ph-${a.id}`)} className="text-muted-foreground hover:text-foreground">
-                                    {copied === `ph-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-                                  </button>
-                                  <a href={`https://wa.me/${a.phone.replace(/[^0-9]/g,"")}`} target="_blank" rel="noreferrer"
-                                    className="flex items-center gap-0.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
-                                    <ExternalLink className="h-2.5 w-2.5" /> WhatsApp
-                                  </a>
-                                </div>
-                              ) : <span className="text-muted-foreground">—</span>}
-                            </div>
-                            <div>
-                              <p className="text-muted-foreground font-medium mb-1">Email</p>
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold truncate">{a.user_email || a.profiles?.email || "—"}</span>
-                                {(a.user_email || a.profiles?.email) && (
-                                  <button onClick={() => copyText(a.user_email || a.profiles?.email, `em-${a.id}`)} className="text-muted-foreground hover:text-foreground shrink-0">
-                                    {copied === `em-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">الرقم القومي (14 رقم)</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono font-bold text-foreground">{meta.national_id || "—"}</span>
+                                {meta.national_id && (
+                                  <button onClick={() => copyText(meta.national_id!, `nid-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                    {copied === `nid-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                               </div>
                             </div>
-                            <div>
-                              <p className="text-muted-foreground font-medium mb-1">Referral Partner</p>
-                              <span className="font-semibold">{partner ?? "Direct (no partner)"}</span>
-                              {a.promo_code && <span className="ml-2 font-mono text-[11px] text-navy bg-navy/10 rounded px-1.5 py-0.5">{a.promo_code}</span>}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* ══ PROGRAM ══ */}
-                    {curTab === "program" && (
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                            <Briefcase className="h-3.5 w-3.5 text-beige" /> Program & Pathway
-                          </p>
-                          {[
-                            ["Country",      a.programs?.countries?.name_en ?? "—"],
-                            ["Program",      a.programs?.title_en ?? "—"],
-                            ["Track",        a.programs?.track ?? "—"],
-                            ["Duration",     a.programs?.duration_months ? `${a.programs.duration_months} months` : "—"],
-                          ].map(([l, v]) => (
-                            <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
-                              <span className="text-muted-foreground font-medium">{l}</span>
-                              <span className="font-semibold text-foreground text-right">{v}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
-                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                            <CreditCard className="h-3.5 w-3.5 text-beige" /> Payment Details
-                          </p>
-                          {[
-                            ["Total Price",    eur(a.programs?.price ?? 0)],
-                            ["Deposit",        eur(a.programs?.deposit ?? 250)],
-                            ["Payment Plan",   a.payment_plan === "full" ? "Full Payment" : `${a.installments}× Installments`],
-                            ["Promo / Disc",   a.promo_code ? `${a.promo_code} (${a.discount_percent ?? 0}% off)` : "None"],
-                            ["Deposit Status", eff.deposit ? "Paid" : "Pending"],
-                          ].map(([l, v]) => (
-                            <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
-                              <span className="text-muted-foreground font-medium">{l}</span>
-                              <span className={`font-semibold text-right ${l === "Deposit Status" ? (eff.deposit ? "text-emerald-700" : "text-amber-700") : "text-foreground"}`}>{v}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Timeline */}
-                        <div className="sm:col-span-2 rounded-2xl border border-border bg-card p-4">
-                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                            <Calendar className="h-3.5 w-3.5 text-beige" /> Application Timeline
-                          </p>
-                          <div className="space-y-2">
-                            {[
-                              { label: "Application Submitted", date: a.created_at,  done: true },
-                              { label: "Documents Uploaded",   date: null,           done: (a.application_documents ?? []).length > 0 },
-                              { label: "Deposit Paid",         date: null,           done: Boolean(eff.deposit) },
-                              { label: "Interview Completed",  date: null,           done: eff.stage >= 3 },
-                              { label: "Visa / Permit Issued", date: null,           done: eff.stage >= 4 },
-                              { label: "Ready to Travel",      date: null,           done: eff.stage >= 5 },
-                            ].map((item, idx) => (
-                              <div key={idx} className="flex items-center gap-3 text-xs">
-                                <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                                  item.done ? "bg-emerald-500 text-white" : "bg-secondary text-muted-foreground"
-                                }`}>
-                                  {item.done ? <Check className="h-3 w-3" /> : <span className="text-[9px] font-bold">{idx+1}</span>}
-                                </div>
-                                <span className={`flex-1 ${item.done ? "text-foreground font-semibold" : "text-muted-foreground"}`}>{item.label}</span>
-                                {item.date ? <span className="text-muted-foreground">{new Date(item.date).toLocaleDateString("en-GB")}</span>
-                                  : !item.done && <span className="text-muted-foreground italic text-[10px]">pending</span>}
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">رقم جواز السفر</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono font-bold text-foreground">{a.passport_number || "—"}</span>
+                                {a.passport_number && (
+                                  <button onClick={() => copyText(a.passport_number!, `pass-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                    {copied === `pass-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                                  </button>
+                                )}
                               </div>
-                            ))}
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">تاريخ الميلاد</span>
+                              <span className="font-semibold">{a.birth_date || meta.birth_date || "—"}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">النوع / الجنس</span>
+                              <span className="font-semibold">{meta.gender === "female" ? "أنثى (Female)" : "ذكر (Male)"}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-muted-foreground font-medium">الموقف من التجنيد</span>
+                              <span className="font-semibold">{meta.military_status || "—"}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2. Education & Academic Details */}
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
+                            <GraduationCap className="h-4 w-4 text-beige" />
+                            <span>المؤهل والمسار التعليمي (Academic Profile)</span>
+                          </p>
+                          <div className="space-y-2.5 text-xs">
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">المستوى التعليمي</span>
+                              <span className="font-bold text-foreground">{meta.education_level === "student" ? "طالب مقيد (Student)" : "خريج جامعي (Graduate)"}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">الجامعة</span>
+                              <span className="font-semibold text-foreground text-right">{meta.university || a.education || "—"}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">الكلية والتخصص</span>
+                              <span className="font-semibold text-foreground text-right">{meta.faculty || "—"}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-muted-foreground font-medium">
+                                {meta.education_level === "student" ? "الفرقة الدراسية الحالية" : "سنة التخرج"}
+                              </span>
+                              <span className="font-semibold text-foreground">
+                                {meta.education_level === "student" ? (meta.academic_year ? `السنة ${meta.academic_year}` : "—") : (meta.graduation_year || "—")}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 3. Address & Contact Information */}
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
+                            <MapPin className="h-4 w-4 text-beige" />
+                            <span>عناوين الإقامة والتواصل (Location & Contact)</span>
+                          </p>
+                          <div className="space-y-2.5 text-xs">
+                            <div className="border-b border-border/40 pb-2">
+                              <p className="text-muted-foreground font-medium mb-1">الهاتف والواتساب المعتمد</p>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold font-mono text-sm text-foreground">{a.phone || "—"}</span>
+                                {a.phone && (
+                                  <>
+                                    <button onClick={() => copyText(a.phone, `phtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                      {copied === `phtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                    </button>
+                                    <a
+                                      href={`https://wa.me/${a.phone.replace(/[^0-9]/g,"")}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-2.5 py-0.5 text-[11px] font-bold hover:opacity-90"
+                                    >
+                                      <MessageSquare className="h-3 w-3" /> WhatsApp
+                                    </a>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            <div className="border-b border-border/40 pb-2">
+                              <p className="text-muted-foreground font-medium mb-1">البريد الإلكتروني</p>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold truncate">{a.user_email || a.profiles?.email || "—"}</span>
+                                {(a.user_email || a.profiles?.email) && (
+                                  <button onClick={() => copyText(a.user_email || a.profiles?.email, `emtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                    {copied === `emtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            <div className="border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium block">محل الإقامة الحالي</span>
+                              <span className="font-semibold text-foreground">
+                                {meta.current_city ? `${meta.current_city} — ` : ""}{meta.current_address || "—"}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground font-medium block">المحافظة الأصلية (محل الميلاد)</span>
+                              <span className="font-semibold text-foreground">
+                                {meta.hometown_city ? `${meta.hometown_city} — ` : ""}{meta.hometown_address || "—"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 4. Contract Duration & Selected Options */}
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
+                            <Briefcase className="h-4 w-4 text-beige" />
+                            <span>مدة العقد وخيارات الباقة (Contract & Package)</span>
+                          </p>
+                          <div className="space-y-2.5 text-xs">
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">مدة العقد المطلوبة</span>
+                              <span className="font-bold text-navy dark:text-beige bg-navy/5 dark:bg-beige/10 px-2.5 py-1 rounded-lg">
+                                🕒 {contractDuration}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">تذكرة الطيران</span>
+                              <span className="font-semibold">
+                                {meta.flight_included ? "مشمولة في الباقة ✈️" : "غير مشمولة (على المتقدم)"}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">نظام السداد المختار</span>
+                              <span className="font-bold">
+                                {a.payment_plan === "full" ? "دفع كامل (Full Payment)" : `${a.installments} أقساط شهرية`}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
+                              <span className="text-muted-foreground font-medium">الشريك المحيل</span>
+                              <span className="font-semibold">{partner ? `${partner} (${a.promo_code || "كود"})` : (a.promo_code || "تقديم مباشر")}</span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-muted-foreground font-medium">نسبة الخصم المطبقة</span>
+                              <span className="font-bold text-emerald-600 dark:text-emerald-400">{a.discount_percent ?? 0}% خصم</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     )}
 
-                    {/* ══ DOCUMENTS ══ */}
+                    {/* ══ TAB 3: PROGRAM & CONTRACT SPECIFICATIONS ══ */}
+                    {curTab === "program" && (
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2.5">
+                            <Briefcase className="h-4 w-4 text-beige" /> تفاصيل الوظيفة والعقد
+                          </p>
+                          {[
+                            ["الدولة المستضيفة", a.programs?.countries?.name_en ?? "—"],
+                            ["المسمى الوظيفي", a.programs?.title_en ?? "—"],
+                            ["المسار", a.programs?.track === "student" ? "طلاب (Student)" : "خريجين (Graduate)"],
+                            ["مدة العقد المعتمدة", contractDuration],
+                            ["إجمالي التكلفة", eur(a.programs?.price ?? 0)],
+                            ["قيمة الديبوزت", eur(a.programs?.deposit ?? 250)],
+                          ].map(([l, v]) => (
+                            <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
+                              <span className="text-muted-foreground font-medium">{l}</span>
+                              <span className="font-bold text-foreground text-right">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+                          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2.5">
+                            <CreditCard className="h-4 w-4 text-beige" /> الخطة المالية
+                          </p>
+                          {[
+                            ["نظام السداد", a.payment_plan === "full" ? "دفع كامل كاش" : `${a.installments} أقساط`],
+                            ["حالة الديبوزت", eff.deposit ? "مدفوع ومؤكد ✓" : "في انتظار السداد"],
+                            ["المبلغ المطلوب الآن", eur(due ?? 0)],
+                            ["تذكرة الطيران", meta.flight_included ? "مشمولة ✈️" : "غير مشمولة"],
+                            ["كود الخصم", a.promo_code ? `${a.promo_code} (${a.discount_percent ?? 0}% خصم)` : "بدون كود"],
+                          ].map(([l, v]) => (
+                            <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
+                              <span className="text-muted-foreground font-medium">{l}</span>
+                              <span className="font-bold text-foreground text-right">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ══ TAB 4: DOCUMENTS ══ */}
                     {curTab === "documents" && (
                       <div>
                         {(a.application_documents ?? []).length === 0 ? (
-                          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                            <FileText className="h-10 w-10 mb-3 opacity-20" />
-                            <p className="text-sm font-medium">No documents submitted yet</p>
+                          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-secondary/10">
+                            <FileText className="h-10 w-10 mb-3 opacity-30" />
+                            <p className="text-sm font-semibold">لم يقم المتقدم برفع أي مستندات حتى الآن</p>
+                            <p className="text-xs text-muted-foreground mt-1">يمكنه رفع الجواز، السيرة الذاتية والمؤهل عبر لوحة تحكم حسابه.</p>
                           </div>
                         ) : (
                           <div className="rounded-2xl border border-border bg-card overflow-hidden">
-                            <div className="flex items-center justify-between bg-secondary/30 px-4 py-2.5 border-b border-border">
-                              <p className="text-xs font-semibold text-muted-foreground">Submitted Documents ({a.application_documents.length})</p>
-                              <p className="text-[10px] text-muted-foreground">Click to open · Approve or Reject</p>
+                            <div className="flex items-center justify-between bg-secondary/30 px-4 py-3 border-b border-border">
+                              <p className="text-xs font-bold text-foreground">المستندات المرفوعة ({a.application_documents.length})</p>
+                              <p className="text-[11px] text-muted-foreground">اضغط للاطلاع على الملف · اعتماد أو رفض</p>
                             </div>
                             <div className="divide-y divide-border">
                               {a.application_documents.map((d: any) => (
-                                <div key={d.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+                                <div key={d.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5 hover:bg-secondary/10 transition-colors">
                                   <div className="min-w-0 flex-1">
                                     <button onClick={() => openDoc(d.file_path)}
-                                      className="text-xs font-semibold text-foreground hover:text-navy hover:underline transition-colors text-start">
-                                      {d.doc_type}
+                                      className="text-xs font-bold text-foreground hover:text-navy hover:underline transition-colors text-start flex items-center gap-1.5">
+                                      <FileText className="h-4 w-4 text-beige shrink-0" />
+                                      <span>{d.doc_type}</span>
                                     </button>
                                     <p className="text-[11px] text-muted-foreground font-mono truncate mt-0.5">{d.file_name}</p>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className={`${pill} ${statusColor(d.status)} text-[11px]`}>{d.status}</span>
+                                    <span className={`${pill} ${statusColor(d.status)} text-[11px] font-bold`}>{d.status}</span>
                                     <button onClick={() => openDoc(d.file_path)}
-                                      className="flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] hover:border-beige">
-                                      <ExternalLink className="h-3 w-3" /> View
+                                      className="flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold hover:border-beige">
+                                      <ExternalLink className="h-3 w-3" /> عرض الملف
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "approved" } }); onChange(); }}
                                       className={`${pill} border text-[11px] transition-all ${d.status === "approved" ? "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold" : "border-border hover:border-emerald-400 hover:bg-emerald-50"}`}>
-                                      <CheckCircle2 className="inline h-3 w-3 mr-0.5" /> Approve
+                                      <CheckCircle2 className="inline h-3 w-3 mr-0.5" /> اعتماد
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "rejected" } }); onChange(); }}
                                       className={`${pill} border text-[11px] transition-all ${d.status === "rejected" ? "bg-red-100 text-red-800 border-red-300 font-bold" : "border-border hover:border-red-400 hover:bg-red-50"}`}>
-                                      <XCircle className="inline h-3 w-3 mr-0.5" /> Reject
+                                      <XCircle className="inline h-3 w-3 mr-0.5" /> رفض
                                     </button>
                                   </div>
                                 </div>
@@ -959,13 +1304,13 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       </div>
                     )}
 
-                    {/* ══ NOTES ══ */}
+                    {/* ══ TAB 5: NOTES & PAYMENT ══ */}
                     {curTab === "notes" && (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {hasPayment && eff.notes && (
                           <div className="rounded-2xl border border-amber-400/60 bg-amber-500/10 p-4">
                             <p className="flex items-center gap-1.5 text-xs font-bold text-amber-800 mb-2">
-                              <CreditCard className="h-4 w-4" /> Payment Request via Chat
+                              <CreditCard className="h-4 w-4" /> طلب سداد قادم عبر الشات
                             </p>
                             <p className="text-xs font-mono whitespace-pre-wrap leading-relaxed">{eff.notes}</p>
                           </div>
@@ -1000,50 +1345,113 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             <div className="min-h-[70px] rounded-xl border border-border/50 bg-secondary/20 p-3">
                               {eff.notes
                                 ? <p className="text-xs font-mono whitespace-pre-wrap leading-relaxed">{eff.notes}</p>
-                                : <p className="text-xs text-muted-foreground italic">No notes yet.</p>}
+                                : <p className="text-xs text-muted-foreground italic">No internal notes.</p>}
                             </div>
                           )}
                         </div>
-
-                        {/* Timestamps */}
-                        <div className="rounded-2xl border border-border bg-card p-4">
-                          <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-3">Record History</p>
-                          <div className="space-y-2 text-xs">
-                            {[
-                              ["Submitted",    new Date(a.created_at).toLocaleString("en-GB")],
-                              ["Last Updated", new Date(a.updated_at || a.created_at).toLocaleString("en-GB")],
-                            ].map(([l, v]) => (
-                              <div key={l} className="flex justify-between gap-2">
-                                <span className="text-muted-foreground">{l}</span>
-                                <span className="font-medium">{v}</span>
-                              </div>
-                            ))}
-                            <div className="flex justify-between gap-2 items-center">
-                              <span className="text-muted-foreground">Application ID</span>
-                              <button onClick={() => copyText(a.id, `aid-${a.id}`)}
-                                className="flex items-center gap-1 font-mono text-[10px] hover:text-navy">
-                                {a.id.slice(0,16)}… {copied === `aid-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     )}
+
                   </div>
                 </div>
               )}
             </div>
           );
         })}
-
-        {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <Layers className="h-12 w-12 mb-3 opacity-20" />
-            <p className="text-sm font-medium">No applications found</p>
-            <p className="text-xs mt-1 opacity-70">Try adjusting search or filters</p>
-          </div>
-        )}
       </div>
+
+      {/* ══ REJECTION MODAL DIALOG ══ */}
+      {rejectionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-950/60 dark:text-red-400">
+                  <XCircle className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-foreground">
+                    رفض طلب التقديم — {rejectionModal.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    سيتم إغلاق الطلب وإظهار سبب الرفض المحدد للمتقدم على حسابه فوراً
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRejectionModal(null)}
+                className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-foreground block mb-1.5">
+                  1. اختر سبب الرفض من القائمة:
+                </label>
+                <select
+                  value={rejectionSelect}
+                  onChange={e => setRejectionSelect(e.target.value)}
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs font-medium outline-none focus:border-red-500"
+                >
+                  {PREDEFINED_REJECTION_REASONS.map((r, i) => (
+                    <option key={i} value={r}>
+                      {r === "custom" ? "✏️ سبب آخر (كتابة يدوية مخصصة)..." : r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="font-bold text-foreground block mb-1.5">
+                  2. توضيح أو كتابة تفاصيل سبب الرفض الموجه للعميل:
+                </label>
+                <textarea
+                  rows={4}
+                  value={rejectionCustomText}
+                  onChange={e => setRejectionCustomText(e.target.value)}
+                  placeholder="اكتب هنا أي تفاصيل إضافية تود إبلاغ العميل بها (مثل: يرجى التواصل لإعادة التقديم على دولة أخرى)..."
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs outline-none focus:border-red-500 resize-none"
+                />
+              </div>
+
+              <div className="rounded-xl border border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-[11.5px] text-amber-900 dark:text-amber-200">
+                ⚠️ بمجرد تأكيد الرفض، سيتحول الطلب إلى حالة "مرفوض" ويظهر السبب للعميل على لوحة تحكمه مع إمكانية استشارته لفريق العمل عبر الشات.
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-border/60">
+              <button
+                type="button"
+                onClick={() => setRejectionModal(null)}
+                className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              >
+                إلغاء
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmRejection}
+                disabled={savingRejection}
+                className="inline-flex items-center gap-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white px-5 py-2 text-xs font-bold shadow-md transition-all disabled:opacity-50"
+              >
+                {savingRejection ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <XCircle className="h-3.5 w-3.5" />}
+                <span>تأكيد رفض الطلب وإغلاقه</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+          <Layers className="h-12 w-12 mb-3 opacity-20" />
+          <p className="text-sm font-medium">No applications found</p>
+          <p className="text-xs mt-1 opacity-70">Try adjusting search or filters</p>
+        </div>
+      )}
     </div>
   );
 }

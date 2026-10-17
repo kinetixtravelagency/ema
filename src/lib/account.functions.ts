@@ -129,12 +129,64 @@ export const getAdminOverview = createServerFn({ method: "GET" })
 
 export const adminUpdateApplicationStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string; status: string }) => data)
+  .inputValidator((data: { id: string; status: string; rejection_reason?: string | undefined }) => data)
   .handler(async ({ data, context }) => {
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("applications").update({ status: data.status }).eq("id", data.id);
+
+    const patch: any = {
+      status: data.status,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (data.status === "rejected" && data.rejection_reason !== undefined) {
+      const { data: currentApp } = await supabaseAdmin
+        .from("applications")
+        .select("notes")
+        .eq("id", data.id)
+        .maybeSingle();
+
+      const existingNotes = (currentApp as any)?.notes || "";
+      const cleanReason = (data.rejection_reason || "").trim();
+
+      const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          parsed.rejection_reason = cleanReason;
+          patch.notes = existingNotes.replace(jsonMatch[0], JSON.stringify(parsed));
+        } catch {
+          patch.notes = `[REJECTION_REASON:${cleanReason}] ${existingNotes}`;
+        }
+      } else {
+        const stripped = existingNotes.replace(/\[REJECTION_REASON:[^\]]*\]/g, "").trim();
+        patch.notes = cleanReason ? `[REJECTION_REASON:${cleanReason}] ${stripped}` : stripped;
+      }
+    } else if (data.status !== "rejected") {
+      // If moving away from rejected, clear any rejection reason
+      const { data: currentApp } = await supabaseAdmin
+        .from("applications")
+        .select("notes")
+        .eq("id", data.id)
+        .maybeSingle();
+
+      const existingNotes = (currentApp as any)?.notes || "";
+      const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          delete parsed.rejection_reason;
+          patch.notes = existingNotes.replace(jsonMatch[0], JSON.stringify(parsed));
+        } catch {
+          patch.notes = existingNotes.replace(/\[REJECTION_REASON:[^\]]*\]/g, "").trim();
+        }
+      } else {
+        patch.notes = existingNotes.replace(/\[REJECTION_REASON:[^\]]*\]/g, "").trim();
+      }
+    }
+
+    const { error } = await (supabaseAdmin.from("applications") as any).update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

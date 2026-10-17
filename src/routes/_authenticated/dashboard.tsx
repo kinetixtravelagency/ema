@@ -6,7 +6,7 @@ import {
   Award, Copy, Check, LogOut, Wallet, Mail, Phone, MapPin, Link2,
   User, Calendar, GraduationCap, Building2, BookOpen, ShieldCheck,
   CheckCircle2, Clock, FileText, Sparkles, CreditCard, ArrowRight,
-  Settings, ExternalLink, Globe, Layers, AlertCircle, Trash2,
+  Settings, ExternalLink, Globe, Layers, AlertCircle, Trash2, XCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAccount, updateMyProfile, updateMyPayout, deleteApplication } from "@/lib/account.functions";
@@ -261,10 +261,14 @@ function Dashboard() {
                     const catProg = catEntry?.program;
                     const c = getCountry(pr?.countries?.slug ?? catEntry?.country?.slug ?? "");
                     let flightIncluded = false;
+                    let contractDuration = "";
                     try {
                       if (a.notes) {
-                        const parsed = typeof a.notes === "string" ? JSON.parse(a.notes) : a.notes;
+                        const text = typeof a.notes === "object" ? JSON.stringify(a.notes) : String(a.notes);
+                        const jsonMatch = text.match(/\{[\s\S]*\}/);
+                        const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : (typeof a.notes === "object" ? a.notes : JSON.parse(text));
                         flightIncluded = Boolean(parsed.flight_included);
+                        contractDuration = parsed.contract_duration || "";
                       }
                     } catch {
                       // ignore parse errors
@@ -322,6 +326,15 @@ function Dashboard() {
                                   <Calendar className="h-3 w-3" />
                                   {formattedDate}
                                 </span>
+                                {contractDuration && (
+                                  <>
+                                    <span className="opacity-40">·</span>
+                                    <span className="inline-flex items-center gap-1 font-bold text-navy dark:text-beige">
+                                      <Clock className="h-3 w-3" />
+                                      {contractDuration}
+                                    </span>
+                                  </>
+                                )}
                                 <span className="opacity-40">·</span>
                                 <span className="inline-flex items-center gap-1">
                                   <CreditCard className="h-3 w-3" />
@@ -341,10 +354,20 @@ function Dashboard() {
 
                           {/* Right: status badge + cancel */}
                           <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/40">
-                            {a.deposit_paid ? (
+                            {a.status === "rejected" ? (
+                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-red-100 dark:bg-red-950/50 px-3 py-1.5 text-xs font-bold text-red-800 dark:text-red-300 ring-1 ring-red-300 dark:ring-red-800/40">
+                                <XCircle className="h-3.5 w-3.5" />
+                                {ar ? "طلب مغلق ومرفوض ❌" : "Closed & Rejected ❌"}
+                              </span>
+                            ) : a.status === "documents" ? (
+                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/50 px-3 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 ring-1 ring-amber-300 dark:ring-amber-700/40">
+                                <AlertCircle className="h-3.5 w-3.5" />
+                                {ar ? "مطلوب مستندات ⚠️" : "Action Required ⚠️"}
+                              </span>
+                            ) : a.deposit_paid ? (
                               <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800/40">
                                 <CheckCircle2 className="h-3.5 w-3.5" />
-                                {ar ? "الديبوزت مدفوع" : "Deposit Paid"}
+                                {ar ? "الديبوزت مدفوع ✓" : "Deposit Paid ✓"}
                               </span>
                             ) : (
                               <>

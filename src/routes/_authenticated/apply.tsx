@@ -28,8 +28,9 @@ import {
 } from "@/components/site/PaymentBrandLogos";
 
 export const Route = createFileRoute("/_authenticated/apply")({
-  validateSearch: (s: Record<string, unknown>): { program?: string | undefined } => ({
+  validateSearch: (s: Record<string, unknown>): { program?: string | undefined; duration?: string | undefined } => ({
     program: typeof s["program"] === "string" ? s["program"] : undefined,
+    duration: typeof s["duration"] === "string" ? s["duration"] : undefined,
   }),
   head: () => ({
     meta: [
@@ -46,14 +47,14 @@ function Apply() {
   const { t, lang } = useLang();
   const ar = lang === "ar";
   const tr = (en: string, a: string) => (ar ? a : en);
-  const { program: initial } = Route.useSearch();
+  const { program: initial, duration: initialDuration } = Route.useSearch();
   const found = initial ? getProgram(initial) : undefined;
 
   const [countrySlug, setCountrySlug] = useState(found?.country.slug ?? countries[0]!.slug);
   const [track, setTrack] = useState<Track>(found?.program.track ?? "graduate");
   const [plan, setPlan] = useState<"full" | "installments">("installments");
   const [months, setMonths] = useState(MAX_INSTALLMENTS);
-  const [selectedDuration, setSelectedDuration] = useState<string>("");
+  const [selectedDuration, setSelectedDuration] = useState<string>(initialDuration || "");
   const [flightIncluded, setFlightIncluded] = useState(false);
 
   const PERSIST_KEY = `kinetix_app_submitted_${initial || "default"}`;
