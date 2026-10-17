@@ -117,7 +117,7 @@ export function CountriesPage() {
                 <p className="text-xs text-ivory/60 mt-1">{tr("Active Job Programs", "فرص وبرامج عمل")}</p>
               </div>
               <div>
-                <p className="font-display text-3xl font-bold text-emerald-400">10,000 ج.م</p>
+                <p className="font-display text-3xl font-bold text-beige/80">10,000 ج.م</p>
                 <p className="text-xs text-ivory/60 mt-1">{tr("Starting Deposit", "أقل مقدم تعاقد")}</p>
               </div>
               <div>
@@ -179,7 +179,7 @@ export function CountriesPage() {
                           <span className="font-display font-bold text-sm text-navy dark:text-beige">
                             {eur(fromDeposit(c))}
                           </span>
-                          <span className="ms-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="ms-1.5 font-bold text-beige dark:text-beige/80">
                             ≈ {Math.round(fromDeposit(c) * 54).toLocaleString()} {tr("EGP", "ج.م")}
                           </span>
                         </div>
@@ -289,7 +289,7 @@ export function CountriesPage() {
                       {ar ? p.country.descriptionAr : p.country.description}
                     </p>
                     {p.expectedSalary && (
-                      <div className="mt-3 inline-flex items-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                      <div className="mt-3 inline-flex items-center rounded-lg bg-beige/100/10 border border-beige/20 px-2.5 py-1 text-xs font-semibold text-navy/80 dark:text-beige/80">
                         {tr("Expected Salary:", "الراتب المتوقع:")} {ar ? (p.expectedSalaryAr ?? p.expectedSalary) : p.expectedSalary}
                       </div>
                     )}
@@ -301,7 +301,7 @@ export function CountriesPage() {
                       <p className="font-display text-base font-bold text-navy dark:text-beige">
                         {eur(p.deposit)}
                       </p>
-                      <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      <p className="text-[10px] font-semibold text-beige dark:text-beige/80">
                         ≈ {Math.round(p.deposit * 54).toLocaleString()} {tr("EGP", "ج.م")}
                       </p>
                     </div>

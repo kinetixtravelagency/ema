@@ -152,7 +152,7 @@ function SearchBar({ lang, onClose }: { lang: string; onClose: () => void }) {
 
                   <div className="flex items-center gap-3 shrink-0 ps-7 sm:ps-0">
                     {salary && (
-                      <span className="inline-flex items-center rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-xs font-medium text-emerald-300">
+                      <span className="inline-flex items-center rounded-full bg-beige/100/15 border border-beige/30 px-2.5 py-1 text-xs font-medium text-beige/70">
                         {salary}
                       </span>
                     )}

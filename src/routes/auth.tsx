@@ -262,7 +262,7 @@ export function AuthPage() {
                 <div
                   className={`rounded-2xl p-3.5 text-xs font-semibold ${
                     msg.type === "success"
-                      ? "border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+                      ? "border border-beige/40 bg-beige/100/10 text-navy dark:text-beige/70"
                       : "border border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300"
                   }`}
                 >

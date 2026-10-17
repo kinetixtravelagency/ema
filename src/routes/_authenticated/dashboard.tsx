@@ -356,7 +356,7 @@ function Dashboard() {
                                 {a.promo_code && (
                                   <>
                                     <span className="opacity-40">·</span>
-                                    <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                                    <span className="inline-flex items-center gap-1 text-beige dark:text-beige/80 font-medium">
                                       🏷 {a.promo_code}
                                     </span>
                                   </>
@@ -378,7 +378,7 @@ function Dashboard() {
                                 {ar ? "مطلوب مستندات ⚠️" : "Action Required ⚠️"}
                               </span>
                             ) : a.deposit_paid ? (
-                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800/40">
+                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-beige/20 dark:bg-navy/20 px-3 py-1.5 text-xs font-bold text-navy dark:text-beige/70 ring-1 ring-beige dark:ring-beige">
                                 <CheckCircle2 className="h-3.5 w-3.5" />
                                 {ar ? "الديبوزت مدفوع ✓" : "Deposit Paid ✓"}
                               </span>
@@ -451,7 +451,7 @@ function Dashboard() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 px-3 py-1 text-xs font-bold flex items-center gap-1.5">
+                  <span className="rounded-full bg-beige/20 dark:bg-navy/20 text-navy dark:text-beige/80 px-3 py-1 text-xs font-bold flex items-center gap-1.5">
                     <ShieldCheck className="h-4 w-4" />
                     {tr("Verified Account", "حساب مفعل")}
                   </span>
@@ -459,7 +459,7 @@ function Dashboard() {
               </div>
 
               {saveSuccess && (
-                <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2 animate-in fade-in">
+                <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-xs font-bold text-navy/80 dark:text-beige/80 flex items-center gap-2 animate-in fade-in">
                   <CheckCircle2 className="h-4 w-4" />
                   {tr("Profile details updated successfully!", "تم تحديث وحفظ بيانات البروفايل بنجاح!")}
                 </div>

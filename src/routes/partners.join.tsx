@@ -620,13 +620,13 @@ function JoinPartner() {
                 className={`flex items-start gap-2.5 rounded-2xl p-4 text-sm font-medium ${
                   msgType === "error"
                     ? "bg-red-50 text-red-900 border border-red-200"
-                    : "bg-emerald-50 text-emerald-900 border border-emerald-200"
+                    : "bg-beige/10 text-navy border border-beige/40"
                 }`}
               >
                 {msgType === "error" ? (
                   <AlertCircle className="h-5 w-5 shrink-0 text-red-600 mt-0.5" />
                 ) : (
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-beige mt-0.5" />
                 )}
                 <div>
                   <p className="font-semibold">{msgType === "error" ? tr("Attention required", "تنبيه في البيانات") : tr("Success", "تم بنجاح")}</p>

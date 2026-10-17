@@ -85,7 +85,7 @@ export function AdminBroadcastTab({ partners = [] }: { partners?: any[] }) {
         <div
           className={`rounded-2xl p-4 text-xs font-semibold flex items-center gap-2 ${
             resultMsg.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300"
+              ? "bg-beige/10 text-navy border border-beige/40 dark:bg-navy/20 dark:text-beige/70"
               : "bg-red-50 text-red-800 border border-red-200 dark:bg-red-950/30 dark:text-red-300"
           }`}
         >

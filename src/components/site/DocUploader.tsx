@@ -40,7 +40,7 @@ export function DocUploader({ appId, docTypes, existing, onChange }: { appId: st
     <div className="space-y-2">
       {docTypes.map((dt) => {
         const doc = existing.find((d) => d.doc_type === dt);
-        const tone = doc?.status === "approved" ? "text-emerald-700" : doc?.status === "rejected" ? "text-destructive" : "text-muted-foreground";
+        const tone = doc?.status === "approved" ? "text-navy/80" : doc?.status === "rejected" ? "text-destructive" : "text-muted-foreground";
         return (
           <div key={dt} className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-4 py-3">
             <div className="flex min-w-0 items-center gap-3">
@@ -83,7 +83,7 @@ export function StageTracker({ stage, depositPaid }: { stage: number; depositPai
       <div className="absolute top-5 start-4 end-4 h-1 -translate-y-1/2 rounded-full bg-secondary" />
       {/* Foreground filled line */}
       <div
-        className="absolute top-5 start-4 h-1 -translate-y-1/2 rounded-full bg-gradient-to-r from-navy via-beige to-emerald-600 transition-all duration-300"
+        className="absolute top-5 start-4 h-1 -translate-y-1/2 rounded-full bg-gradient-to-r from-navy via-beige to-navy transition-all duration-300"
         style={{ width: `calc(${progressPercent}% - 1rem)` }}
       />
 

@@ -141,7 +141,7 @@ export function PricingPage() {
 
               {/* Legal Guarantee Badge */}
               <div className="flex items-start gap-3 rounded-2xl bg-card border border-border p-4">
-                <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <ShieldCheck className="h-5 w-5 text-beige dark:text-beige/80 shrink-0 mt-0.5" />
                 <div className="text-xs">
                   <p className="font-bold text-foreground">{tr("Official Refund Policy", "سياسة استرجاع مضمونة")}</p>
                   <p className="text-muted-foreground mt-0.5 leading-relaxed">
@@ -188,7 +188,7 @@ export function PricingPage() {
                   <span className="font-display text-3xl md:text-4xl font-bold text-navy dark:text-beige">
                     {eur(selectedProgram.price)}
                   </span>
-                  <span className="block text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                  <span className="block text-xs font-bold text-beige dark:text-beige/80 mt-0.5">
                     ≈ {Math.round(selectedProgram.price * 54).toLocaleString()} {tr("EGP", "ج.م")}
                   </span>
                 </div>
@@ -256,7 +256,7 @@ export function PricingPage() {
                   <p className="font-display text-2xl md:text-3xl font-bold text-navy dark:text-beige mt-0.5">
                     {eur(depositAmount)}
                   </p>
-                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+                  <p className="text-xs font-bold text-beige dark:text-beige/80 mt-1">
                     ≈ {Math.round(depositAmount * 54).toLocaleString()} {tr("EGP", "ج.م")}
                   </p>
                 </div>
@@ -352,7 +352,7 @@ export function PricingPage() {
                         <span className="font-display font-bold text-navy dark:text-beige block">
                           {eur(p.deposit)}
                         </span>
-                        <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                        <span className="text-[10px] font-bold text-beige dark:text-beige/80">
                           ≈ {Math.round(p.deposit * 54).toLocaleString()} {tr("EGP", "ج.م")}
                         </span>
                       </td>
@@ -369,7 +369,7 @@ export function PricingPage() {
                       </td>
 
                       <td className="py-4 px-4">
-                        <span className="inline-flex items-center rounded-md bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                        <span className="inline-flex items-center rounded-md bg-beige/100/10 border border-beige/20 px-2 py-0.5 text-xs font-semibold text-navy/80 dark:text-beige/80">
                           {ar ? (p.expectedSalaryAr ?? p.expectedSalary) : p.expectedSalary}
                         </span>
                       </td>

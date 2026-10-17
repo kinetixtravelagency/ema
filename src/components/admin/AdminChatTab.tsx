@@ -54,7 +54,7 @@ const FLAGS: { id: "urgent" | "important" | "follow_up" | "resolved"; label: str
   { id: "urgent", label: "Urgent", color: "text-red-500", badgeCls: "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300 border-red-300" },
   { id: "important", label: "Important", color: "text-purple-500", badgeCls: "bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300 border-purple-300" },
   { id: "follow_up", label: "Follow-up", color: "text-amber-500", badgeCls: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-amber-300" },
-  { id: "resolved", label: "Resolved", color: "text-emerald-500", badgeCls: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-300" },
+  { id: "resolved", label: "Resolved", color: "text-beige", badgeCls: "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 border-beige/40" },
 ];
 
 export function AdminChatTab() {
@@ -635,7 +635,7 @@ export function AdminChatTab() {
                     href={`https://wa.me/${activeConv.clientPhone.replace(/[^0-9]/g, "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition-colors shrink-0"
+                    className="inline-flex items-center gap-1 rounded-full border border-beige/30 bg-beige/100/10 px-2.5 py-1 text-[11px] sm:text-xs font-medium text-navy/80 dark:text-beige/70 hover:bg-beige/100/20 transition-colors shrink-0"
                   >
                     WhatsApp
                     <ExternalLink className="h-3 w-3" />

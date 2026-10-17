@@ -88,7 +88,7 @@ export function NotificationsDropdown() {
       case "lead":
         return <Users className="h-4 w-4 text-blue-500" />;
       case "deposit":
-        return <DollarSign className="h-4 w-4 text-emerald-500" />;
+        return <DollarSign className="h-4 w-4 text-beige" />;
       case "commission":
         return <Wallet className="h-4 w-4 text-amber-500" />;
       case "withdrawal":

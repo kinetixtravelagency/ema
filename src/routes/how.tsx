@@ -234,7 +234,7 @@ export function HowPage() {
                         <div className="grid gap-3 sm:grid-cols-2">
                           {(ar ? s.pointsAr : s.pointsEn).map((pt, pIdx) => (
                             <div key={pIdx} className="flex items-start gap-2.5">
-                              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                              <CheckCircle2 className="h-4 w-4 shrink-0 text-beige dark:text-beige/80 mt-0.5" />
                               <span className="text-xs md:text-sm font-medium text-foreground leading-snug">
                                 {pt}
                               </span>

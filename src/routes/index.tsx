@@ -122,7 +122,7 @@ function Countries() {
                       <p className="text-xs text-ivory/60">{lang === "ar" ? "المقدم يبدأ من" : "Deposit starts from"}</p>
                       <div className="flex items-baseline gap-2 mt-0.5">
                         <span className="font-display text-2xl font-bold text-beige">{eur(fromDeposit(c))}</span>
-                        <span className="text-xs font-semibold text-emerald-400">≈ {Math.round(fromDeposit(c) * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</span>
+                        <span className="text-xs font-semibold text-beige/80">≈ {Math.round(fromDeposit(c) * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</span>
                       </div>
                       <p className="text-[11px] text-ivory/50 mt-0.5">{lang === "ar" ? "إجمالي البرنامج من" : "Total from"} {eur(fromPrice(c))}</p>
                     </div>
@@ -524,7 +524,7 @@ function Pricing() {
             <div>
               <p className="text-xs text-muted-foreground">{t("dueToday")}</p>
               <p className="font-display text-2xl font-bold">{eur(full ? p.price : p.deposit)}</p>
-              <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">≈ {Math.round((full ? p.price : p.deposit) * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</p>
+              <p className="text-xs font-bold text-beige dark:text-beige/80 mt-0.5">≈ {Math.round((full ? p.price : p.deposit) * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</p>
             </div>
             {full ? (
               <div>

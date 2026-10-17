@@ -50,8 +50,8 @@ const egp = (n: number) => `${Math.round(n).toLocaleString("en-US")} EGP`;
 
 function statusColor(s: string) {
   const m: Record<string, string> = {
-    active: "bg-emerald-100 text-emerald-800",
-    approved: "bg-emerald-100 text-emerald-800",
+    active: "bg-beige/20 text-navy",
+    approved: "bg-beige/20 text-navy",
     pending: "bg-amber-100 text-amber-800",
     in_review: "bg-blue-100 text-blue-800",
     submitted: "bg-blue-100 text-blue-800",
@@ -61,8 +61,8 @@ function statusColor(s: string) {
     paid: "bg-navy text-ivory",
     cancelled: "bg-gray-100 text-gray-500",
     new: "bg-sky-100 text-sky-800",
-    qualified: "bg-green-100 text-green-800",
-    converted: "bg-emerald-100 text-emerald-800",
+    qualified: "bg-beige/20 text-beige",
+    converted: "bg-beige/20 text-navy",
     lost: "bg-gray-100 text-gray-500",
   };
   return m[s] ?? "bg-secondary text-foreground";
@@ -142,7 +142,7 @@ function Admin() {
     ["overview", tr("Overview", "نظرة عامة"), LayoutDashboard],
     ["chat", tr("Live Chat", "الدردشة الحية"), MessageSquare],
     ["applications", tr("Applications", "الطلبات والتقديمات"), Briefcase],
-    ["programs", tr("Programs", "البرامج والوظائف"), TrendingUp],
+    ["programs", "Programs & Roles", TrendingUp],
     ["countries", tr("Countries", "الدول والوجهات"), Globe],
     ["partners", tr("Partners", "الشركاء والمسوقين"), Users],
     ["partner_settings", tr("Partner Settings", "إعدادات العمولات"), Award],
@@ -251,7 +251,7 @@ function Admin() {
               {[
                 ["Total Applications", d.applications.length, Briefcase, "bg-blue-50 text-blue-700"],
                 ["Total Partners", d.partners.length, Users, "bg-purple-50 text-purple-700"],
-                ["Active Partners", d.partners.filter((p: any) => p.status === "active").length, ShieldCheck, "bg-emerald-50 text-emerald-700"],
+                ["Active Partners", d.partners.filter((p: any) => p.status === "active").length, ShieldCheck, "bg-beige/10 text-navy/80"],
                 ["Countries", d.countries.length, Globe, "bg-amber-50 text-amber-700"],
               ].map(([l, n, Icon, cls]) => (
                 <div key={l as string} className="rounded-3xl border border-border bg-card p-6">
@@ -320,7 +320,7 @@ function Admin() {
                               await setComm({ data: { id: c.id, status: "paid" } });
                               refetch();
                             }}
-                            className="inline-flex items-center gap-1 rounded-full bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition-all"
+                            className="inline-flex items-center gap-1 rounded-full bg-navy hover:bg-beige/30 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition-all"
                           >
                             <Check className="h-3.5 w-3.5" />
                             تم التحويل (Mark Paid)
@@ -865,7 +865,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       eff.status === "rejected"
                         ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-400"
                         : eff.deposit
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300"
+                        ? "bg-beige/20 text-navy/80 dark:bg-navy/20 dark:text-beige/70"
                         : "bg-secondary text-muted-foreground"
                     }`}>
                       {eff.status === "rejected" ? <XCircle className="h-6 w-6" /> : <StageIcon className="h-6 w-6" />}
@@ -905,7 +905,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
                         {/* Deposit Paid badge */}
                         {eff.deposit && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 text-[11px] font-bold text-emerald-800">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-beige/20 border border-beige/40 dark:bg-navy/20 dark:text-beige/70 px-2 py-0.5 text-[11px] font-bold text-navy">
                             <CheckCircle2 className="h-3 w-3" /> {tr("Deposit Paid", "الديبوزت مدفوع")}
                           </span>
                         )}
@@ -975,7 +975,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           href={`https://wa.me/${a.phone.replace(/[^0-9]/g, "")}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 text-xs font-bold hover:bg-emerald-100 transition-colors shadow-2xs"
+                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-beige/40 dark:border-beige/50 bg-beige/10 dark:bg-navy/20 text-navy/80 dark:text-beige/70 px-3 py-1.5 text-xs font-bold hover:bg-beige/20 transition-colors shadow-2xs"
                           title={tr("Chat on WhatsApp", "محادثة واتساب مباشرة")}
                         >
                           <MessageSquare className="h-3.5 w-3.5" />
@@ -1002,8 +1002,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     >
                       {copied === `quick-${a.id}` ? (
                         <>
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
-                          <span className="text-emerald-600 font-bold">{tr("Copied!", "تم النسخ!")}</span>
+                          <Check className="h-3.5 w-3.5 text-beige" />
+                          <span className="text-beige font-bold">{tr("Copied!", "تم النسخ!")}</span>
                         </>
                       ) : (
                         <>
@@ -1138,11 +1138,11 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             <button onClick={() => doDeposit(a.id, Boolean(eff.deposit))} disabled={isBusy}
                               className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 sm:ms-auto ${
                                 eff.deposit
-                                  ? "bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300"
-                                  : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-emerald-400 hover:text-emerald-700"
+                                  ? "bg-beige/20 text-navy border-beige/40 hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70"
+                                  : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-beige/40 hover:text-navy/80"
                               }`}>
                               {eff.deposit
-                                ? <><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> {tr("Deposit Paid", "الديبوزت مدفوع")} ({eur(due ?? 0)})</>
+                                ? <><CheckCircle2 className="h-3.5 w-3.5 text-beige" /> {tr("Deposit Paid", "الديبوزت مدفوع")} ({eur(due ?? 0)})</>
                                 : <><DollarSign className="h-3.5 w-3.5" /> {tr("Mark Deposit Paid", "تأكيد سداد الديبوزت")} ({eur(due ?? 0)})</>}
                             </button>
                           </div>
@@ -1161,11 +1161,11 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                   <button key={i} onClick={() => doStage(a.id, i)} disabled={isBusy}
                                     className={`flex flex-col items-center gap-1 rounded-2xl p-2.5 text-xs border transition-all disabled:opacity-50 ${
                                       isCurr ? "bg-navy text-ivory border-navy shadow ring-2 ring-beige/30 dark:bg-beige dark:text-navy"
-                                      : isPast ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-300"
+                                      : isPast ? "bg-beige/10 text-navy border-beige/40 hover:border-beige/40 dark:bg-navy/20 dark:text-beige/70"
                                       : "bg-card text-muted-foreground border-border hover:border-beige"
                                     }`}>
                                     <span className={`flex h-7 w-7 items-center justify-center rounded-full ${
-                                      isCurr ? "bg-beige text-navy dark:bg-navy dark:text-beige" : isPast ? "bg-emerald-500 text-white" : "bg-secondary text-muted-foreground"
+                                      isCurr ? "bg-beige text-navy dark:bg-navy dark:text-beige" : isPast ? "bg-beige/100 text-white" : "bg-secondary text-muted-foreground"
                                     }`}>
                                       {isPast && !isCurr ? <Check className="h-3.5 w-3.5" /> : <SIcon className="h-3.5 w-3.5" />}
                                     </span>
@@ -1202,12 +1202,12 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 <p className="text-xs font-bold text-foreground truncate flex-1">{item.value}</p>
                                 {item.copy && item.copy !== "—" && (
                                   <button onClick={() => copyText(item.copy!, `c-${idx}-${a.id}`)} className="text-muted-foreground hover:text-foreground">
-                                    {copied === `c-${idx}-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                                    {copied === `c-${idx}-${a.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                                 {item.wa && (
                                   <a href={`https://wa.me/${item.wa.replace(/[^0-9]/g,"")}`} target="_blank" rel="noreferrer"
-                                    className="text-[10px] font-bold text-emerald-600 hover:underline">WA</a>
+                                    className="text-[10px] font-bold text-beige hover:underline">WA</a>
                                 )}
                               </div>
                             </div>
@@ -1236,7 +1236,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 <span className="font-mono font-bold text-foreground">{meta.national_id || "—"}</span>
                                 {meta.national_id && (
                                   <button onClick={() => copyText(meta.national_id!, `nid-${a.id}`)} className="text-muted-foreground hover:text-foreground" title={tr("Copy", "نسخ")}>
-                                    {copied === `nid-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                                    {copied === `nid-${a.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                               </div>
@@ -1247,7 +1247,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 <span className="font-mono font-bold text-foreground">{a.passport_number || "—"}</span>
                                 {a.passport_number && (
                                   <button onClick={() => copyText(a.passport_number!, `pass-${a.id}`)} className="text-muted-foreground hover:text-foreground" title={tr("Copy", "نسخ")}>
-                                    {copied === `pass-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                                    {copied === `pass-${a.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                               </div>
@@ -1319,7 +1319,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 {a.phone && (
                                   <>
                                     <button onClick={() => copyText(a.phone, `phtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
-                                      {copied === `phtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                      {copied === `phtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-beige" /> : <Copy className="h-3.5 w-3.5" />}
                                     </button>
                                     <a
                                       href={`tel:${a.phone.replace(/[^0-9+]/g,"")}`}
@@ -1331,7 +1331,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                       href={`https://wa.me/${a.phone.replace(/[^0-9]/g,"")}`}
                                       target="_blank"
                                       rel="noreferrer"
-                                      className="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-2.5 py-0.5 text-[11px] font-bold hover:opacity-90"
+                                      className="inline-flex items-center gap-1 rounded-full bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 px-2.5 py-0.5 text-[11px] font-bold hover:opacity-90"
                                     >
                                       <MessageSquare className="h-3 w-3" /> WhatsApp
                                     </a>
@@ -1346,7 +1346,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 <span className="font-semibold truncate">{candidateEmail || "—"}</span>
                                 {candidateEmail && (
                                   <button onClick={() => copyText(candidateEmail, `emtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
-                                    {copied === `emtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                                    {copied === `emtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-beige" /> : <Copy className="h-3.5 w-3.5" />}
                                   </button>
                                 )}
                               </div>
@@ -1417,7 +1417,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             </div>
                             <div className="flex justify-between items-center gap-2">
                               <span className="text-muted-foreground font-medium">{tr("Promo Discount", "نسبة الخصم المطبقة")}</span>
-                              <span className="font-bold text-emerald-600 dark:text-emerald-400">{a.discount_percent ?? 0}% {tr("Discount", "خصم")}</span>
+                              <span className="font-bold text-beige dark:text-beige/80">{a.discount_percent ?? 0}% {tr("Discount", "خصم")}</span>
                             </div>
                           </div>
                         </div>
@@ -1499,7 +1499,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                       <ExternalLink className="h-3 w-3" /> {tr("View File", "عرض الملف")}
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "approved" } }); onChange(); }}
-                                      className={`${pill} border text-[11px] transition-all ${d.status === "approved" ? "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold" : "border-border hover:border-emerald-400 hover:bg-emerald-50"}`}>
+                                      className={`${pill} border text-[11px] transition-all ${d.status === "approved" ? "bg-beige/20 text-navy border-beige/40 font-bold" : "border-border hover:border-beige/40 hover:bg-beige/10"}`}>
                                       <CheckCircle2 className="inline h-3 w-3 me-0.5" /> {tr("Approve", "اعتماد")}
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "rejected" } }); onChange(); }}
@@ -1837,6 +1837,66 @@ const PRESET_DUTIES_TEMPLATES = [
       "المشاركة في رعاية النباتات والتقليم ومراقبة شبكات الري الحديثة.",
       "الحفاظ على نظافة وتعقيم أدوات الحصاد ومحطات التعبئة والتخزين."
     ]
+  },
+  {
+    category: "Airport & Aviation Ground Services",
+    dutiesEn: [
+      "Assist international travelers with check-in kiosks, baggage drop, and boarding gates.",
+      "Perform precision luggage sorting, ramp transfers, and baggage reconciliation.",
+      "Coordinate with airport ground dispatch and uphold strict EASA aviation safety codes.",
+      "Provide customer support at arrival information desks and lost & found counters."
+    ],
+    dutiesAr: [
+      "مساعدة المسافرين الدوليين في تسجيل الدخول، تسليم الحقائب، وبوابات المغادرة.",
+      "فرز الأمتعة بدقة وتوزيعها على رحلات الطيران ومطابقة بوالص الشحن الجوي.",
+      "التنسيق مع فرق العمليات الأرضية والالتزام بمعايير سلامة الطيران الأوروبية (EASA).",
+      "تقديم الدعم بمكاتب معلومات الوصول وخدمات المفقودات بالمطار."
+    ]
+  },
+  {
+    category: "Clean Energy & Solar Technologies",
+    dutiesEn: [
+      "Assist certified engineers in photovoltaic (PV) solar panel mounting and cabling.",
+      "Perform mechanical structure assembly and electrical inverter connectivity checks.",
+      "Conduct solar array diagnostic testing and preventive maintenance inspections.",
+      "Maintain strict European renewable installation and high-voltage safety compliance."
+    ],
+    dutiesAr: [
+      "مساعدة المهندسين المعتمدين في تركيب وتثبيت الألواح الشمسية وتمديد الكابلات.",
+      "تجميع الهياكل الميكانيكية وفحص توصيلات المحولات الكهربائية وأنظمة الطاقة.",
+      "إجراء الفحوصات التشخيصية الدورية لألواح الطاقة والصيانة الوقائية لمحطات التوليد.",
+      "الالتزام الصارم بمعايير السلامة المهنية الأوروبية لأنظمة الطاقة المتجددة."
+    ]
+  },
+  {
+    category: "Luxury Fashion & Premium Retail",
+    dutiesEn: [
+      "Deliver tailored multilingual customer service in high-end European fashion boutiques.",
+      "Execute luxury visual merchandising, display rotations, and collection staging.",
+      "Manage premium inventory, barcode logging, and secure stockroom replenishment.",
+      "Process VIP tax-free transactions, currency conversions, and concierge packaging."
+    ],
+    dutiesAr: [
+      "تقديم تجربة خدمة عملاء متميزة ومتعددة اللغات في بوتيكات ومتاجر الأزياء الأوروبية الراقية.",
+      "تنسيق عروض الأزياء وواجهات العرض طبقاً للمعايير البصرية للعلامات التجارية العالمية.",
+      "إدارة المخزون الفاخر، مسح الأكواد، وتنظيم استلام وتخزين التشكيلات الجديدة.",
+      "إتمام المعاملات المعفاة من الضرائب (Tax-Free) للعملاء الدوليين والتغليف الفاخر."
+    ]
+  },
+  {
+    category: "Cloud Support & Systems Administration",
+    dutiesEn: [
+      "Triage Level-1 technical support requests and internal corporate IT ticketing.",
+      "Assist in user provisioning, Active Directory access, and Google Workspace security.",
+      "Monitor corporate cloud server metrics, data backups, and uptime telemetry.",
+      "Configure workplace workstations, VPN configurations, and peripherals."
+    ],
+    dutiesAr: [
+      "استقبال وتصنيف تذاكر الدعم الفني للمستوى الأول ومتابعة المشكلات التقنية.",
+      "إدارة حسابات المستخدمين وصلاحيات الوصول وأنظمة الأمان والحوسبة السحابية.",
+      "مراقبة أداء الخوادم السحابية، النسخ الاحتياطية الدورية، ومؤشرات الاستقرار التقني.",
+      "إعداد أجهزة الموظفين وتكوين شبكات الاتصال الآمنة (VPN) والبرمجيات المؤسسية."
+    ]
   }
 ];
 
@@ -2113,9 +2173,9 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
         <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between text-muted-foreground mb-1">
             <span className="text-xs font-semibold">Live in Catalog</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <CheckCircle2 className="h-4 w-4 text-beige" />
           </div>
-          <p className="font-display text-2xl font-bold text-emerald-600 dark:text-emerald-400">{publishedCount}</p>
+          <p className="font-display text-2xl font-bold text-beige dark:text-beige/80">{publishedCount}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">
             Visible to clients & partners
           </p>
@@ -2178,7 +2238,7 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
         </div>
 
         {syncMessage && (
-          <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-3 text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+          <div className="rounded-2xl bg-beige/10 dark:bg-navy/20 border border-beige/40 dark:border-beige/40 p-3 text-xs font-semibold text-navy dark:text-beige/70 flex items-center gap-2">
             <Check className="h-4 w-4 shrink-0" />
             <span>{syncMessage}</span>
           </div>
@@ -2462,7 +2522,7 @@ function ProgramCard({
               onClick={onTogglePublished}
               className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition-colors ${
                 isPublished
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                  ? "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70"
                   : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
               }`}
               title="Click to toggle between Published and Draft"
@@ -2527,7 +2587,7 @@ function ProgramCard({
 
         <div className="text-end">
           <span className="text-muted-foreground block text-[10px]">Deposit:</span>
-          <span className={`font-display font-bold text-base ${isDepositInRange ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>
+          <span className={`font-display font-bold text-base ${isDepositInRange ? "text-beige dark:text-beige/80" : "text-foreground"}`}>
             €{p.deposit}
           </span>
           <span className="text-[10px] text-muted-foreground ms-1">({depositEgp.toLocaleString()} EGP)</span>
@@ -2666,7 +2726,7 @@ function ProgramRow({
             type="number"
             className={`${cell} ${
               isDepositInRange
-                ? "border-emerald-400 bg-emerald-50/40 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 font-bold"
+                ? "border-beige/40 bg-beige/24 dark:bg-navy/20 text-navy dark:text-beige/70 font-bold"
                 : ""
             }`}
             value={deposit}
@@ -2675,7 +2735,7 @@ function ProgramRow({
           <span
             className={`text-[10px] font-semibold mt-0.5 ${
               isDepositInRange
-                ? "text-emerald-600 dark:text-emerald-400"
+                ? "text-beige dark:text-beige/80"
                 : "text-muted-foreground"
             }`}
           >
@@ -2707,7 +2767,7 @@ function ProgramRow({
           onClick={onTogglePublished}
           className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ${
             isPublished
-              ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950 dark:text-emerald-300"
+              ? "bg-beige/20 text-navy hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400"
           }`}
           title="Toggle published status"
@@ -2779,12 +2839,44 @@ function ProgramModal({
   const [categoryAr, setCategoryAr] = useState(program?.category_ar || "ضيافة وسياحة وفنادق");
   const [slug, setSlug] = useState(program?.slug || "");
   const [duration, setDuration] = useState(program?.duration || (track === "student" ? "3–6 months" : "12–24 months"));
+  const [durationMonths, setDurationMonths] = useState<number>(() => {
+    const match = (program?.duration || "").match(/(\d+)/);
+    return match ? Math.max(1, Math.min(24, parseInt(match[1]))) : (track === "student" ? 4 : 12);
+  });
   const [published, setPublished] = useState(program?.published !== false);
 
   // Tab 2: Work Conditions, Housing & Food
+  // Expected Net Monthly Salary with dual sliders
+  const [salaryMin, setSalaryMin] = useState<number>(() => {
+    const match = (program?.expected_salary || "").match(/€?\s*(\d+)/);
+    return match ? Math.max(400, Math.min(3000, parseInt(match[1]))) : 800;
+  });
+  const [salaryMax, setSalaryMax] = useState<number>(() => {
+    const matches = (program?.expected_salary || "").match(/€?\s*(\d+)/g);
+    if (matches && matches.length > 1) {
+      const val = parseInt(matches[1].replace(/[^0-9]/g, ""));
+      return Math.max(500, Math.min(5000, val));
+    }
+    return 1200;
+  });
   const [expectedSalary, setExpectedSalary] = useState(program?.expected_salary || "€800 – €1,200 / month");
   const [expectedSalaryAr, setExpectedSalaryAr] = useState(program?.expected_salary_ar || "800€ – 1,200€ / شهرياً (صافي)");
+
+  // Working hours with daily hours + days/week sliders
+  const [dailyHours, setDailyHours] = useState<number>(() => {
+    const match = (program?.working_hours || "").match(/(\d+)\s*hrs/);
+    return match ? Math.max(4, Math.min(12, parseInt(match[1]))) : 8;
+  });
+  const [workDays, setWorkDays] = useState<number>(() => {
+    const match = (program?.working_hours || "").match(/(\d+)\s*days/);
+    return match ? Math.max(3, Math.min(7, parseInt(match[1]))) : 5;
+  });
+  const [overtimeAllowed, setOvertimeAllowed] = useState<boolean>(() => {
+    return Boolean((program?.working_hours || "").toLowerCase().includes("overtime"));
+  });
   const [workingHours, setWorkingHours] = useState(program?.working_hours || "8 hrs/day · 5–6 days/week (40–48 hrs/wk)");
+
+  // Housing, meals, and health insurance
   const [accommodation, setAccommodation] = useState(program?.accommodation || "Provided free by employer (Furnished staff housing)");
   const [accommodationAr, setAccommodationAr] = useState(program?.accommodation_ar || "سكن موظفين مؤثث بالكامل مجاناً من جهة العمل");
   const [meals, setMeals] = useState(program?.meals || "1 to 2 free hot meals per shift at staff cafeteria");
@@ -2813,10 +2905,40 @@ function ProgramModal({
           "تلبية طلبات النزلاء ومساعدة الحقائب وتنسيق الأنشطة والجولات السياحية."
         ]
   );
-  const [ageRequirement, setAgeRequirement] = useState(program?.age_requirement || (track === "student" ? "18–30 years (Statutory student bracket)" : "20–45 years (Standard career bracket)"));
-  const [educationRequirement, setEducationRequirement] = useState(program?.education_requirement || (track === "student" ? "Active university student enrollment (Letter of enrollment)" : "Accredited high school diploma, vocational certificate, or degree"));
+
+  // Age with min/max sliders
+  const [ageMin, setAgeMin] = useState<number>(() => {
+    const match = (program?.age_requirement || "").match(/(\d+)/);
+    return match ? Math.max(18, Math.min(35, parseInt(match[1]))) : (track === "student" ? 18 : 20);
+  });
+  const [ageMax, setAgeMax] = useState<number>(() => {
+    const matches = (program?.age_requirement || "").match(/(\d+)/g);
+    if (matches && matches.length > 1) {
+      return Math.max(20, Math.min(65, parseInt(matches[1])));
+    }
+    return track === "student" ? 30 : 45;
+  });
+  const [ageRequirement, setAgeRequirement] = useState(
+    program?.age_requirement || (track === "student" ? "18–30 years (Statutory student bracket)" : "20–45 years (Standard career bracket)")
+  );
+
+  // Education & Language
+  const [educationRequirement, setEducationRequirement] = useState(
+    program?.education_requirement || (track === "student" ? "Active university student enrollment (Letter of enrollment)" : "Accredited high school diploma, vocational certificate, or degree")
+  );
   const [englishLevel, setEnglishLevel] = useState(program?.english_level || "Basic conversational English (A2 level)");
-  const [experienceRequired, setExperienceRequired] = useState(program?.experience_required || "No prior experience required — full on-the-job training provided");
+
+  // Experience with slider (0-5+ years)
+  const [expYears, setExpYears] = useState<number>(() => {
+    const text = (program?.experience_required || "").toLowerCase();
+    if (text.includes("no prior") || text.includes("no experience")) return 0;
+    const match = text.match(/(\d+)/);
+    return match ? Math.max(0, Math.min(5, parseInt(match[1]))) : 0;
+  });
+  const [experienceRequired, setExperienceRequired] = useState(
+    program?.experience_required || "No prior experience required — full on-the-job training provided"
+  );
+
   const [requirements, setRequirements] = useState<string[]>(program?.requirements ?? [
     "Valid passport (at least 6 months remaining)",
     "Clean criminal background record certificate",
@@ -2846,33 +2968,6 @@ function ProgramModal({
   const [selectedCatPreset, setSelectedCatPreset] = useState<string>(
     PRESET_CATEGORIES.some((x) => x.en === program?.category_en) ? program?.category_en : "custom"
   );
-  const [selectedSalaryPreset, setSelectedSalaryPreset] = useState<string>(
-    PRESET_SALARIES.some((x) => x.en === program?.expected_salary) ? program?.expected_salary : "custom"
-  );
-  const [selectedHoursPreset, setSelectedHoursPreset] = useState<string>(
-    PRESET_WORKING_HOURS.some((x) => x.en === program?.working_hours) ? program?.working_hours : "custom"
-  );
-  const [selectedAccomPreset, setSelectedAccomPreset] = useState<string>(
-    PRESET_ACCOMMODATION.some((x) => x.en === program?.accommodation) ? program?.accommodation : "custom"
-  );
-  const [selectedMealsPreset, setSelectedMealsPreset] = useState<string>(
-    PRESET_MEALS.some((x) => x.en === program?.meals) ? program?.meals : "custom"
-  );
-  const [selectedInsurancePreset, setSelectedInsurancePreset] = useState<string>(
-    PRESET_INSURANCE.some((x) => x.en === program?.health_insurance) ? program?.health_insurance : "custom"
-  );
-  const [selectedAgePreset, setSelectedAgePreset] = useState<string>(
-    PRESET_AGE_OPTIONS.some((x) => x.en === ageRequirement) ? ageRequirement : "custom"
-  );
-  const [selectedEduPreset, setSelectedEduPreset] = useState<string>(
-    PRESET_EDUCATION_OPTIONS.some((x) => x.en === educationRequirement) ? educationRequirement : "custom"
-  );
-  const [selectedEngPreset, setSelectedEngPreset] = useState<string>(
-    PRESET_ENGLISH_OPTIONS.some((x) => x.en === englishLevel) ? englishLevel : "custom"
-  );
-  const [selectedExpPreset, setSelectedExpPreset] = useState<string>(
-    PRESET_EXPERIENCE_OPTIONS.some((x) => x.en === experienceRequired) ? experienceRequired : "custom"
-  );
 
   const durationOptions = track === "student" ? PRESET_DURATIONS_STUDENT : PRESET_DURATIONS_GRADUATE;
 
@@ -2884,6 +2979,54 @@ function ProgramModal({
   const monthly = installments > 0 ? Math.ceil(Math.max(0, price - deposit) / installments) : 0;
   const monthlyEgp = Math.round(monthly * 54);
   const flightEgp = Math.round(flightPrice * 54);
+
+  // Synchronize salary sliders to text state
+  const handleSalarySliderChange = (min: number, max: number) => {
+    const actualMin = Math.min(min, max);
+    const actualMax = Math.max(min, max);
+    setSalaryMin(actualMin);
+    setSalaryMax(actualMax);
+    const enStr = `€${actualMin.toLocaleString()} – €${actualMax.toLocaleString()} / month`;
+    const arStr = `${actualMin.toLocaleString()}€ – ${actualMax.toLocaleString()}€ / شهرياً (صافي)`;
+    setExpectedSalary(enStr);
+    setExpectedSalaryAr(arStr);
+  };
+
+  // Synchronize working hours sliders to text state
+  const handleHoursSliderChange = (h: number, d: number, ot: boolean) => {
+    setDailyHours(h);
+    setWorkDays(d);
+    setOvertimeAllowed(ot);
+    const totalWeekly = h * d;
+    const otNotice = ot ? " (Overtime paid at 150%)" : "";
+    const enStr = `${h} hrs/day · ${d} days/week (${totalWeekly} hrs/wk)${otNotice}`;
+    setWorkingHours(enStr);
+  };
+
+  // Synchronize age sliders
+  const handleAgeSliderChange = (min: number, max: number) => {
+    const actualMin = Math.min(min, max);
+    const actualMax = Math.max(min, max);
+    setAgeMin(actualMin);
+    setAgeMax(actualMax);
+    setAgeRequirement(`${actualMin}–${actualMax} years`);
+  };
+
+  // Synchronize experience slider
+  const handleExpSliderChange = (yrs: number) => {
+    setExpYears(yrs);
+    if (yrs === 0) {
+      setExperienceRequired("No prior experience required — full on-the-job training provided");
+    } else if (yrs === 1) {
+      setExperienceRequired("Minimum 1 year relevant professional background");
+    } else if (yrs === 2) {
+      setExperienceRequired("2+ years experience in related industry");
+    } else if (yrs === 3) {
+      setExperienceRequired("3+ years specialized / technical background");
+    } else {
+      setExperienceRequired(`${yrs}+ years senior industry experience`);
+    }
+  };
 
   // Auto-translate entire program to Arabic
   const handleAutoTranslateAll = () => {
@@ -2985,7 +3128,7 @@ function ProgramModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-2 sm:p-4 backdrop-blur-xs overflow-y-auto">
       <div className="w-full max-w-4xl my-auto rounded-3xl border border-border bg-card shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
 
-        {/* Modal Sticky Header */}
+        {/* Modal Sticky Header - 100% English */}
         <div className="flex flex-wrap items-center justify-between border-b border-border bg-secondary/60 px-5 py-4 gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-navy text-ivory shrink-0 shadow-xs">
@@ -2996,7 +3139,7 @@ function ProgramModal({
                 {mode === "add" ? "Create New Job Placement Program" : `Edit Program: ${titleEn || program?.title_en}`}
               </h3>
               <p className="text-[11px] text-muted-foreground">
-                Enter details in English with auto-translation and interactive sliders
+                Comprehensive English interface with real-time sliders and ready-made presets
               </p>
             </div>
           </div>
@@ -3006,7 +3149,7 @@ function ProgramModal({
               type="button"
               onClick={handleAutoTranslateAll}
               className="inline-flex items-center gap-1.5 rounded-full bg-beige/20 text-navy dark:text-beige border border-beige/40 px-3.5 py-1.5 text-xs font-bold hover:bg-beige/30 transition-colors shadow-2xs"
-              title="Automatically translate all English fields into Arabic"
+              title="Automatically translate all English fields into Arabic for website visitors"
             >
               <Wand2 className="h-3.5 w-3.5 text-beige" />
               <span>⚡ Translate All to Arabic</span>
@@ -3064,7 +3207,7 @@ function ProgramModal({
                     {countries.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.flag ? `${c.flag} ` : ""}
-                        {c.name_en} {c.name_ar ? `(${c.name_ar})` : ""}
+                        {c.name_en}
                       </option>
                     ))}
                   </select>
@@ -3081,6 +3224,7 @@ function ProgramModal({
                       const nextTrack = e.target.value as "student" | "graduate";
                       setTrack(nextTrack);
                       setDuration(nextTrack === "student" ? "3–6 months" : "12–24 months");
+                      setDurationMonths(nextTrack === "student" ? 4 : 12);
                     }}
                     className={inp}
                   >
@@ -3159,7 +3303,7 @@ function ProgramModal({
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Job Title (Arabic) *</span>
                     <input
                       className={inp}
-                      placeholder="مثال: طاقم الضيافة والفنادق الموسمية"
+                      placeholder="Arabic title (auto-generated or custom)..."
                       value={titleAr}
                       onChange={(e) => setTitleAr(e.target.value)}
                       dir="rtl"
@@ -3233,7 +3377,7 @@ function ProgramModal({
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Category (Arabic)</span>
                     <input
                       className={inp}
-                      placeholder="مثال: ضيافة وسياحة وفنادق"
+                      placeholder="Arabic category (auto-generated or custom)..."
                       value={categoryAr}
                       onChange={(e) => setCategoryAr(e.target.value)}
                       dir="rtl"
@@ -3242,38 +3386,66 @@ function ProgramModal({
                 </div>
               </div>
 
-              {/* Duration & Slug */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-foreground block mb-1 flex items-center gap-1.5">
+              {/* Contract Duration with Interactive Slider */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5 text-beige" />
-                    <span>Contract Duration *</span>
+                    <span>Contract Duration Slider</span>
                   </label>
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {durationOptions.map((d) => (
-                      <button
-                        key={d.en}
-                        type="button"
-                        onClick={() => setDuration(d.en)}
-                        className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all ${
-                          duration === d.en
-                            ? "bg-navy text-ivory border-navy"
-                            : "border-border bg-secondary/50 text-muted-foreground hover:border-beige"
-                        }`}
-                      >
-                        {d.en}
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    className={inp}
-                    placeholder="e.g. 3–6 months or 12 months"
-                    value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
-                    required
-                  />
+                  <span className="font-display font-bold text-sm text-navy dark:text-beige">
+                    {durationMonths} Months ({duration})
+                  </span>
                 </div>
 
+                {/* Duration Slider (1 to 24 months) */}
+                <input
+                  type="range"
+                  min={1}
+                  max={24}
+                  step={1}
+                  value={durationMonths}
+                  onChange={(e) => {
+                    const m = +e.target.value;
+                    setDurationMonths(m);
+                    setDuration(m === 1 ? "1 month" : `${m} months`);
+                  }}
+                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
+                />
+
+                {/* Quick Preset Buttons */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {durationOptions.map((d) => (
+                    <button
+                      key={d.en}
+                      type="button"
+                      onClick={() => {
+                        setDuration(d.en);
+                        const match = d.en.match(/(\d+)/);
+                        if (match && match[1]) setDurationMonths(parseInt(match[1]));
+                      }}
+                      className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold transition-all ${
+                        duration === d.en
+                          ? "bg-navy text-ivory border-navy"
+                          : "border-border bg-card text-muted-foreground hover:border-beige"
+                      }`}
+                    >
+                      {d.en}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  className={inp}
+                  placeholder="e.g. 3–6 months or 12 months"
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* URL Slug & Publish toggle */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-xs font-bold text-foreground flex items-center gap-1">
@@ -3296,23 +3468,22 @@ function ProgramModal({
                     required
                   />
                 </div>
-              </div>
 
-              {/* Published Switch */}
-              <div className="flex items-center gap-3 rounded-2xl border border-border bg-secondary/40 p-4">
-                <input
-                  type="checkbox"
-                  id="prog-pub-switch"
-                  checked={published}
-                  onChange={(e) => setPublished(e.target.checked)}
-                  className="h-4 w-4 rounded accent-navy cursor-pointer"
-                />
-                <label htmlFor="prog-pub-switch" className="text-xs font-medium cursor-pointer">
-                  <span className="font-bold text-foreground">Publish program live in catalog immediately</span>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    When active, candidates and partners will see this opportunity in the public catalog and application dropdown.
-                  </p>
-                </label>
+                <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
+                  <input
+                    type="checkbox"
+                    id="prog-pub-switch"
+                    checked={published}
+                    onChange={(e) => setPublished(e.target.checked)}
+                    className="h-4 w-4 rounded accent-navy cursor-pointer"
+                  />
+                  <label htmlFor="prog-pub-switch" className="text-xs font-medium cursor-pointer">
+                    <span className="font-bold text-foreground">Publish Live in Public Catalog</span>
+                    <p className="text-[10px] text-muted-foreground">
+                      Visible immediately on public job board and application portal.
+                    </p>
+                  </label>
+                </div>
               </div>
             </div>
           )}
@@ -3325,73 +3496,117 @@ function ProgramModal({
                 <div>
                   <strong className="text-foreground">Official Client-Facing Working Specifications</strong>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    These certified details are displayed prominently on the job specifications page, application form, and applicant portal.
+                    Configure shifts and benefits using rich interactive sliders and 1-click ready-made presets.
                   </p>
                 </div>
               </div>
 
-              {/* Expected Net Salary */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <DollarSign className="h-3.5 w-3.5 text-beige" />
-                    <span>Expected Net Monthly Salary</span>
-                  </label>
+              {/* Expected Net Salary with Interactive Dual Sliders */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-4 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                      <DollarSign className="h-4 w-4 text-beige" />
+                      <span>Expected Net Monthly Salary (Sliders & Presets)</span>
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Drag sliders to set certified monthly compensation range.
+                    </p>
+                  </div>
 
-                  <select
-                    value={selectedSalaryPreset}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedSalaryPreset(val);
-                      if (val !== "custom") {
-                        const matched = PRESET_SALARIES.find((x) => x.en === val);
-                        if (matched) {
-                          setExpectedSalary(matched.en);
-                          setExpectedSalaryAr(matched.ar);
-                        }
-                      }
-                    }}
-                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                  >
-                    <option value="custom">✍️ Custom Salary...</option>
-                    {PRESET_SALARIES.map((item) => (
-                      <option key={item.en} value={item.en}>
-                        {item.en}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Real-time EGP badge */}
+                  <div className="text-start sm:text-end bg-card px-3 py-1.5 rounded-xl border border-border/70">
+                    <span className="font-display font-extrabold text-sm sm:text-base text-navy dark:text-beige block">
+                      €{salaryMin.toLocaleString()} – €{salaryMax.toLocaleString()} / mo
+                    </span>
+                    <span className="text-[11px] font-semibold text-beige dark:text-beige/80 block font-mono">
+                      ≈ {Math.round(salaryMin * 54).toLocaleString()} – {Math.round(salaryMax * 54).toLocaleString()} EGP / mo net
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Salary (English)</span>
-                      <button
-                        type="button"
-                        onClick={() => setExpectedSalaryAr(autoTranslateToAr("salary", expectedSalary))}
-                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
-                      >
-                        <Wand2 className="h-2.5 w-2.5" /> Translate
-                      </button>
+                {/* Min & Max Sliders */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Min Salary:</span>
+                      <span className="text-foreground font-mono">€{salaryMin} (~{Math.round(salaryMin * 54).toLocaleString()} EGP)</span>
                     </div>
                     <input
-                      className={inp}
-                      placeholder="e.g. €800 – €1,200 / month"
-                      value={expectedSalary}
-                      onChange={(e) => {
-                        setExpectedSalary(e.target.value);
-                        if (!expectedSalaryAr || expectedSalaryAr === autoTranslateToAr("salary", expectedSalary)) {
-                          setExpectedSalaryAr(autoTranslateToAr("salary", e.target.value));
-                        }
-                      }}
+                      type="range"
+                      min={400}
+                      max={2500}
+                      step={50}
+                      value={salaryMin}
+                      onChange={(e) => handleSalarySliderChange(+e.target.value, salaryMax)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
                     />
                   </div>
 
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Max Salary:</span>
+                      <span className="text-foreground font-mono">€{salaryMax} (~{Math.round(salaryMax * 54).toLocaleString()} EGP)</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={600}
+                      max={4500}
+                      step={50}
+                      value={salaryMax}
+                      onChange={(e) => handleSalarySliderChange(salaryMin, +e.target.value)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Salary Preset Chips */}
+                <div className="space-y-1 pt-1">
+                  <span className="text-[11px] font-semibold text-muted-foreground block">
+                    Quick-pick Popular European Salary Brackets:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      [600, 900, "€600–€900 (~32k–49k EGP)"],
+                      [800, 1200, "€800–€1,200 (~43k–65k EGP Entry)"],
+                      [1000, 1400, "€1,000–€1,400 (~54k–76k EGP Standard)"],
+                      [1200, 1800, "€1,200–€1,800 (~65k–97k EGP Mid)"],
+                      [1500, 2200, "€1,500–€2,200 (~81k–119k EGP Skilled)"],
+                      [2000, 3000, "€2,000–€3,000 (~108k–162k EGP Tech/Ireland)"],
+                    ].map(([mn, mx, label]) => (
+                      <button
+                        key={label as string}
+                        type="button"
+                        onClick={() => handleSalarySliderChange(Number(mn), Number(mx))}
+                        className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
+                          salaryMin === mn && salaryMax === mx
+                            ? "bg-navy text-ivory border-navy shadow-xs"
+                            : "bg-card border-border text-foreground hover:border-beige"
+                        }`}
+                      >
+                        {label as string}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Salary (Arabic)</span>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Salary Description (English)
+                    </span>
                     <input
                       className={inp}
-                      placeholder="مثال: 800€ – 1,200€ / شهرياً (صافي)"
+                      value={expectedSalary}
+                      onChange={(e) => setExpectedSalary(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Salary Description (Arabic)
+                    </span>
+                    <input
+                      className={inp}
                       value={expectedSalaryAr}
                       onChange={(e) => setExpectedSalaryAr(e.target.value)}
                       dir="rtl"
@@ -3400,89 +3615,155 @@ function ProgramModal({
                 </div>
               </div>
 
-              {/* Working Hours & Shifts */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <Clock3 className="h-3.5 w-3.5 text-beige" />
-                    <span>Working Hours & Shift Roster</span>
-                  </label>
+              {/* Working Hours with Interactive Daily & Weekly Sliders */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-4 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                      <Clock3 className="h-4 w-4 text-beige" />
+                      <span>Working Hours & Shifts (Sliders & Shift Presets)</span>
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Adjust daily hours and days per week to automatically calculate weekly shifts.
+                    </p>
+                  </div>
 
-                  <select
-                    value={selectedHoursPreset}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedHoursPreset(val);
-                      if (val !== "custom") {
-                        const matched = PRESET_WORKING_HOURS.find((x) => x.en === val);
-                        if (matched) {
-                          setWorkingHours(matched.en);
-                        }
-                      }
-                    }}
-                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                  >
-                    <option value="custom">✍️ Custom Hours...</option>
-                    {PRESET_WORKING_HOURS.map((item) => (
-                      <option key={item.en} value={item.en}>
-                        {item.en}
-                      </option>
+                  <div className="bg-card px-3 py-1.5 rounded-xl border border-border/70 text-start sm:text-end">
+                    <span className="font-display font-bold text-sm text-navy dark:text-beige block">
+                      {dailyHours} hrs/day · {workDays} days/wk
+                    </span>
+                    <span className="text-[11px] font-semibold text-muted-foreground block">
+                      Total: {dailyHours * workDays} hours / week
+                    </span>
+                  </div>
+                </div>
+
+                {/* Daily Hours & Days per Week Sliders */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Daily Shift Duration:</span>
+                      <span className="text-foreground font-mono">{dailyHours} Hours / Day</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={4}
+                      max={12}
+                      step={1}
+                      value={dailyHours}
+                      onChange={(e) => handleHoursSliderChange(+e.target.value, workDays, overtimeAllowed)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Working Days:</span>
+                      <span className="text-foreground font-mono">{workDays} Days / Week</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={3}
+                      max={7}
+                      step={1}
+                      value={workDays}
+                      onChange={(e) => handleHoursSliderChange(dailyHours, +e.target.value, overtimeAllowed)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
+                    />
+                  </div>
+                </div>
+
+                {/* Overtime Toggle */}
+                <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3">
+                  <label htmlFor="ot-toggle" className="flex items-center gap-2 cursor-pointer text-xs">
+                    <Clock className="h-4 w-4 text-beige" />
+                    <div>
+                      <span className="font-bold text-foreground block">Overtime Hours Available</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        Indicates candidates can work optional overtime paid at statutory 150% rate.
+                      </span>
+                    </div>
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="ot-toggle"
+                    checked={overtimeAllowed}
+                    onChange={(e) => handleHoursSliderChange(dailyHours, workDays, e.target.checked)}
+                    className="h-4 w-4 rounded accent-navy cursor-pointer"
+                  />
+                </div>
+
+                {/* Quick Presets for Working Hours */}
+                <div className="space-y-1">
+                  <span className="text-[11px] font-semibold text-muted-foreground block">
+                    Quick-pick Standard Shift Schedules:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      [8, 5, false, "8 hrs/day · 5 days (40 hrs/wk · Standard)"],
+                      [8, 6, false, "8 hrs/day · 6 days (48 hrs/wk · Hospitality)"],
+                      [8, 5, true, "8 hrs/day · 5 days + Overtime 150%"],
+                      [10, 4, false, "10 hrs/day · 4 days (40 hrs/wk Compressed)"],
+                      [4, 5, false, "4 hrs/day · 5 days (20 hrs/wk Student Cap)"],
+                    ].map(([h, d, ot, label]) => (
+                      <button
+                        key={label as string}
+                        type="button"
+                        onClick={() => handleHoursSliderChange(Number(h), Number(d), Boolean(ot))}
+                        className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
+                          dailyHours === h && workDays === d && overtimeAllowed === ot
+                            ? "bg-navy text-ivory border-navy shadow-xs"
+                            : "bg-card border-border text-foreground hover:border-beige"
+                        }`}
+                      >
+                        {label as string}
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
                 <input
                   className={inp}
-                  placeholder="e.g. 8 hrs/day · 5–6 days/week (40–48 hrs/wk)"
                   value={workingHours}
                   onChange={(e) => setWorkingHours(e.target.value)}
+                  placeholder="e.g. 8 hrs/day · 5–6 days/week (40–48 hrs/wk)"
                 />
               </div>
 
-              {/* Accommodation & Housing */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <Building2 className="h-3.5 w-3.5 text-beige" />
-                    <span>Housing & Accommodation</span>
-                  </label>
+              {/* Housing & Accommodation: 1-Click Cards + Custom Inputs */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <Building2 className="h-4 w-4 text-beige" />
+                  <span>Housing & Accommodation (1-Click Presets)</span>
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Select a certified housing arrangement or customize details below.
+                </p>
 
-                  <select
-                    value={selectedAccomPreset}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedAccomPreset(val);
-                      if (val !== "custom") {
-                        const matched = PRESET_ACCOMMODATION.find((x) => x.en === val);
-                        if (matched) {
-                          setAccommodation(matched.en);
-                          setAccommodationAr(matched.ar);
-                        }
-                      }
-                    }}
-                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                  >
-                    <option value="custom">✍️ Custom Housing...</option>
-                    {PRESET_ACCOMMODATION.map((item) => (
-                      <option key={item.en} value={item.en}>
-                        {item.en}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {PRESET_ACCOMMODATION.map((item) => (
+                    <button
+                      key={item.en}
+                      type="button"
+                      onClick={() => {
+                        setAccommodation(item.en);
+                        setAccommodationAr(item.ar);
+                      }}
+                      className={`text-start rounded-2xl border p-3 transition-all ${
+                        accommodation === item.en
+                          ? "border-navy bg-navy/10 dark:bg-navy/30 dark:border-beige"
+                          : "border-border bg-card hover:border-beige/60"
+                      }`}
+                    >
+                      <span className="text-xs font-bold text-foreground block">{item.en}</span>
+                      <span className="text-[11px] text-muted-foreground block mt-1" dir="rtl">{item.ar}</span>
+                    </button>
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Housing (English)</span>
-                      <button
-                        type="button"
-                        onClick={() => setAccommodationAr(autoTranslateToAr("accommodation", accommodation))}
-                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
-                      >
-                        <Wand2 className="h-2.5 w-2.5" /> Translate
-                      </button>
-                    </div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Housing (English)</span>
                     <input
                       className={inp}
                       placeholder="e.g. Provided free by employer (Furnished staff housing)"
@@ -3495,12 +3776,11 @@ function ProgramModal({
                       }}
                     />
                   </div>
-
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Housing (Arabic)</span>
                     <input
                       className={inp}
-                      placeholder="مثال: سكن موظفين مؤثث بالكامل مجاناً من جهة العمل"
+                      placeholder="Arabic housing details (auto-generated or custom)..."
                       value={accommodationAr}
                       onChange={(e) => setAccommodationAr(e.target.value)}
                       dir="rtl"
@@ -3509,50 +3789,40 @@ function ProgramModal({
                 </div>
               </div>
 
-              {/* Meals & Food Provisions */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <Coffee className="h-3.5 w-3.5 text-beige" />
-                    <span>Dining, Meals & Food Provisions</span>
-                  </label>
+              {/* Meals & Food Provisions: 1-Click Cards + Custom Inputs */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <Coffee className="h-4 w-4 text-beige" />
+                  <span>Meals & Dining Provisions (1-Click Presets)</span>
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Select meal benefits provided to the candidate during shifts.
+                </p>
 
-                  <select
-                    value={selectedMealsPreset}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedMealsPreset(val);
-                      if (val !== "custom") {
-                        const matched = PRESET_MEALS.find((x) => x.en === val);
-                        if (matched) {
-                          setMeals(matched.en);
-                          setMealsAr(matched.ar);
-                        }
-                      }
-                    }}
-                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                  >
-                    <option value="custom">✍️ Custom Meals...</option>
-                    {PRESET_MEALS.map((item) => (
-                      <option key={item.en} value={item.en}>
-                        {item.en}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {PRESET_MEALS.map((item) => (
+                    <button
+                      key={item.en}
+                      type="button"
+                      onClick={() => {
+                        setMeals(item.en);
+                        setMealsAr(item.ar);
+                      }}
+                      className={`text-start rounded-2xl border p-3 transition-all ${
+                        meals === item.en
+                          ? "border-navy bg-navy/10 dark:bg-navy/30 dark:border-beige"
+                          : "border-border bg-card hover:border-beige/60"
+                      }`}
+                    >
+                      <span className="text-xs font-bold text-foreground block">{item.en}</span>
+                      <span className="text-[11px] text-muted-foreground block mt-1" dir="rtl">{item.ar}</span>
+                    </button>
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Meals Provision (English)</span>
-                      <button
-                        type="button"
-                        onClick={() => setMealsAr(autoTranslateToAr("meals", meals))}
-                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
-                      >
-                        <Wand2 className="h-2.5 w-2.5" /> Translate
-                      </button>
-                    </div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Meals Provision (English)</span>
                     <input
                       className={inp}
                       placeholder="e.g. 1 to 2 free hot meals per shift at staff cafeteria"
@@ -3565,12 +3835,11 @@ function ProgramModal({
                       }}
                     />
                   </div>
-
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Meals Provision (Arabic)</span>
                     <input
                       className={inp}
-                      placeholder="مثال: وجبة إلى وجبتين مجاناً أثناء نوبة العمل بكافتيريا المنشأة"
+                      placeholder="Arabic meals details (auto-generated or custom)..."
                       value={mealsAr}
                       onChange={(e) => setMealsAr(e.target.value)}
                       dir="rtl"
@@ -3579,50 +3848,40 @@ function ProgramModal({
                 </div>
               </div>
 
-              {/* Health Insurance & Medical */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <ShieldCheck className="h-3.5 w-3.5 text-beige" />
-                    <span>Statutory Health & Medical Insurance</span>
-                  </label>
+              {/* Health Insurance: 1-Click Cards + Custom Inputs */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <ShieldCheck className="h-4 w-4 text-beige" />
+                  <span>Statutory Health & Medical Insurance (1-Click Presets)</span>
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Certified statutory European insurance packages.
+                </p>
 
-                  <select
-                    value={selectedInsurancePreset}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setSelectedInsurancePreset(val);
-                      if (val !== "custom") {
-                        const matched = PRESET_INSURANCE.find((x) => x.en === val);
-                        if (matched) {
-                          setHealthInsurance(matched.en);
-                          setHealthInsuranceAr(matched.ar);
-                        }
-                      }
-                    }}
-                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                  >
-                    <option value="custom">✍️ Custom Insurance...</option>
-                    {PRESET_INSURANCE.map((item) => (
-                      <option key={item.en} value={item.en}>
-                        {item.en}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                  {PRESET_INSURANCE.map((item) => (
+                    <button
+                      key={item.en}
+                      type="button"
+                      onClick={() => {
+                        setHealthInsurance(item.en);
+                        setHealthInsuranceAr(item.ar);
+                      }}
+                      className={`text-start rounded-2xl border p-3 transition-all ${
+                        healthInsurance === item.en
+                          ? "border-navy bg-navy/10 dark:bg-navy/30 dark:border-beige"
+                          : "border-border bg-card hover:border-beige/60"
+                      }`}
+                    >
+                      <span className="text-xs font-bold text-foreground block">{item.en}</span>
+                      <span className="text-[10px] text-muted-foreground block mt-1" dir="rtl">{item.ar}</span>
+                    </button>
+                  ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Insurance (English)</span>
-                      <button
-                        type="button"
-                        onClick={() => setHealthInsuranceAr(autoTranslateToAr("insurance", healthInsurance))}
-                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
-                      >
-                        <Wand2 className="h-2.5 w-2.5" /> Translate
-                      </button>
-                    </div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Health Insurance (English)</span>
                     <input
                       className={inp}
                       placeholder="e.g. Comprehensive EU statutory health insurance & workplace injury coverage"
@@ -3635,12 +3894,11 @@ function ProgramModal({
                       }}
                     />
                   </div>
-
                   <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Insurance (Arabic)</span>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Health Insurance (Arabic)</span>
                     <input
                       className={inp}
-                      placeholder="مثال: تأمين طبي حكومي أوروبي شامل وتأمين ضد حوادث العمل"
+                      placeholder="Arabic health insurance details (auto-generated or custom)..."
                       value={healthInsuranceAr}
                       onChange={(e) => setHealthInsuranceAr(e.target.value)}
                       dir="rtl"
@@ -3653,51 +3911,53 @@ function ProgramModal({
 
           {/* ════════ TAB 3: DUTIES & ELIGIBILITY ════════ */}
           {activeTab === "duties" && (
-            <div className="space-y-5 animate-in fade-in duration-150">
-              {/* Daily Duties & Responsibilities */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <ClipboardList className="h-3.5 w-3.5 text-beige" />
-                    <span>Daily Duties & Job Responsibilities</span>
-                  </label>
-
-                  <div className="flex items-center gap-2">
-                    <select
-                      onChange={(e) => {
-                        if (e.target.value) applyDutyTemplate(e.target.value);
-                      }}
-                      defaultValue=""
-                      className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
-                    >
-                      <option value="" disabled>Load Industry Template...</option>
-                      {PRESET_DUTIES_TEMPLATES.map((t) => (
-                        <option key={t.category} value={t.category}>
-                          {t.category}
-                        </option>
-                      ))}
-                    </select>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const tr = duties.map((d) => autoTranslateToAr("duty", d));
-                        setDutiesAr(tr);
-                      }}
-                      className="text-[11px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
-                    >
-                      <Wand2 className="h-2.5 w-2.5" /> Translate Duties
-                    </button>
+            <div className="space-y-6 animate-in fade-in duration-150">
+              {/* Daily Duties & Industry Templates */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-4 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                      <ClipboardList className="h-4 w-4 text-beige" />
+                      <span>Daily Duties & Responsibilities (8 Industry Templates)</span>
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Click any industry template below to instantly load certified responsibilities in both English and Arabic.
+                    </p>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const tr = duties.map((d) => autoTranslateToAr("duty", d));
+                      setDutiesAr(tr);
+                    }}
+                    className="self-start sm:self-auto text-xs text-navy dark:text-beige underline font-semibold flex items-center gap-1"
+                  >
+                    <Wand2 className="h-3.5 w-3.5" /> Translate Duties
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 8 Industry Template Buttons */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {PRESET_DUTIES_TEMPLATES.map((t) => (
+                    <button
+                      key={t.category}
+                      type="button"
+                      onClick={() => applyDutyTemplate(t.category)}
+                      className="rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:border-beige hover:bg-beige/10 transition-all shadow-2xs"
+                    >
+                      ⚡ {t.category}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                      Daily Duties (EN) — One per line
+                      Daily Duties (English) — One per line
                     </span>
                     <textarea
-                      rows={5}
+                      rows={6}
                       className={inp}
                       placeholder={"Welcome hotel and resort guests\nProvide guest assistance\nCoordinate with housekeeping"}
                       value={duties.join("\n")}
@@ -3707,13 +3967,13 @@ function ProgramModal({
 
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                      المهام والمسؤوليات اليومية (عربي) — سطر لكل مهمة
+                      Daily Duties (Arabic) — One item per line
                     </span>
                     <textarea
-                      rows={5}
+                      rows={6}
                       className={inp}
                       dir="rtl"
-                      placeholder={"استقبال نزلاء الفندق والمنتجع\nتقديم المساعدة والرد على الاستفسارات\nالتنسيق مع فرق الإشراف الداخلي"}
+                      placeholder="Arabic duties (auto-translated or custom arabic text)..."
                       value={dutiesAr.join("\n")}
                       onChange={(e) => setDutiesAr(e.target.value.split("\n"))}
                     />
@@ -3721,117 +3981,207 @@ function ProgramModal({
                 </div>
               </div>
 
-              {/* Candidate Criteria: Age, Degree, English, Experience */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-4">
-                <span className="text-xs font-bold text-foreground block">
-                  Candidate Acceptance Criteria & Profile Match
-                </span>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Candidate Age Requirement with Sliders */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-4 shadow-2xs">
+                <div className="flex items-center justify-between">
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Age Requirement</span>
-                      <select
-                        value={selectedAgePreset}
-                        onChange={(e) => {
-                          setSelectedAgePreset(e.target.value);
-                          if (e.target.value !== "custom") setAgeRequirement(e.target.value);
-                        }}
-                        className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px]"
-                      >
-                        <option value="custom">Custom...</option>
-                        {PRESET_AGE_OPTIONS.map((a) => (
-                          <option key={a.en} value={a.en}>{a.en}</option>
-                        ))}
-                      </select>
+                    <label className="text-xs sm:text-sm font-bold text-foreground block">
+                      Candidate Age Requirement (Min & Max Sliders)
+                    </label>
+                    <span className="text-xs text-muted-foreground">
+                      Set target age window according to destination statutory youth/work laws.
+                    </span>
+                  </div>
+                  <span className="font-display font-extrabold text-sm sm:text-base text-navy dark:text-beige bg-card px-3 py-1 rounded-xl border border-border">
+                    {ageMin} – {ageMax} Years Old
+                  </span>
+                </div>
+
+                {/* Dual Sliders for Age */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Minimum Age:</span>
+                      <span className="text-foreground font-mono">{ageMin} yrs</span>
                     </div>
                     <input
-                      className={inp}
-                      value={ageRequirement}
-                      onChange={(e) => setAgeRequirement(e.target.value)}
+                      type="range"
+                      min={18}
+                      max={35}
+                      step={1}
+                      value={ageMin}
+                      onChange={(e) => handleAgeSliderChange(+e.target.value, ageMax)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
                     />
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Degree / Education</span>
-                      <select
-                        value={selectedEduPreset}
-                        onChange={(e) => {
-                          setSelectedEduPreset(e.target.value);
-                          if (e.target.value !== "custom") setEducationRequirement(e.target.value);
-                        }}
-                        className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px]"
-                      >
-                        <option value="custom">Custom...</option>
-                        {PRESET_EDUCATION_OPTIONS.map((a) => (
-                          <option key={a.en} value={a.en}>{a.en}</option>
-                        ))}
-                      </select>
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-muted-foreground">Maximum Age:</span>
+                      <span className="text-foreground font-mono">{ageMax} yrs</span>
                     </div>
                     <input
-                      className={inp}
-                      value={educationRequirement}
-                      onChange={(e) => setEducationRequirement(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">English Language Proficiency</span>
-                      <select
-                        value={selectedEngPreset}
-                        onChange={(e) => {
-                          setSelectedEngPreset(e.target.value);
-                          if (e.target.value !== "custom") setEnglishLevel(e.target.value);
-                        }}
-                        className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px]"
-                      >
-                        <option value="custom">Custom...</option>
-                        {PRESET_ENGLISH_OPTIONS.map((a) => (
-                          <option key={a.en} value={a.en}>{a.en}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <input
-                      className={inp}
-                      value={englishLevel}
-                      onChange={(e) => setEnglishLevel(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] font-semibold text-muted-foreground">Prior Work Experience</span>
-                      <select
-                        value={selectedExpPreset}
-                        onChange={(e) => {
-                          setSelectedExpPreset(e.target.value);
-                          if (e.target.value !== "custom") setExperienceRequired(e.target.value);
-                        }}
-                        className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px]"
-                      >
-                        <option value="custom">Custom...</option>
-                        {PRESET_EXPERIENCE_OPTIONS.map((a) => (
-                          <option key={a.en} value={a.en}>{a.en}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <input
-                      className={inp}
-                      value={experienceRequired}
-                      onChange={(e) => setExperienceRequired(e.target.value)}
+                      type="range"
+                      min={20}
+                      max={60}
+                      step={1}
+                      value={ageMax}
+                      onChange={(e) => handleAgeSliderChange(ageMin, +e.target.value)}
+                      className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
                     />
                   </div>
                 </div>
+
+                {/* Quick Age Brackets */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[
+                    [18, 28, "18–28 years (Student summer)"],
+                    [18, 30, "18–30 years (Statutory student bracket)"],
+                    [18, 35, "18–35 years (Youth standard)"],
+                    [20, 45, "20–45 years (Standard career bracket)"],
+                    [21, 55, "21–55 years (Open skilled bracket)"],
+                  ].map(([mn, mx, label]) => (
+                    <button
+                      key={label as string}
+                      type="button"
+                      onClick={() => handleAgeSliderChange(Number(mn), Number(mx))}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
+                        ageMin === mn && ageMax === mx
+                          ? "bg-navy text-ivory border-navy shadow-xs"
+                          : "bg-card border-border text-foreground hover:border-beige"
+                      }`}
+                    >
+                      {label as string}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  className={inp}
+                  value={ageRequirement}
+                  onChange={(e) => setAgeRequirement(e.target.value)}
+                />
+              </div>
+
+              {/* Education Requirement: 1-Click Cards */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <label className="text-xs sm:text-sm font-bold text-foreground block">
+                  Education & Degree Requirement (1-Click Presets)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {PRESET_EDUCATION_OPTIONS.map((item) => (
+                    <button
+                      key={item.en}
+                      type="button"
+                      onClick={() => setEducationRequirement(item.en)}
+                      className={`text-start rounded-2xl border p-3 transition-all ${
+                        educationRequirement === item.en
+                          ? "border-navy bg-navy/10 dark:bg-navy/30 dark:border-beige"
+                          : "border-border bg-card hover:border-beige/60"
+                      }`}
+                    >
+                      <span className="text-xs font-bold text-foreground block">{item.en}</span>
+                      <span className="text-[11px] text-muted-foreground block mt-1" dir="rtl">{item.ar}</span>
+                    </button>
+                  ))}
+                </div>
+                <input
+                  className={inp}
+                  value={educationRequirement}
+                  onChange={(e) => setEducationRequirement(e.target.value)}
+                />
+              </div>
+
+              {/* English Language Level: 1-Click Cards */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <label className="text-xs sm:text-sm font-bold text-foreground block">
+                  English Language Proficiency Level (1-Click Presets)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {PRESET_ENGLISH_OPTIONS.map((item) => (
+                    <button
+                      key={item.en}
+                      type="button"
+                      onClick={() => setEnglishLevel(item.en)}
+                      className={`text-start rounded-2xl border p-3 transition-all ${
+                        englishLevel === item.en
+                          ? "border-navy bg-navy/10 dark:bg-navy/30 dark:border-beige"
+                          : "border-border bg-card hover:border-beige/60"
+                      }`}
+                    >
+                      <span className="text-xs font-bold text-foreground block">{item.en}</span>
+                      <span className="text-[11px] text-muted-foreground block mt-1" dir="rtl">{item.ar}</span>
+                    </button>
+                  ))}
+                </div>
+                <input
+                  className={inp}
+                  value={englishLevel}
+                  onChange={(e) => setEnglishLevel(e.target.value)}
+                />
+              </div>
+
+              {/* Prior Work Experience: Slider (0 - 5+ years) */}
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-xs sm:text-sm font-bold text-foreground block">
+                      Prior Work Experience Requirement (Slider)
+                    </label>
+                    <span className="text-xs text-muted-foreground">
+                      Slide to require entry-level (0 years) or experienced specialists.
+                    </span>
+                  </div>
+                  <span className="font-display font-extrabold text-sm text-navy dark:text-beige bg-card px-3 py-1 rounded-xl border border-border">
+                    {expYears === 0 ? "0 Yrs (Entry)" : `${expYears}+ Years`}
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min={0}
+                  max={5}
+                  step={1}
+                  value={expYears}
+                  onChange={(e) => handleExpSliderChange(+e.target.value)}
+                  className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-navy dark:accent-beige"
+                />
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[
+                    [0, "0 Yrs: No Experience Required (Full Training)"],
+                    [1, "1+ Year: Basic Industry Experience"],
+                    [2, "2+ Years: Mid-level Track"],
+                    [3, "3+ Years: Senior / Technical Track"],
+                  ].map(([y, label]) => (
+                    <button
+                      key={label as string}
+                      type="button"
+                      onClick={() => handleExpSliderChange(Number(y))}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
+                        expYears === y
+                          ? "bg-navy text-ivory border-navy shadow-xs"
+                          : "bg-card border-border text-foreground hover:border-beige"
+                      }`}
+                    >
+                      {label as string}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  className={inp}
+                  value={experienceRequired}
+                  onChange={(e) => setExperienceRequired(e.target.value)}
+                />
               </div>
 
               {/* Requirements & Checklist */}
-              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+              <div className="rounded-3xl border border-border bg-secondary/30 p-5 space-y-3 shadow-2xs">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <CheckSquare className="h-3.5 w-3.5 text-beige" />
-                    <span>General Requirements & Checklist</span>
+                  <label className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                    <CheckSquare className="h-4 w-4 text-beige" />
+                    <span>General Requirements & Candidate Checklist</span>
                   </label>
 
                   <button
@@ -3842,7 +4192,7 @@ function ProgramModal({
                         .map((r) => autoTranslateToAr("requirement", r));
                       setRequirementsAr(translated);
                     }}
-                    className="text-[11px] text-navy dark:text-beige underline font-semibold flex items-center gap-1"
+                    className="text-xs text-navy dark:text-beige underline font-semibold flex items-center gap-1"
                   >
                     <Wand2 className="h-3 w-3" /> Translate Checklist to Arabic
                   </button>
@@ -3864,7 +4214,7 @@ function ProgramModal({
                             setRequirementsAr([...requirementsAr, chip.ar]);
                           }
                         }}
-                        className="rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-beige transition-colors shadow-2xs"
+                        className="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-beige transition-colors shadow-2xs"
                       >
                         + {chip.en}
                       </button>
@@ -3875,7 +4225,7 @@ function ProgramModal({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                      Requirements (EN) — One per line
+                      Requirements (English) — One per line
                     </span>
                     <textarea
                       rows={4}
@@ -3888,13 +4238,13 @@ function ProgramModal({
 
                   <div>
                     <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                      المتطلبات والشروط (عربي) — سطر لكل شرط
+                      Requirements & Checklist (Arabic) — One item per line
                     </span>
                     <textarea
                       rows={4}
                       className={inp}
                       dir="rtl"
-                      placeholder={"جواز سفر صالح لمدة لا تقل عن 6 أشهر\nصحيفة حالة جنائية خالية من السوابق\nلياقة طبية وبدنية جيدة"}
+                      placeholder="Arabic requirements (auto-translated or custom text)..."
                       value={requirementsAr.join("\n")}
                       onChange={(e) => setRequirementsAr(e.target.value.split("\n"))}
                     />
@@ -3912,7 +4262,7 @@ function ProgramModal({
                 <div
                   className={`rounded-2xl border p-3.5 text-xs font-semibold flex items-center justify-between ${
                     isStudentPriceOk
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      ? "border-beige/40 bg-beige/10 text-navy dark:bg-navy/20 dark:text-beige/70"
                       : "border-red-300 bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300"
                   }`}
                 >
@@ -3990,7 +4340,7 @@ function ProgramModal({
                     [1600, "€1,600 (~86.4k EGP)"],
                   ].map(([val, label]) => (
                     <button
-                      key={val}
+                      key={val as number}
                       type="button"
                       onClick={() => setPrice(Number(val))}
                       className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all ${
@@ -3999,7 +4349,7 @@ function ProgramModal({
                           : "bg-background border-border text-foreground hover:border-beige"
                       }`}
                     >
-                      {label}
+                      {label as string}
                     </button>
                   ))}
                 </div>
@@ -4020,17 +4370,17 @@ function ProgramModal({
 
                   <div className="flex items-center gap-2">
                     <div className="text-end">
-                      <span className={`font-display font-extrabold text-2xl ${isDepositInRange ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>
+                      <span className={`font-display font-extrabold text-2xl ${isDepositInRange ? "text-beige dark:text-beige/80" : "text-foreground"}`}>
                         €{deposit}
                       </span>
-                      <span className={`text-xs block font-bold ${isDepositInRange ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
+                      <span className={`text-xs block font-bold ${isDepositInRange ? "text-beige dark:text-beige/80" : "text-muted-foreground"}`}>
                         ≈ {depositEgp.toLocaleString()} EGP
                       </span>
                     </div>
                     <input
                       type="number"
                       className={`w-24 rounded-xl border bg-background px-3 py-1.5 text-sm font-bold text-center outline-none focus:border-beige ${
-                        isDepositInRange ? "border-emerald-500 font-bold" : "border-input"
+                        isDepositInRange ? "border-beige/60 font-bold" : "border-input"
                       }`}
                       min={0}
                       value={deposit}
@@ -4048,11 +4398,11 @@ function ProgramModal({
                     step={1}
                     value={deposit}
                     onChange={(e) => setDeposit(+e.target.value)}
-                    className="w-full h-2.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                    className="w-full h-2.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-[#C4A265]"
                   />
                   <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
                     <span>€150 (~8.1k EGP)</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">€185–€222 (Target 10k–12k EGP)</span>
+                    <span className="text-beige dark:text-beige/80 font-bold">€185–€222 (Target 10k–12k EGP)</span>
                     <span>€350 (~18.9k EGP)</span>
                   </div>
                 </div>
@@ -4060,7 +4410,7 @@ function ProgramModal({
                 {/* Deposit Bracket Status Badge */}
                 <div className="flex items-center justify-between">
                   {isDepositInRange ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-3 py-1 text-xs font-bold">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 px-3 py-1 text-xs font-bold">
                       <Check className="h-3.5 w-3.5" />
                       In Target Bracket: {depositEgp.toLocaleString()} EGP is between 10k and 12k EGP
                     </span>
@@ -4083,7 +4433,7 @@ function ProgramModal({
                     [222, "€222 (~11,988 EGP — Max)"],
                   ].map(([val, label]) => (
                     <button
-                      key={val}
+                      key={val as number}
                       type="button"
                       onClick={() => setDeposit(Number(val))}
                       className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all ${
@@ -4092,7 +4442,7 @@ function ProgramModal({
                           : "bg-background border-border text-foreground hover:border-beige"
                       }`}
                     >
-                      {label}
+                      {label as string}
                     </button>
                   ))}
                 </div>
@@ -4161,7 +4511,7 @@ function ProgramModal({
                     [12, "12 months (Max)"],
                   ].map(([val, label]) => (
                     <button
-                      key={val}
+                      key={val as number}
                       type="button"
                       onClick={() => setInstallments(Number(val))}
                       className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all ${
@@ -4170,7 +4520,7 @@ function ProgramModal({
                           : "bg-background border-border text-foreground hover:border-beige"
                       }`}
                     >
-                      {label}
+                      {label as string}
                     </button>
                   ))}
                 </div>
@@ -4236,7 +4586,7 @@ function ProgramModal({
                         [278, "€278 (~15k EGP Ireland)"],
                       ].map(([val, lbl]) => (
                         <button
-                          key={val}
+                          key={val as number}
                           type="button"
                           onClick={() => setFlightPrice(Number(val))}
                           className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all ${
@@ -4245,7 +4595,7 @@ function ProgramModal({
                               : "bg-background border-border text-foreground hover:border-beige"
                           }`}
                         >
-                          {lbl}
+                          {lbl as string}
                         </button>
                       ))}
                     </div>
@@ -4255,7 +4605,7 @@ function ProgramModal({
             </div>
           )}
 
-          {/* Sticky Modal Footer */}
+          {/* Sticky Modal Footer - 100% English */}
           <div className="flex items-center justify-between pt-4 border-t border-border sticky bottom-0 bg-card pb-1">
             <button
               type="button"
@@ -4304,8 +4654,6 @@ function ProgramModal({
     </div>
   );
 }
-
-
 /* ═══════════════════════════════════════
    COUNTRIES TAB
 ═══════════════════════════════════════ */
@@ -4336,12 +4684,12 @@ function CountriesTab({ countries, programs, onChange }: { countries: any[]; pro
                     <div className="grid gap-2">
                       <div className="grid grid-cols-2 gap-2">
                         <input className={inp} placeholder="Name (EN)" value={form.name_en ?? ""} onChange={e => setForm({ ...form, name_en: e.target.value })} />
-                        <input className={inp} placeholder="الاسم (AR)" value={form.name_ar ?? ""} onChange={e => setForm({ ...form, name_ar: e.target.value })} dir="rtl" />
+                        <input className={inp} placeholder="Name (Arabic)" value={form.name_ar ?? ""} onChange={e => setForm({ ...form, name_ar: e.target.value })} dir="rtl" />
                         <input className={inp} placeholder="Tagline (EN)" value={form.tagline_en ?? ""} onChange={e => setForm({ ...form, tagline_en: e.target.value })} />
-                        <input className={inp} placeholder="الشعار (AR)" value={form.tagline_ar ?? ""} onChange={e => setForm({ ...form, tagline_ar: e.target.value })} dir="rtl" />
+                        <input className={inp} placeholder="Tagline (Arabic)" value={form.tagline_ar ?? ""} onChange={e => setForm({ ...form, tagline_ar: e.target.value })} dir="rtl" />
                       </div>
                       <textarea className={inp} rows={2} placeholder="Description (EN)" value={form.description_en ?? ""} onChange={e => setForm({ ...form, description_en: e.target.value })} />
-                      <textarea className={inp} rows={2} placeholder="الوصف (AR)" value={form.description_ar ?? ""} onChange={e => setForm({ ...form, description_ar: e.target.value })} dir="rtl" />
+                      <textarea className={inp} rows={2} placeholder="Description (Arabic)" value={form.description_ar ?? ""} onChange={e => setForm({ ...form, description_ar: e.target.value })} dir="rtl" />
                       <div className="flex items-center gap-3">
                         <label className="flex items-center gap-2 text-sm">
                           <input type="checkbox" checked={form.published ?? true} onChange={e => setForm({ ...form, published: e.target.checked })} />
@@ -4355,7 +4703,7 @@ function CountriesTab({ countries, programs, onChange }: { countries: any[]; pro
                       <div className="flex items-center gap-2">
                         <p className="font-display text-xl font-semibold">{c.name_en}</p>
                         <span className="text-sm text-muted-foreground">/ {c.name_ar}</span>
-                        <span className={`${pill} ${c.published ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-500"}`}>{c.published ? "Published" : "Hidden"}</span>
+                        <span className={`${pill} ${c.published ? "bg-beige/20 text-navy" : "bg-gray-100 text-gray-500"}`}>{c.published ? "Published" : "Hidden"}</span>
                       </div>
                       <p className="mt-1 text-sm text-muted-foreground">{c.tagline_en}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{c.description_en?.slice(0, 120)}…</p>
@@ -4515,7 +4863,7 @@ function PartnersTab({
 
                   {p.profiles?.phone && (
                     <span className="inline-flex items-center gap-1.5 text-foreground">
-                      <Phone className="h-3.5 w-3.5 text-emerald-500" />
+                      <Phone className="h-3.5 w-3.5 text-beige" />
                       {p.profiles.phone}
                     </span>
                   )}
@@ -4532,7 +4880,7 @@ function PartnersTab({
                 </div>
 
                 <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
-                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="font-semibold text-beige dark:text-beige/80">
                     ✓ Paid: {egp(p.total_paid)}
                   </span>
                   <span className="font-semibold text-amber-600 dark:text-amber-400">
@@ -4578,7 +4926,7 @@ function PartnersTab({
                               onClick={() => copyText(p.email, `em_${p.id}`)}
                               className="text-muted-foreground hover:text-foreground shrink-0"
                               title="Copy email">
-                              {copiedKey === `em_${p.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                              {copiedKey === `em_${p.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                             </button>
                           </div>
                         ) : (
@@ -4594,7 +4942,7 @@ function PartnersTab({
                               href={`https://wa.me/${p.profiles.phone.replace(/[^0-9]/g, "")}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950 dark:text-emerald-300">
+                              className="inline-flex items-center gap-1 rounded-full bg-beige/20 px-2 py-0.5 text-[10px] font-semibold text-navy hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70">
                               WhatsApp
                             </a>
                           </div>
@@ -4623,7 +4971,7 @@ function PartnersTab({
                             onClick={() => copyText(p.promo_code, `code_${p.id}`)}
                             className="text-muted-foreground hover:text-foreground"
                             title="Copy code">
-                            {copiedKey === `code_${p.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                            {copiedKey === `code_${p.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                           </button>
                         </div>
                       </div>
@@ -4635,7 +4983,7 @@ function PartnersTab({
                             onClick={() => copyText(refUrl, `link_${p.id}`)}
                             className="rounded-lg border border-border bg-secondary p-1.5 text-muted-foreground hover:text-foreground shrink-0"
                             title="Copy referral link">
-                            {copiedKey === `link_${p.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                            {copiedKey === `link_${p.id}` ? <Check className="h-3 w-3 text-beige" /> : <Copy className="h-3 w-3" />}
                           </button>
                         </div>
                       </div>
@@ -4752,7 +5100,7 @@ function PartnersTab({
                               <td className="px-3 py-2 font-medium">{l.full_name}</td>
                               <td className="px-3 py-2 text-muted-foreground">
                                 {l.phone ? (
-                                  <a href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline">
+                                  <a href={`https://wa.me/${l.phone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" className="text-beige hover:underline">
                                     {l.phone}
                                   </a>
                                 ) : "—"}
@@ -4802,7 +5150,7 @@ function PartnersTab({
                               </td>
                               <td className="px-3 py-2">
                                 {a.deposit_paid ? (
-                                  <span className="text-emerald-600 font-semibold">✓ Paid</span>
+                                  <span className="text-beige font-semibold">✓ Paid</span>
                                 ) : (
                                   <span className="text-amber-600">Pending</span>
                                 )}
@@ -5212,7 +5560,7 @@ function CommissionsTab({ commissions, onChange }: { commissions: any[]; onChang
           ["All Records", commissions.length + " records", "bg-secondary/60"],
           ["Pending", egp(total("pending")), "bg-amber-50"],
           ["Approved", egp(total("approved")), "bg-blue-50"],
-          ["Paid", egp(total("paid")), "bg-emerald-50"],
+          ["Paid", egp(total("paid")), "bg-beige/10"],
         ].map(([l, v, cls]) => (
           <div key={l} className={`rounded-2xl p-4 ${cls}`}>
             <p className="text-xs text-muted-foreground">{l}</p>
@@ -5294,7 +5642,7 @@ function CommissionsTab({ commissions, onChange }: { commissions: any[]; onChang
                             await setComm({ data: { id: c.id, status: "paid" } });
                             onChange();
                           }}
-                          className="rounded-full bg-emerald-600 hover:bg-emerald-700 px-3 py-1 text-xs font-bold text-white shadow-xs transition-colors shrink-0"
+                          className="rounded-full bg-navy hover:bg-beige/30 px-3 py-1 text-xs font-bold text-white shadow-xs transition-colors shrink-0"
                         >
                           ✓ تم التحويل
                         </button>

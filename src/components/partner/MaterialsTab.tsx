@@ -149,7 +149,7 @@ export function MaterialsTab() {
       case "graduates":
         return { label: ar ? "مسار خريجين 💼" : "Graduates", bg: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20" };
       case "financial":
-        return { label: ar ? "الأسعار والديبوزت 💳" : "Financial", bg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" };
+        return { label: ar ? "الأسعار والديبوزت 💳" : "Financial", bg: "bg-beige/100/10 text-beige dark:text-beige/80 border-beige/20" };
       case "flights":
         return { label: ar ? "تذاكر الطيران ✈️" : "Flights", bg: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" };
       case "interviews":
@@ -363,7 +363,7 @@ export function MaterialsTab() {
                         }}
                         className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
                           isCopied
-                            ? "bg-emerald-600 text-white shadow-xs"
+                            ? "bg-navy text-white shadow-xs"
                             : "bg-card border border-border text-foreground hover:border-beige hover:bg-secondary"
                         }`}
                       >

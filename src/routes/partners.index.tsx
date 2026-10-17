@@ -279,7 +279,7 @@ export function PartnersOverviewPage() {
                 </div>
                 <div className="rounded-2xl bg-ivory/10 p-5 border border-ivory/10">
                   <p className="text-xs text-ivory/60">{tr("6 Clients / month", "6 عملاء شهرياً")}</p>
-                  <p className="font-display text-2xl font-bold text-emerald-400 mt-1">61,500 ج.م</p>
+                  <p className="font-display text-2xl font-bold text-beige/80 mt-1">61,500 ج.م</p>
                   <p className="text-[11px] text-ivory/70 mt-0.5">{tr("Bronze Level (10,250/ea)", "مستوى برونزي")}</p>
                 </div>
                 <div className="rounded-2xl bg-ivory/10 p-5 border border-ivory/10">
@@ -289,7 +289,7 @@ export function PartnersOverviewPage() {
                 </div>
                 <div className="rounded-2xl bg-ivory/10 p-5 border border-ivory/10">
                   <p className="text-xs text-ivory/60">{tr("20 Clients / month", "20 عميل شهرياً")}</p>
-                  <p className="font-display text-2xl font-bold text-emerald-400 mt-1">250,000 ج.م</p>
+                  <p className="font-display text-2xl font-bold text-beige/80 mt-1">250,000 ج.م</p>
                   <p className="text-[11px] text-ivory/70 mt-0.5">{tr("Gold Level (12,500/ea)", "مستوى ذهبي")}</p>
                 </div>
               </div>

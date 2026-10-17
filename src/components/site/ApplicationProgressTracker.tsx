@@ -391,9 +391,9 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* SUCCESS UPLOAD NOTIFICATION */}
       {uploadSuccessMsg && (
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-900 shadow-sm dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200 animate-in fade-in slide-in-from-top-1">
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-beige/40 bg-beige/10 px-4 py-3 text-xs font-semibold text-navy shadow-sm dark:border-beige/40 dark:bg-navy/20 dark:text-beige animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="h-4 w-4 text-beige shrink-0" />
             <span>{uploadSuccessMsg}</span>
           </div>
           <button
@@ -462,7 +462,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       {!isRejected && (
         <div className={`rounded-2xl border p-4 text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs ${
           application.status === "approved"
-            ? "border-emerald-300 bg-emerald-50/80 text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200"
+            ? "border-beige/40 bg-beige/48 text-beige dark:border-beige/40 dark:bg-navy/20 dark:text-beige"
             : application.status === "documents"
             ? "border-amber-300 bg-amber-50/80 text-amber-950 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
             : application.status === "in_review"
@@ -472,7 +472,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           <div className="flex items-center gap-2.5 min-w-0">
             <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-bold ${
               application.status === "approved"
-                ? "bg-emerald-600 text-white"
+                ? "bg-navy text-white"
                 : application.status === "documents"
                 ? "bg-amber-600 text-white"
                 : application.status === "in_review"
@@ -518,7 +518,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
             <button
               type="button"
               onClick={() => setActiveSection(3)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-bold text-white hover:bg-beige/30 shadow-xs"
             >
               <span>{ar ? "سداد الديبوزت الآن" : "Pay Deposit Now"}</span>
               <ArrowRight className="h-3 w-3 rtl:rotate-180" />
@@ -585,7 +585,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
 
             {/* Filled active progress bar */}
             <div
-              className="absolute top-6 start-8 h-1 -translate-y-1/2 rounded-full bg-gradient-to-r from-navy via-beige to-emerald-600 transition-all duration-500"
+              className="absolute top-6 start-8 h-1 -translate-y-1/2 rounded-full bg-gradient-to-r from-navy via-beige to-navy transition-all duration-500"
               style={{
                 width: `calc(${progressPercent}% - 2.5rem)`,
               }}
@@ -603,7 +603,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                     <div
                       className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ${
                         isCompleted
-                          ? "bg-navy text-ivory shadow-md ring-4 ring-navy/15 dark:bg-emerald-600 dark:ring-emerald-500/20"
+                          ? "bg-navy text-ivory shadow-md ring-4 ring-navy/15 dark:bg-navy dark:ring-beige"
                           : isActive
                           ? "scale-110 bg-beige text-navy shadow-lg shadow-beige/30 ring-4 ring-beige/40 ring-offset-2 ring-offset-background"
                           : "border-2 border-border bg-card text-muted-foreground"
@@ -640,7 +640,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                     <span
                       className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[9px] font-medium ${
                         isCompleted
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400"
+                          ? "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/80"
                           : isActive
                           ? "bg-amber-100 text-amber-900 font-semibold dark:bg-amber-950/60 dark:text-amber-300"
                           : "bg-secondary text-muted-foreground"
@@ -800,7 +800,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
             </span>
 
             {(catProg?.expectedSalary || catProg?.expectedSalaryAr) && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <span className="inline-flex items-center gap-1 rounded-full bg-beige/10 border border-beige/40 px-3 py-1 text-xs font-semibold text-navy/80 dark:bg-navy/20 dark:text-beige/80">
                 <TrendingUp className="h-3.5 w-3.5 stroke-[2]" />
                 {ar ? "الراتب المتوقع:" : "Expected Salary:"} {ar ? (catProg.expectedSalaryAr ?? catProg.expectedSalary) : catProg.expectedSalary}
               </span>
@@ -896,7 +896,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               </p>
             </div>
 
-            <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-3 py-1 text-xs font-bold">
+            <span className="rounded-full bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 px-3 py-1 text-xs font-bold">
               ✓ {ar ? "بيانات موثقة" : "Verified Profile"}
             </span>
           </div>
@@ -1066,7 +1066,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 <span
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
                     cvDoc.status === "approved"
-                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400"
+                      ? "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/80"
                       : cvDoc.status === "rejected"
                       ? "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-400"
                       : "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-400"
@@ -1164,7 +1164,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                         <p className="truncate text-sm font-medium">{dt}</p>
                         {doc ? (
                           <div className="space-y-0.5">
-                            <p className={`flex items-center gap-1 text-xs ${isApproved ? "text-emerald-700 dark:text-emerald-400" : isRejected ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                            <p className={`flex items-center gap-1 text-xs ${isApproved ? "text-navy/80 dark:text-beige/80" : isRejected ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
                               {isApproved ? <Check className="h-3 w-3" /> : isRejected ? <XCircle className="h-3 w-3" /> : null}
                               {isApproved ? t("docApproved") : isRejected ? t("docRejected") : t("docPending")} ·{" "}
                               <span className="truncate">{doc.file_name}</span>
@@ -1249,10 +1249,10 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
         <div className="space-y-6 animate-in fade-in duration-200">
           {depositPaid ? (
             /* PAID CELEBRATION CARD */
-            <div className="rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-card to-card p-6 shadow-md">
+            <div className="rounded-3xl border-2 border-beige/40 bg-gradient-to-br from-beige via-card to-card p-6 shadow-md">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/80 pb-5">
                 <div className="flex items-center gap-3.5">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-navy text-white shadow-md">
                     <CheckCircle2 className="h-6 w-6" strokeWidth={2.5} />
                   </div>
                   <div>
@@ -1265,7 +1265,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   </div>
                 </div>
 
-                <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-4 py-1.5 text-xs font-bold">
+                <span className="rounded-full bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 px-4 py-1.5 text-xs font-bold">
                   ✓ {ar ? "مدفوع وموثق" : "Verified Paid"}
                 </span>
               </div>
@@ -1281,7 +1281,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 </div>
                 <div className="rounded-2xl bg-secondary/50 p-3.5 border border-border">
                   <span className="text-muted-foreground block text-[11px] mb-0.5">{ar ? "حالة الملف الحالية" : "Current Milestone"}</span>
-                  <span className="font-bold text-base text-emerald-700 dark:text-emerald-400">{currentMilestone.title}</span>
+                  <span className="font-bold text-base text-navy/80 dark:text-beige/80">{currentMilestone.title}</span>
                 </div>
               </div>
 
@@ -1352,12 +1352,12 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   </div>
 
                   {/* HIGHLIGHTED DEPOSIT DUE ROW */}
-                  <div className="flex justify-between py-3 text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50/70 dark:bg-emerald-950/30 px-3 rounded-xl border border-emerald-500/20 my-1">
+                  <div className="flex justify-between py-3 text-navy dark:text-beige/70 font-bold bg-beige/42 dark:bg-navy/20 px-3 rounded-xl border border-beige/20 my-1">
                     <div>
-                      <span className="block text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                      <span className="block text-xs font-bold text-navy dark:text-beige">
                         {tr("Deposit Due Now (Locks spot & files)", "مبلغ التأمين (الديبوزيت) المطلوب سداده الآن")}
                       </span>
-                      <span className="text-[11px] font-normal text-emerald-700 dark:text-emerald-400">
+                      <span className="text-[11px] font-normal text-navy/80 dark:text-beige/80">
                         {tr("The ONLY amount to pay today to start processing", "المبلغ الوحيد المطلوب سداده اليوم لتأكيد حجز مقعدك وبدء الإجراءات")}
                       </span>
                     </div>
@@ -1520,9 +1520,9 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 )}
 
                 {requestSuccess && (
-                  <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-950 dark:text-emerald-200 animate-in fade-in">
+                  <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-beige dark:text-beige animate-in fade-in">
                     <div className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-beige shrink-0 mt-0.5" />
                       <div className="text-xs leading-relaxed flex-1">
                         <p className="font-bold text-sm">
                           {ar ? "✓ تم إرسال طلب الدفع بنجاح!" : "✓ Payment request sent successfully!"}
@@ -1536,7 +1536,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                           <button
                             type="button"
                             onClick={() => window.dispatchEvent(new CustomEvent("open-kinetix-chat"))}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-emerald-700"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-beige/30"
                           >
                             <MessageSquare className="h-3.5 w-3.5" />
                             {ar ? "فتح شات الموقع الآن 💬" : "Open Live Chat Now 💬"}

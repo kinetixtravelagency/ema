@@ -176,7 +176,7 @@ export function AdminMaterialsTab() {
               <span>Saving…</span>
             ) : saveSuccess ? (
               <>
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-beige/80" />
                 <span>Saved & Published!</span>
               </>
             ) : (

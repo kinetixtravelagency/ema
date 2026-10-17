@@ -36,7 +36,7 @@ const STAGE_COLORS = [
   "bg-blue-500",   // 2 - pre-interview
   "bg-violet-500", // 3 - interview
   "bg-orange-500", // 4 - permit
-  "bg-emerald-500",// 5 - ready
+  "bg-beige/100",// 5 - ready
 ];
 
 // Available deposit payout methods matching system options
@@ -143,7 +143,7 @@ const DEPOSIT_PAYOUT_OPTIONS = [
     badge: "Card",
     badgeAr: "بطاقة",
     LogoComponent: null,
-    bgClass: "border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20",
+    bgClass: "border-beige/40 bg-beige/30 dark:bg-navy/20",
   },
 ];
 
@@ -269,7 +269,7 @@ function ReferredClientsSection({ apps, comms, ar, tr, egp }: { apps: any[]; com
                   </div>
                   {/* Stage badge */}
                   <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold text-white ${
-                    effective === 5 ? "bg-emerald-500" :
+                    effective === 5 ? "bg-beige/100" :
                     effective === 4 ? "bg-orange-500" :
                     effective === 3 ? "bg-violet-500" :
                     effective === 2 ? "bg-blue-500" :
@@ -286,7 +286,7 @@ function ReferredClientsSection({ apps, comms, ar, tr, egp }: { apps: any[]; com
                   {progTitle && <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px]">{progTitle}</span>}
                   <span className="rounded-full bg-navy/10 px-2.5 py-0.5 text-[11px] font-medium text-navy">{track}</span>
                   {a.deposit_paid && (
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+                    <span className="rounded-full bg-beige/20 px-2.5 py-0.5 text-[11px] font-semibold text-navy/80">
                       ✓ {tr("Deposit paid", "دفع المقدم")}
                     </span>
                   )}
@@ -311,7 +311,7 @@ function ReferredClientsSection({ apps, comms, ar, tr, egp }: { apps: any[]; com
                 {c.note && <span className="ms-2 text-xs text-muted-foreground">{c.note}</span>}
               </div>
               <span className={`rounded-full px-3 py-1 text-xs ${
-                c.status === "paid" ? "bg-emerald-100 text-emerald-700 font-semibold" :
+                c.status === "paid" ? "bg-beige/20 text-navy/80 font-semibold" :
                 c.status === "approved" ? "bg-blue-100 text-blue-700" :
                 "bg-secondary text-muted-foreground"
               }`}>{c.status}</span>
@@ -514,10 +514,10 @@ function PartnerPortal() {
     [tr("My Leads", "العملاء المسجلين"), score, Users, "text-blue-500"],
     [tr("Qualified Leads", "عملاء مؤهلين"), qualified, Target, "text-amber-500"],
     [tr("Applications", "طلبات البرامج"), apps.length, TrendingUp, "text-indigo-500"],
-    [tr("Deposits Paid", "دفعوا المقدم"), depositPaidApps, DollarSign, "text-emerald-500"],
+    [tr("Deposits Paid", "دفعوا المقدم"), depositPaidApps, DollarSign, "text-beige"],
     [tr("Travel Ready", "جاهزون للسفر"), successful, Plane, "text-violet-500"],
     [tr("Available Balance", "الرصيد المتاح"), egp(pending), Wallet, "text-beige"],
-    [tr("Paid Out", "الرصيد المصروف"), egp(paid), Check, "text-emerald-400"],
+    [tr("Paid Out", "الرصيد المصروف"), egp(paid), Check, "text-beige/80"],
   ];
 
   // Visual Pipeline Funnel data
@@ -525,7 +525,7 @@ function PartnerPortal() {
     { label: tr("Total Leads", "إجمالي المهتمين"), count: score, color: "from-blue-600 to-blue-500", pct: 100 },
     { label: tr("Qualified", "عملاء مؤهلين"), count: qualified, color: "from-amber-500 to-amber-400", pct: score > 0 ? Math.round((qualified / score) * 100) : 0 },
     { label: tr("Submitted Apps", "قدّموا ملفاتهم"), count: apps.length, color: "from-indigo-600 to-indigo-500", pct: score > 0 ? Math.round((apps.length / score) * 100) : 0 },
-    { label: tr("Deposit Paid", "سددوا الدفعة الأولى"), count: depositPaidApps, color: "from-emerald-600 to-emerald-500", pct: score > 0 ? Math.round((depositPaidApps / score) * 100) : 0 },
+    { label: tr("Deposit Paid", "سددوا الدفعة الأولى"), count: depositPaidApps, color: "from-beige to-navy", pct: score > 0 ? Math.round((depositPaidApps / score) * 100) : 0 },
     { label: tr("Visa & Travel Ready", "التأشيرة والسفر"), count: successful, color: "from-violet-600 to-violet-500", pct: score > 0 ? Math.round((successful / score) * 100) : 0 },
   ];
 
@@ -961,7 +961,7 @@ function PartnerPortal() {
                   </div>
                   <div className="rounded-xl bg-secondary/40 p-2">
                     <p className="text-muted-foreground text-[11px]">{tr("App to Deposit", "التحويل للديبوزت")}</p>
-                    <p className="font-bold text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">
+                    <p className="font-bold text-sm text-beige dark:text-beige/80 mt-0.5">
                       {apps.length > 0 ? Math.round((depositPaidApps / apps.length) * 100) : 0}%
                     </p>
                   </div>
@@ -1004,7 +1004,7 @@ function PartnerPortal() {
                             />
                             {/* Apps Bar */}
                             <div
-                              className={`w-3 sm:w-4 rounded-t-md transition-all group-hover:opacity-80 ${isCurrent ? "bg-amber-500" : "bg-emerald-400/80"}`}
+                              className={`w-3 sm:w-4 rounded-t-md transition-all group-hover:opacity-80 ${isCurrent ? "bg-amber-500" : "bg-beige/70"}`}
                               style={{ height: `${appsHeight}px` }}
                               title={`${tr("Applications", "طلبات")}: ${m.apps}`}
                             />
@@ -1176,7 +1176,7 @@ function PartnerPortal() {
                 <button
                   type="button"
                   onClick={handleOpenWithdraw}
-                  className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white transition-all shadow-md active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-full bg-navy hover:bg-beige/30 px-5 py-2.5 text-xs font-bold text-white transition-all shadow-md active:scale-95"
                 >
                   <ArrowUpRight className="h-4 w-4" />
                   {tr("Request Payout / Withdraw", "طلب سحب الأرباح")}
@@ -1219,12 +1219,12 @@ function PartnerPortal() {
               </div>
 
               {/* Paid Out Balance */}
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 relative overflow-hidden">
+              <div className="rounded-2xl border border-beige/30 bg-beige/100/5 p-4 relative overflow-hidden">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">{tr("Already Paid Out", "الرصيد المحوّل والمستلم")}</span>
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  <span className="text-xs font-semibold text-navy/80 dark:text-beige/80">{tr("Already Paid Out", "الرصيد المحوّل والمستلم")}</span>
+                  <CheckCircle2 className="h-4 w-4 text-beige" />
                 </div>
-                <p className="mt-2 font-display text-2xl font-bold text-emerald-600 dark:text-emerald-400">{egp(paid)}</p>
+                <p className="mt-2 font-display text-2xl font-bold text-beige dark:text-beige/80">{egp(paid)}</p>
                 <p className="mt-1 text-[11px] text-muted-foreground">
                   {tr("Successfully received into your account/wallet", "تم استلامها بنجاح في حسابك أو محفظتك")}
                 </p>
@@ -1251,7 +1251,7 @@ function PartnerPortal() {
                 <div className="flex flex-wrap gap-1.5">
                   {payoutItems.filter((i) => i.method && i.detail).map((item, idx) => (
                     <span key={idx} className="inline-flex items-center gap-1 rounded-full bg-background border border-border px-2.5 py-0.5 font-semibold text-foreground">
-                      <Check className="h-3 w-3 text-emerald-500" />
+                      <Check className="h-3 w-3 text-beige" />
                       {item.method}
                     </span>
                   ))}
@@ -1318,7 +1318,7 @@ function PartnerPortal() {
                     {withdrawals.map((w: any) => {
                       const dateStr = w.created_at ? new Date(w.created_at).toLocaleDateString(ar ? "ar-EG" : "en-GB") : "—";
                       const statusBadge =
-                        w.status === "completed" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" :
+                        w.status === "completed" ? "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70" :
                         w.status === "approved" ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300" :
                         w.status === "processing" ? "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300" :
                         w.status === "rejected" ? "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300" :
@@ -1371,7 +1371,7 @@ function PartnerPortal() {
                     )}
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    c.status === "paid" ? "bg-emerald-100 text-emerald-700" :
+                    c.status === "paid" ? "bg-beige/20 text-navy/80" :
                     c.status === "approved" ? "bg-blue-100 text-blue-700" :
                     "bg-secondary text-muted-foreground"
                   }`}>{c.status}</span>
@@ -1409,7 +1409,7 @@ function PartnerPortal() {
             </div>
 
             {saveSuccess && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800 animate-in fade-in">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-beige/20 px-3 py-1 text-xs font-semibold text-navy animate-in fade-in">
                 <CheckCircle2 className="h-4 w-4" />
                 {tr("Settings saved successfully!", "تم حفظ الإعدادات بنجاح!")}
               </span>
@@ -1624,7 +1624,7 @@ function PartnerPortal() {
                                   </div>
                                 </div>
                                 {isAdded ? (
-                                  <span className="text-[10px] text-emerald-600 font-bold">{tr("Added", "مُضافة")}</span>
+                                  <span className="text-[10px] text-beige font-bold">{tr("Added", "مُضافة")}</span>
                                 ) : (
                                   <Plus className="h-3.5 w-3.5 text-muted-foreground" />
                                 )}
@@ -1979,7 +1979,7 @@ function PartnerPortal() {
           <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-navy text-white shadow-md">
                   <ArrowUpRight className="h-6 w-6" />
                 </div>
                 <div>
@@ -2101,7 +2101,7 @@ function PartnerPortal() {
               )}
 
               {withdrawSuccessMsg && (
-                <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-2.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                <div className="rounded-xl bg-beige/100/10 border border-beige/30 p-2.5 text-xs font-semibold text-navy/80 dark:text-beige/80 flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
                   <span>{withdrawSuccessMsg}</span>
                 </div>
@@ -2118,7 +2118,7 @@ function PartnerPortal() {
                 <button
                   type="submit"
                   disabled={withdrawing || Boolean(withdrawSuccessMsg)}
-                  className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 text-xs font-bold text-white transition-all shadow-md disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-full bg-navy hover:bg-beige/30 px-6 py-2.5 text-xs font-bold text-white transition-all shadow-md disabled:opacity-50"
                 >
                   {withdrawing ? (
                     <>

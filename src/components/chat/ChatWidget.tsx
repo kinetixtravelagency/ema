@@ -371,8 +371,8 @@ export function ChatWidget() {
                   <MessageSquare className="h-5 w-5 text-beige" strokeWidth={2} />
                 </div>
                 <span className="absolute -top-1 -end-1 flex h-3 w-3">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 border-2 border-navy" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-beige/70 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-beige/100 border-2 border-navy" />
                 </span>
               </div>
 
@@ -380,8 +380,8 @@ export function ChatWidget() {
                 <span className="font-bold text-xs sm:text-sm block leading-tight text-ivory">
                   {ar ? "محادثة مع المستشار" : "Live Advisory Chat"}
                 </span>
-                <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block" />
+                <span className="text-[10px] text-beige/80 font-medium flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-beige/70 inline-block" />
                   {ar ? "متاح الآن للرد الفوري" : "Instant Support"}
                 </span>
               </div>
@@ -413,15 +413,15 @@ export function ChatWidget() {
             <div className="flex items-center gap-3">
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-beige/50 bg-white p-1 shadow-md">
                 <img src={logoImg} alt="Kinetix" className="h-full w-full object-contain" />
-                <span className="absolute bottom-0 end-0 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-navy shadow-xs" />
+                <span className="absolute bottom-0 end-0 h-3 w-3 rounded-full bg-beige/100 ring-2 ring-navy shadow-xs" />
               </div>
               <div>
                 <h3 className="font-bold text-sm leading-tight text-ivory flex items-center gap-1.5">
                   {ar ? "فريق كينتيكس للاستشارات" : "Kinetix Support & Advisory"}
                   <Sparkles className="h-3.5 w-3.5 text-beige" />
                 </h3>
-                <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-beige/80 font-medium">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-beige/70 animate-pulse" />
                   {ar ? "متواجدون للرد المباشر والمساعدة" : "Online · Instant Response"}
                 </p>
               </div>
@@ -673,7 +673,7 @@ export function ChatWidget() {
           >
             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-beige/40 bg-white p-1 shadow-sm">
               <img src={logoImg} alt="Kinetix" className="h-full w-full object-contain" />
-              <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-navy" />
+              <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full bg-beige/100 ring-2 ring-navy" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-1">
