@@ -318,378 +318,615 @@ export function ProgramDetailPage() {
         </div>
       </section>
 
-      {/* Main Content Body */}
-      <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24 space-y-20">
+      {/* Main Content Body - Pure Headings with Icons & Details Underneath (No Cards) */}
+      <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-20 space-y-16">
 
-        {/* SECTION 1: OFFICIAL JOB SPECIFICATION & PLACEMENT DOSSIER (FORM STYLE) */}
-        <section className="rounded-3xl border border-border/80 bg-card shadow-sm overflow-hidden">
-          {/* Form Header */}
-          <div className="border-b border-border bg-secondary/50 px-6 py-5 md:px-8 md:py-6 flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  {ar ? "استمارة ومواصفات الوظيفة الرسمية المعتمدة" : "Official Verified Placement Dossier"}
-                </span>
-              </div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground mt-1 font-display">
-                {title}
-              </h2>
+        {/* 1. بيانات التعاقد والمسمى الوظيفي والأجر الشهري */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <DollarSign className="h-6 w-6" strokeWidth={1.75} />
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-foreground">
-                <span>{c.flag}</span>
-                <span>{countryName}</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-navy/10 text-navy dark:bg-beige/10 dark:text-beige px-3 py-1 text-xs font-semibold">
-                {p.track === "student" ? (
-                  <>
-                    <GraduationCap className="h-3.5 w-3.5 text-beige" />
-                    <span>{ar ? "مسار الطلاب" : "Student Track"}</span>
-                  </>
-                ) : (
-                  <>
-                    <Briefcase className="h-3.5 w-3.5 text-beige" />
-                    <span>{ar ? "مسار الخريجين" : "Graduate Track"}</span>
-                  </>
-                )}
-              </span>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "1. بيانات التعاقد والمسمى الوظيفي والأجر الشهري" : "1. Contract Details, Job Title & Compensation"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "المعلومات المالية والبنود الرسمية المعتمدة في عقد العمل الأوروبي" : "Financial and official terms certified under the EU employment contract"}
+              </p>
             </div>
           </div>
 
-          {/* Form Content: Headings with Icons & Organized Detail Fields */}
-          <div className="p-6 md:p-8 space-y-8 divide-y divide-border/60">
-
-            {/* BLOCK 1: التعاقد والراتب الأساسي */}
-            <div>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
-                  <DollarSign className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-foreground">
-                    {ar ? "1. بيانات التعاقد والمسمى الوظيفي والأجر الشهري" : "1. Contract Details & Remuneration"}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {ar ? "المعلومات المالية والرسمية المصادق عليها في عقد العمل الأوروبي" : "Financial and official terms certified under the EU employment contract"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "المسمى الوظيفي الرسمي" : "Official Job Title"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{title}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{category}</span>
-                </div>
-
-                <div className="rounded-2xl border border-beige/40 bg-beige/5 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الراتب الشهري الصافي المتوقع" : "Expected Net Monthly Salary"}</span>
-                  <span className="text-lg font-extrabold text-navy dark:text-beige block mt-0.5">{salary ?? "—"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تحويل بنكي رسمي + إمكانية حوافز" : "Bank transfer + performance bonus"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "مدة العقد المختارة" : "Contract Duration Options"}</span>
-                  <div className="flex flex-wrap gap-1 mt-1.5">
-                    {durationList.map((d) => {
-                      const adj = getDurationPriceAdjustment(d, p.track);
-                      const isSelected = selectedDuration === d;
-                      return (
-                        <button
-                          key={d}
-                          type="button"
-                          onClick={() => setSelectedDuration(d)}
-                          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all ${
-                            isSelected
-                              ? "bg-navy text-ivory dark:bg-beige dark:text-navy shadow-sm"
-                              : "border border-border bg-card text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {d} {adj > 0 ? `(+€${adj})` : ""}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <span className="text-[11px] text-muted-foreground mt-1.5 block">
-                    {ar ? "قابل للتجديد بموافقة الطرفين" : "Renewable by mutual agreement"}
-                  </span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "نوع التصريح والإقامة" : "Work Permit & Visa Type"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "تصريح عمل أوروبي قانوني" : "Official EU Work Permit"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "فيزا شنغن رسمية وتأمين قانوني" : "Full legal Schengen compliance"}</span>
-                </div>
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "المسمى الوظيفي والتصنيف المهني" : "Official Job Title & Category"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">{title}</span>
+                <span className="ms-2 inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted-foreground">{category}</span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? `وظيفة معتمدة ومسجلة رسمياً في ${countryName}` : `Officially accredited position registered in ${countryName}`}
+                </p>
               </div>
             </div>
 
-            {/* BLOCK 2: أوقات العمل وجداول الدوام */}
-            <div className="pt-6">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
-                  <Clock3 className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-foreground">
-                    {ar ? "2. أوقات العمل وجداول الدوام ونظام الورديات" : "2. Working Hours & Shift Roster"}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {ar ? "ساعات الدوام الرسمية ونظام الراحة الأسبوعية والساعات الإضافية" : "Official daily shift lengths, weekly rest days, and overtime policies"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "ساعات العمل اليومية" : "Daily Working Hours"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{p.workingHours ?? (ar ? "8 ساعات عمل يومياً" : "8 Hours / Day")}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تشمل فترات راحة منتظمة أثناء الوردية" : "Includes regular scheduled shift breaks"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "أيام العمل الأسبوعية" : "Weekly Work Days"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "5 إلى 6 أيام أسبوعياً" : "5 to 6 Days / Week"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "يوم إلى يومين راحة أسبوعية مدفوعة" : "1 to 2 paid rest days per week"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "نظام الورديات والجدولة" : "Shift Rotation"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "ورديات صباحية / مسائية مجدولة" : "Morning / Evening Roster"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "جدول دوري منظم ومعلن أسبوعياً" : "Rotational schedule announced weekly"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الساعات الإضافية (Overtime)" : "Overtime Availability"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "متاحة اختيارياً بأجر مضاعف" : "Optional with extra hourly pay"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تحتسب بنسبة 125% - 150% وفق القانون" : "Compensated at 125%–150% standard rate"}</span>
-                </div>
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الراتب الشهري الصافي المتوقع" : "Expected Net Monthly Salary"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-lg md:text-xl font-extrabold text-navy dark:text-beige">{salary ?? "—"}</span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  {ar ? "يُصرف عبر تحويل بنكي رسمي شهري مع إمكانية زيادة الدخل عبر الساعات الإضافية والحوافز الدورية." : "Disbursed via official bank transfer with overtime and performance incentive eligibility."}
+                </p>
               </div>
             </div>
 
-            {/* BLOCK 3: مواصفات السكن والإقامة (مفصول تماماً عن الأكل) */}
-            <div className="pt-6">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
-                  <Building2 className="h-5 w-5" strokeWidth={1.75} />
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "خيارات مدة التعاقد" : "Contract Duration Options"}
+              </span>
+              <div className="sm:w-2/3">
+                <div className="flex flex-wrap gap-2">
+                  {durationList.map((d) => {
+                    const adj = getDurationPriceAdjustment(d, p.track);
+                    const isSelected = selectedDuration === d;
+                    return (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => setSelectedDuration(d)}
+                        className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                          isSelected
+                            ? "bg-navy text-ivory dark:bg-beige dark:text-navy shadow-sm"
+                            : "border border-border/80 bg-secondary/50 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {d} {adj > 0 ? `(+€${adj})` : ""}
+                      </button>
+                    );
+                  })}
                 </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-foreground">
-                    {ar ? "3. مواصفات وتجهيزات السكن والإقامة (قسم السكن المنفصل)" : "3. Accommodation & Housing Specifications"}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {ar ? "تفاصيل محل الإقامة المؤمن، التجهيزات، الفواتير، ومسافة الانتقال" : "Provided residential quarters, furnishings, utilities coverage, and transit"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "نوع الإقامة ومستواها" : "Residence Classification"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{accom ?? (ar ? "سكن موظفين مؤثث بالكامل" : "Fully Furnished Staff Housing")}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "شقق سكنية نظيفة ومؤثثة للموظفين" : "Clean multi-bedroom apartments/units"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الفواتير والمرافق العامة" : "Utilities & Bills"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "مغطاة بالكامل مجاناً" : "100% Free / Employer Covered"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "شامل الكهرباء، المياه، التدفئة والغاز" : "Includes electricity, water, gas & heating"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الإنترنت والاتصال" : "Wi-Fi & Internet"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "إنترنت فائق السرعة متوفر" : "High-Speed Wi-Fi Included"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تغطية واي فاي مجانية داخل جميع الغرف" : "Free Wi-Fi across all living rooms"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الانتقالات إلى موقع العمل" : "Daily Work Commute"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "مواصلات مؤمنة مجاناً أو سيراً" : "Free Shuttle / Walking Distance"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "حافلات خاصة بالمنشأة أو مسافة قصيرة" : "Company transport or close walking distance"}</span>
-                </div>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  {ar ? "مدة العقد المختارة حالياً قابلة للتجديد برغبة الطرفين دون الحاجة للعودة للوطن." : "Selected duration can be extended upon mutual agreement with employer."}
+                </p>
               </div>
             </div>
 
-            {/* BLOCK 4: الوجبات والإعاشة ونظام التغذية (مفصول تماماً عن السكن) */}
-            <div className="pt-6">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
-                  <Coffee className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-foreground">
-                    {ar ? "4. الوجبات والإعاشة ونظام التغذية (قسم التغذية المنفصل)" : "4. Dining, Meals & Food Provisions"}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {ar ? "الوجبات الموفرة أثناء الورديات ومطابخ السكن وبدلات الغذاء" : "Duty shift meals, self-catering kitchens, and food benefits"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الوجبات أثناء ورديات العمل" : "On-Duty Shift Meals"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "وجبة إلى وجبتين مجاناً بالوردية" : "1 to 2 Free Meals Per Shift"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "وجبات طازجة ومتوازنة بكافتيريا المنشأة" : "Provided in staff canteen during working hours"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "مطابخ السكن والتجهيزات الذاتية" : "Self-Catering Kitchens"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "مطابخ مجهزة بالكامل للطهي" : "Fully Equipped Staff Kitchens"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "ثلاجات، أفران، مايكروويف وأواني طهي كاملة" : "Equipped with fridges, stoves, microwaves & cookware"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "المشروبات والخصومات الإضافية" : "Beverages & Staff Perks"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "مشروبات ساخنة وخصومات خاصة" : "Complimentary Drinks & Staff Discounts"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "شاي وقهوة مجانية وخصومات على منتجات المنشأة" : "Free hot drinks on duty & employee product discounts"}</span>
-                </div>
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "نوع التصريح والإقامة القانونية" : "Work Permit & Legal Status"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? `تصريح عمل قانوني صادر من وزارة العمل في ${countryName}` : `Official Work Permit issued in ${countryName}`}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  {ar ? "فيزا شنغن رسمية وتأمين قانوني كامل يضمن حقوقك وحرية التنقل في دول الشنغن." : "Full Schengen compliance with statutory legal protections and mobility."}
+                </p>
               </div>
             </div>
-
-            {/* BLOCK 5: التأمين الصحي والاستقبال الميداني وشهادة الخبرة */}
-            <div className="pt-6">
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
-                  <ShieldCheck className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-foreground">
-                    {ar ? "5. التأمين الصحي والرعاية الميدانية والاعتماد المهني" : "5. Health Insurance, Reception & Certification"}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {ar ? "التغطية الطبية الرسمية، الاستقبال في المطار، وشهادة الخبرة الأوروبية" : "State medical coverage, airport meet & greet, and accredited certificate"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "التأمين الصحي الإلزامي" : "Medical Health Insurance"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "تأمين طبي حكومي أوروبي شامل" : "Comprehensive EU Public Healthcare"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تغطية كاملة للطوارئ والعلاج والفحوصات طوال العقد" : "Full emergency, consultation, and hospital cover"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "الاستقبال والتسكين الميداني" : "Airport Welcome & Onboarding"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "استقبال رسمي من المطار للسكن" : "Official Airport Meet & Escort"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "مندوب الشركة يستقبلك ويسلمك السكن وشريحة الاتصال" : "Local rep guides you to housing and provides local SIM"}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border/80 bg-secondary/30 p-4">
-                  <span className="text-xs text-muted-foreground block">{ar ? "شهادة الخبرة الأوروبية" : "European Experience Certificate"}</span>
-                  <span className="text-sm font-bold text-foreground block mt-1">{ar ? "شهادة عمل دولية معتمدة" : "Accredited International Reference"}</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5 block">{ar ? "تمنحك أفضلية كبرى في مسارك المهني والأكاديمي المستقبلي" : "Enhances your international career and academic profile"}</span>
-                </div>
-              </div>
-            </div>
-
           </div>
         </section>
 
-        {/* SECTION 2: CORE DUTIES & DAILY RESPONSIBILITIES */}
-        <section className="rounded-3xl border border-border bg-secondary/40 p-8 md:p-12">
-          <div className="grid gap-10 lg:grid-cols-2">
+        {/* 2. أوقات العمل وجداول الدوام ونظام الورديات */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <Clock3 className="h-6 w-6" strokeWidth={1.75} />
+            </div>
             <div>
-              <p className="eyebrow text-muted-foreground mb-2">
-                <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-                {ar ? "طبيعة العمل والمهام" : "Daily Operations"}
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "2. أوقات العمل وجداول الدوام ونظام الورديات" : "2. Working Hours & Shift Roster"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "ساعات الدوام الرسمية ونظام الراحة الأسبوعية والساعات الإضافية" : "Official daily shift lengths, weekly rest days, and overtime policies"}
               </p>
-              <h3 className="text-2xl md:text-3xl font-semibold">
-                {ar ? "ما هي المهام والمسؤوليات اليومية؟" : "What Will You Be Doing?"}
-              </h3>
-              <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed">
-                {ar
-                  ? `يحصل المرشح على تدريب تأهيلي عند وصوله إلى ${countryName} للتعرف على بيئة العمل والأنظمة المتبعة، وتتلخص أبرز المهام في النقاط التالية:`
-                  : `Upon arrival in ${countryName}, candidates undergo structured onboarding and orientation. Main responsibilities include:`}
-              </p>
+            </div>
+          </div>
 
-              <ul className="mt-6 space-y-3">
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "ساعات العمل اليومية" : "Daily Working Hours"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {p.workingHours ?? (ar ? "8 ساعات عمل يومياً" : "8 Hours / Day")}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "تشمل فترات راحة منتظمة أثناء الوردية لتناول الطعام والاستراحة." : "Includes regular scheduled shift breaks for meals and rest."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "أيام العمل الأسبوعية" : "Weekly Work Days"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "5 إلى 6 أيام أسبوعياً" : "5 to 6 Days / Week"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "يوم إلى يومين راحة أسبوعية مدفوعة الأجر وفق جدول التشغيل المعتمد." : "1 to 2 scheduled paid rest days each week."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "نظام الورديات والجدولة" : "Shift System & Scheduling"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "ورديات صباحية ومسائية مجدولة دورياً" : "Morning & Evening Rotational Roster"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "جدول دوري منظم ومعلن أسبوعياً يتيح تنظيم الوقت والاستقرار الشخصي." : "Weekly published timetable allowing predictable work-life balance."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الساعات الإضافية (Overtime)" : "Overtime Availability & Compensation"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "متاحة اختيارياً بأجر مضاعف (125% - 150%)" : "Optional with extra hourly pay (125%–150%)"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "تحتسب الساعات الإضافية طبقاً لقانون العمل الأوروبي وتُصرف مع الراتب الشهري مباشرة." : "Compensated at standard statutory rates and disbursed directly with regular payroll."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. مواصفات وتجهيزات السكن والإقامة (قسم السكن المنفصل) */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <Building2 className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "3. مواصفات وتجهيزات السكن والإقامة (قسم السكن المنفصل)" : "3. Accommodation & Housing Specifications"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "تفاصيل محل الإقامة المؤمن، التجهيزات، الفواتير، ومسافة الانتقال" : "Provided residential quarters, furnishings, utilities coverage, and transit"}
+              </p>
+            </div>
+          </div>
+
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "نوع الإقامة ومستواها" : "Residence Classification"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {accom ?? (ar ? "سكن موظفين مؤثث بالكامل ومجهز" : "Fully Furnished Staff Housing")}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "شقق ووحدات سكنية نظيفة ومؤثثة مخصصة للموظفين مع أسرّة وخزائن وغرف معيشة." : "Clean, dedicated staff apartments with beds, wardrobes, and living areas."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الفواتير والمرافق العامة" : "Utilities & Living Bills"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "مغطاة بالكامل مجاناً (100% على صاحب العمل)" : "100% Free / Employer Covered"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "تشمل فواتير الكهرباء، المياه، التدفئة المركزية والغاز دون أي خصومات من الراتب." : "Full coverage for electricity, water, central heating, and gas with zero deductions."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الإنترنت والاتصال" : "Wi-Fi & Connectivity"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "إنترنت فائق السرعة متوفر مجاناً" : "High-Speed Wi-Fi Included"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "تغطية واي فاي مجانية وسريعة داخل جميع الغرف ومناطق المعيشة للتواصل المستمر مع الأهل." : "Complimentary high-speed Wi-Fi across all living rooms and common areas."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الانتقالات إلى موقع العمل" : "Daily Work Commute"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "مواصلات مؤمنة مجاناً أو سيراً على الأقدام" : "Free Shuttle / Walking Distance"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "حافلات وسيارات خاصة بالمنشأة تنقل الموظفين يومياً، أو سكن على مسافة قريبة جداً سيراً." : "Company shuttles or housing located within short walking distance."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. الوجبات والإعاشة ونظام التغذية (قسم التغذية المنفصل) */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <Coffee className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "4. الوجبات والإعاشة ونظام التغذية (قسم التغذية المنفصل)" : "4. Dining, Meals & Food Provisions"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "الوجبات الموفرة أثناء الورديات ومطابخ السكن وبدلات الغذاء" : "Duty shift meals, self-catering kitchens, and food benefits"}
+              </p>
+            </div>
+          </div>
+
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الوجبات أثناء ورديات العمل" : "On-Duty Shift Meals"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "وجبة إلى وجبتين مجاناً أثناء نوبة العمل" : "1 to 2 Free Meals Per Shift"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "وجبات طازجة ومتوازنة تُقدَّم بكافتيريا المنشأة أثناء ساعات العمل الرسمية." : "Nutritious balanced meals provided directly in employer dining facility."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "مطابخ السكن والتجهيزات الذاتية" : "Self-Catering Kitchen Facilities"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "مطابخ مجهزة بالكامل للطهي المستقل" : "Fully Equipped Staff Kitchens"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "السكن مزود بثلاجات، أفران، مايكروويف وأواني طهي متكاملة لمن يرغب في إعداد طعامه الخاص." : "Equipped with fridges, cooking ranges, microwaves and essential kitchenware."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "المشروبات والخصومات الإضافية" : "Beverages & Staff Perks"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "مشروبات ساخنة مجانية وخصومات خاصة للعاملين" : "Free Drinks & Employee Discounts"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "شاي وقهوة أثناء الدوام وخصومات حصرية على منتجات المنشأة والخدمات المحلية." : "Hot drinks on duty with exclusive discounts on venue products and services."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. التأمين الصحي والرعاية الميدانية والاعتماد المهني */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <ShieldCheck className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "5. التأمين الصحي والرعاية الميدانية والاعتماد المهني" : "5. Health Insurance, Reception & Certification"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "التغطية الطبية الرسمية، الاستقبال في المطار، وشهادة الخبرة الأوروبية" : "State medical coverage, airport meet & greet, and accredited certificate"}
+              </p>
+            </div>
+          </div>
+
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "التأمين الصحي الإلزامي" : "Public Health Insurance"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "تأمين طبي حكومي أوروبي شامل طوال مدة العقد" : "Comprehensive EU Public Healthcare Coverage"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "تغطية كاملة للطوارئ والعلاج والفحوصات في المستشفيات الحكومية دون تكاليف إضافية." : "Full emergency, consultation, and hospital treatment covered under statutory system."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الاستقبال والتسكين الميداني" : "Airport Reception & Local Onboarding"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "استقبال رسمي من المطار والتوصيل للسكن" : "Official Airport Meet, Greet & Transfer"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "مندوب كينتيكس يستقبلك في مطار الوصول ويسلمك السكن وشريحة الاتصال المحلية." : "Local representative guides you to housing and provides local mobile SIM card."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "شهادة الخبرة الأوروبية" : "European Certificate of Experience"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "شهادة عمل دولية معتمدة من جهة العمل بنهاية المدة" : "Accredited International Reference & Certificate"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "توثق خبرتك المهنية وساعات عملك وتمنحك أفضلية كبرى في مسارك الوظيفي المستقبلي." : "Documented work history enhancing career mobility across Europe and globally."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. طبيعة العمل والمهام اليومية والحقوق المشمولة */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <Briefcase className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "6. طبيعة العمل والمهام اليومية والحقوق المشمولة" : "6. Job Duties & Package Inclusions"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "المسؤوليات التشغيلية المنوطة بك والحقوق القانونية المكفولة في العقد" : "Operational duties expected from you and guaranteed contractual rights"}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-8">
+            {/* Responsibilities */}
+            <div>
+              <h3 className="text-sm md:text-base font-bold text-foreground mb-3">
+                {ar ? "أبرز المهام والمسؤوليات اليومية:" : "Primary Daily Duties & Tasks:"}
+              </h3>
+              <ul className="space-y-2.5">
                 {duties.map((duty, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-beige" strokeWidth={1.5} />
-                    <span>{duty}</span>
+                  <li key={idx} className="flex items-start gap-3 text-xs md:text-sm text-foreground">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-beige" strokeWidth={1.75} />
+                    <span className="leading-relaxed">{duty}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Employment Package Benefits */}
-            <div className="rounded-2xl border border-border bg-card p-6 md:p-8 flex flex-col justify-between">
-              <div>
-                <p className="eyebrow text-muted-foreground mb-1">
-                  <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-                  {ar ? "المزايا المشمولة في العقد" : "Included Package Benefits"}
-                </p>
-                <h4 className="text-xl font-semibold mt-1">
-                  {ar ? "حقوقك ومزاياك الرسمية" : "Standard Contract Inclusions"}
-                </h4>
-
-                <div className="mt-6 space-y-3.5">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Home className="h-4 w-4 text-beige shrink-0" strokeWidth={1.5} />
-                    <span>{ar ? "سكن مهيأ مؤثث بالكامل طوال فترة العقد" : "Fully furnished housing throughout the contract"}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Utensils className="h-4 w-4 text-beige shrink-0" strokeWidth={1.5} />
-                    <span>{ar ? "وجبات يومية أثناء نوبات العمل أو بدل طعام" : "Meals during shift hours or dedicated food allowance"}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <ShieldCheck className="h-4 w-4 text-beige shrink-0" strokeWidth={1.5} />
-                    <span>{ar ? "تأمين طبي وتأمين ضد حوادث العمل معتمد أوروبياً" : "Comprehensive health & workplace hazard insurance"}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Car className="h-4 w-4 text-beige shrink-0" strokeWidth={1.5} />
-                    <span>{ar ? "استقبال من المطار وتنسيق الانتقال إلى السكن ومقر العمل" : "Airport meet & assist and local transfer coordination"}</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Award className="h-4 w-4 text-beige shrink-0" strokeWidth={1.5} />
-                    <span>{ar ? "شهادة خبرة رسمية معتمدة من جهة العمل بنهاية المدة" : "Official certified European certificate of experience upon completion"}</span>
-                  </div>
+            {/* Inclusions */}
+            <div className="pt-6 border-t border-border/60">
+              <h3 className="text-sm md:text-base font-bold text-foreground mb-3">
+                {ar ? "الحقوق والمزايا المشمولة في العقد المبرم:" : "Included Rights & Guaranteed Benefits:"}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs md:text-sm">
+                <div className="flex items-center gap-2.5 py-1.5">
+                  <Home className="h-4 w-4 text-beige shrink-0" strokeWidth={1.75} />
+                  <span>{ar ? "سكن مهيأ مؤثث بالكامل طوال فترة العقد" : "Fully furnished housing throughout the contract"}</span>
+                </div>
+                <div className="flex items-center gap-2.5 py-1.5">
+                  <Utensils className="h-4 w-4 text-beige shrink-0" strokeWidth={1.75} />
+                  <span>{ar ? "وجبات يومية أثناء نوبات العمل أو بدل طعام" : "Meals during shift hours or dedicated food allowance"}</span>
+                </div>
+                <div className="flex items-center gap-2.5 py-1.5">
+                  <ShieldCheck className="h-4 w-4 text-beige shrink-0" strokeWidth={1.75} />
+                  <span>{ar ? "تأمين طبي وتأمين ضد حوادث العمل معتمد أوروبياً" : "Comprehensive health & workplace hazard insurance"}</span>
+                </div>
+                <div className="flex items-center gap-2.5 py-1.5">
+                  <Car className="h-4 w-4 text-beige shrink-0" strokeWidth={1.75} />
+                  <span>{ar ? "استقبال من المطار وتنسيق الانتقال إلى السكن والعمل" : "Airport meet & assist and local transfer coordination"}</span>
+                </div>
+                <div className="flex items-center gap-2.5 py-1.5">
+                  <Award className="h-4 w-4 text-beige shrink-0" strokeWidth={1.75} />
+                  <span>{ar ? "شهادة خبرة رسمية معتمدة من جهة العمل بنهاية المدة" : "Official certified European certificate of experience"}</span>
                 </div>
               </div>
+              <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/40">
+                {ar ? "جميع هذه البنود موثقة ومحمية قانونياً في عقد الوساطة الرسمي المبرم بينك وبين شركة كينتيكس." : "All inclusions are legally documented in your agreement with Kinetix."}
+              </p>
+            </div>
+          </div>
+        </section>
 
-              <div className="mt-6 pt-4 border-t border-border text-xs text-muted-foreground">
-                {ar
-                  ? "جميع البنود موثقة ومحمية قانونياً في عقد الوساطة المبرم بينك وبين شركة كينتيكس."
-                  : "All inclusions are legally documented in your contract with Kinetix."}
+        {/* 7. شروط ومتطلبات القبول والأهلية للوظيفة (بدون كروت) */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <UserCheck className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "7. شروط ومتطلبات القبول والأهلية للوظيفة" : "7. Candidate Eligibility & Requirements"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "المعايير المحددة لقبول طلبك وتأكيد مطابقتك لشروط التأشيرة وجهة العمل" : "Statutory criteria required for visa issuance and employer acceptance"}
+              </p>
+            </div>
+          </div>
+
+          <div className="divide-y divide-border/60">
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "السن والعمر المطلوب" : "Age Requirement"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {p.track === "student" ? (ar ? "من 18 حتى 30 سنة" : "18 to 30 Years") : (ar ? "من 20 حتى 45 سنة" : "20 to 45 Years")}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "السن القانوني المسموح به لاستخراج فيزا العمل وتصريح الإقامة الرسمية." : "Official statutory age bracket for employment visa and residency permit."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "المؤهل الدراسي والشهادات" : "Degree & Education"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {p.track === "student"
+                    ? (ar ? "طالب جامعي مقيد حالياً (إثبات قيد ساري)" : "Current University Student")
+                    : (ar ? "مؤهل متوسط أو عالي معتمد (شهادة تخرج أو دبلوم)" : "Diploma or Higher Degree")}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {p.track === "student"
+                    ? (ar ? "إثبات قيد جامعي ساري من جامعة أو معهد معتمد." : "Official active student enrollment letter.")
+                    : (ar ? "شهادة تخرج موثقة أو بيان درجات معتمد من الجهات المختصة." : "Certified graduation certificate or diploma.")}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "مستوى اللغة الإنجليزية" : "English Language Level"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "مستوى أساسي إلى متوسط (A2 - B1)" : "Basic to Intermediate (A2 - B1)"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "القدرة على التفاهم البسيط في بيئة العمل، ولا تشترط شهادات آيلتس أو توفل دولية معقدة." : "Conversational workplace English; no IELTS or TOEFL certificates required."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "الخبرة المهنية السابقة" : "Prior Work Experience"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "لا تشترط خبرة سابقة معقدة" : "No Prior Experience Required"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "يتم توفير تدريب ميداني عملي وإرشادي في موقع العمل للتعرف على كافة المهام." : "Practical on-site training and guidance provided upon starting work."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "اللياقة الطبية والبدنية" : "Medical & Health Fitness"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "لياقة طبية عامة للعمل" : "General Medical Fitness"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "خلو من الأمراض المزمنة المعيقة والقدرة البدنية على أداء مهام الوردية المعتادة." : "Free from hindering chronic conditions and physically fit for regular duties."}
+                </p>
+              </div>
+            </div>
+
+            <div className="py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "السجل الجنائي والأمني" : "Police Clearance & Criminal Record"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-sm md:text-base font-bold text-foreground">
+                  {ar ? "صحيفة حالة جنائية خالية من السوابق" : "Clean Judicial Record"}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ar ? "صحيفة حالة جنائية حديثة (فيش وتشبيه) بدون أحكام جنائية موجهة للسفارة المعنية." : "Official recent police clearance with clean judicial standing."}
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 3: PRICING, INSTALLMENTS & FLIGHT CALCULATOR */}
-        <section id="pricing-details" className="scroll-mt-32">
-          <Reveal>
-            <p className="eyebrow text-muted-foreground mb-2">
-              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-              {t("pricingEyebrow")}
-            </p>
-            <h2 className="text-2xl md:text-4xl font-semibold">
-              {ar ? "خطة التكاليف والأقساط الشفافة" : "Transparent Pricing & Installment Calculator"}
-            </h2>
-            <p className="mt-2 text-sm md:text-base text-muted-foreground">
-              {ar ? "احسب تكلفة البرنامج مع إمكانية إضافة تذكرة الطيران وتقسيط المتبقي على 6 أشهر." : "Select your options and see exact monthly installment figures."}
-            </p>
-          </Reveal>
+        {/* 8. قائمة المستندات الرسمية المطلوبة للتقديم */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <FileText className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "8. قائمة المستندات الرسمية المطلوبة للتقديم" : "8. Official Required Documents Checklist"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "الوثائق المعتمدة لتجهيز ملفك وبدء استخراج تصريح العمل" : "Verified documents needed to compile your employer & visa file"}
+              </p>
+            </div>
+          </div>
 
-          {/* Interactive Calculator Option Strip */}
+          <div className="space-y-4">
+            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+              {ar
+                ? "يمكنك البدء بصورة الجواز والسيرة الذاتية الآن، واستكمال باقي الأوراق لاحقاً عبر لوحة التحكم الخاصة بك:"
+                : "You can start by submitting your passport copy & CV now, and complete remaining documents later via your portal:"}
+            </p>
+
+            <div className="divide-y divide-border/60">
+              {(ar ? docsAr : docsEn).map((doc, idx) => (
+                <div key={idx} className="py-3 flex items-start gap-3">
+                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-beige/15 text-beige">
+                    <FileText className="h-3.5 w-3.5" strokeWidth={1.75} />
+                  </div>
+                  <div>
+                    <span className="text-xs md:text-sm font-bold text-foreground block">{doc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 9. تفاصيل التكاليف وخيارات الدفع والأقساط */}
+        <section id="pricing-details" className="space-y-6 scroll-mt-28">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <Wallet className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "9. تفاصيل التكاليف وخيارات الدفع والأقساط الشفافة" : "9. Cost Breakdown, Payment Options & Installments"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "شفافية مطلقة بدون أي رسوم مخفية، مع إمكانية التقسيط المريح" : "Zero hidden fees with clear installment flexibility"}
+              </p>
+            </div>
+          </div>
+
+          {/* Flight Option Strip (inline, unboxed) */}
           {flightAddon > 0 && (
-            <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60">
               <div>
-                <p className="text-sm font-semibold">{ar ? "هل ترغب في تضمين تذكرة الطيران في العقد؟" : "Include flight ticket option in program?"}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <span className="text-xs md:text-sm font-bold text-foreground block">
+                  {ar ? "هل ترغب في تضمين تذكرة الطيران في العقد؟" : "Include flight ticket option in program?"}
+                </span>
+                <span className="text-xs text-muted-foreground block mt-0.5">
                   {ar
                     ? `إضافة تذكرة الطيران عبر كينتيكس مقابل +${eur(flightAddon)} (≈ ${Math.round(flightAddon * 54).toLocaleString()} ج.م)`
                     : `Add flight coordination for +${eur(flightAddon)}`}
-                </p>
+                </span>
               </div>
-
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setWithFlight(false)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
                     !withFlight
                       ? "bg-navy text-ivory shadow-sm"
                       : "border border-border text-muted-foreground hover:text-foreground"
@@ -700,7 +937,7 @@ export function ProgramDetailPage() {
                 <button
                   type="button"
                   onClick={() => setWithFlight(true)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
                     withFlight
                       ? "bg-beige text-navy shadow-sm"
                       : "border border-border text-muted-foreground hover:text-foreground"
@@ -712,332 +949,162 @@ export function ProgramDetailPage() {
             </div>
           )}
 
-          {/* 3-Column Transparent Breakdown */}
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Step 1: Deposit */}
-            <div className="rounded-3xl border border-border bg-card p-7 flex flex-col justify-between">
-              <div>
-                <p className="eyebrow text-muted-foreground">{ar ? "المرحلة الأولى" : "Step 1"}</p>
-                <h3 className="text-xl font-semibold mt-1">{ar ? "مقدم التعاقد وتأكيد الحجز" : "Deposit Required"}</h3>
-                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                  {ar ? "المبلغ المطلوب اليوم لحجز مقعدك وتفعيل مراجعة السيرة الذاتية وبدء إجراءات تصريح العمل." : "Initial deposit required to lock your placement and start employer file processing."}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-5 border-t border-border">
-                <p className="text-xs text-muted-foreground">{ar ? "المطلوب سداده اليوم" : "Due Today"}</p>
-                <p className="font-display text-3xl font-bold text-navy dark:text-beige mt-1">{eur(p.deposit)}</p>
-                <p className="text-sm font-semibold text-foreground mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}</p>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <ShieldCheck className="h-3.5 w-3.5 text-beige" strokeWidth={1.5} />
-                  <span>{ar ? "إيصال دفع رسمي وعقد اتفاق قانوني" : "Official receipt & legal agreement"}</span>
+          {/* Cost details rows */}
+          <div className="divide-y divide-border/60">
+            <div className="py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "مقدم التعاقد وتأكيد الحجز (المطلوب اليوم)" : "Deposit Due Today"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-2xl font-black text-navy dark:text-beige">{eur(p.deposit)}</span>
+                <span className="text-sm font-bold text-muted-foreground ms-2">
+                  (≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "جنيه مصري" : "EGP"})
                 </span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  {ar
+                    ? "المبلغ المطلوب اليوم لحجز مقعدك وبدء فحص السيرة الذاتية وإجراءات تصريح العمل، مع إيصال دفع رسمي وعقد اتفاق قانوني."
+                    : "Initial deposit required to lock your placement and start employer file processing with official receipt."}
+                </p>
               </div>
             </div>
 
-            {/* Step 2: Installments */}
-            <div className="rounded-3xl border border-border bg-card p-7 flex flex-col justify-between">
-              <div>
-                <p className="eyebrow text-muted-foreground">{ar ? "المرحلة الثانية" : "Step 2"}</p>
-                <h3 className="text-xl font-semibold mt-1">{ar ? `أقساط شهرية مريحة (حتى ${p.installments} أشهر)` : `Installments (up to ${p.installments}x)`}</h3>
-                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                  {ar ? "تقسيط باقي التكلفة براحة تامة على دفعات شهرية ميسرة أثناء فترة استخراج تصريح العمل والتأشيرة." : "Spread the remaining balance over easy monthly installments during processing."}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-5 border-t border-border">
-                <p className="text-xs text-muted-foreground">{ar ? "القسط الشهري التقريبي" : "Monthly Installment"}</p>
-                <p className="font-display text-3xl font-bold text-foreground mt-1">
-                  {eur(monthlyInst)}
-                  <span className="text-sm font-normal text-muted-foreground ms-1">/ {ar ? "شهر" : "mo"}</span>
-                </p>
-                <p className="text-sm font-semibold text-foreground mt-0.5">
-                  ≈ {Math.round(monthlyInst * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-beige" strokeWidth={1.5} />
-                  <span>{ar ? "بدون أي فوائد إضافية أو رسوم بنكية" : "Zero extra interest or hidden fees"}</span>
+            <div className="py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? `الأقساط الشهرية الميسرة (حتى ${p.installments} أشهر)` : `Installments (up to ${p.installments} months)`}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-2xl font-black text-foreground">{eur(monthlyInst)}</span>
+                <span className="text-xs text-muted-foreground ms-1">/ {ar ? "شهر" : "mo"}</span>
+                <span className="text-sm font-bold text-muted-foreground ms-2">
+                  (≈ {Math.round(monthlyInst * 54).toLocaleString()} {ar ? "جنيه مصري" : "EGP"})
                 </span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  {ar
+                    ? "تقسيط المتبقي براحة تامة على دفعات شهرية أثناء فترة استخراج تصريح العمل بدون فوائد بنكية."
+                    : "Remaining balance spread across monthly installments during visa processing with zero interest."}
+                </p>
               </div>
             </div>
 
-            {/* Step 3: Total Program Cost & Apply CTA */}
-            <div className="rounded-3xl border border-beige/40 bg-navy text-ivory p-7 flex flex-col justify-between shadow-xl">
-              <div>
-                <span className="eyebrow text-beige">{ar ? "إجمالي التكلفة" : "Total Program Cost"}</span>
-                <p className="font-display text-4xl font-bold text-beige mt-2">{eur(totalPrice)}</p>
-                <p className="text-base text-ivory/80 mt-1">≈ {Math.round(totalPrice * 54).toLocaleString()} {ar ? "جنيه مصري" : "EGP"}</p>
-                <p className="mt-4 text-xs text-ivory/70 leading-relaxed">
+            <div className="py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
+              <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
+                {ar ? "إجمالي التكلفة الإجمالية للبرنامج" : "Total Program Cost"}
+              </span>
+              <div className="sm:w-2/3">
+                <span className="text-3xl font-black text-beige">{eur(totalPrice)}</span>
+                <span className="text-base font-bold text-foreground ms-2">
+                  (≈ {Math.round(totalPrice * 54).toLocaleString()} {ar ? "جنيه مصري" : "EGP"})
+                </span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                   {ar
                     ? "تشمل التكلفة كامل إجراءات التنسيق مع جهة العمل، تصاريح العمل الرسمية، تجهيز ملف التأشيرة، والدعم الميداني."
                     : "Includes employer placement, work permit issuance, visa documentation, and continuous support."}
                 </p>
               </div>
-
-              <div className="mt-8 pt-5 border-t border-ivory/15">
-                <Link
-                  to="/apply"
-                  search={{ program: p.slug, duration: selectedDuration }}
-                  className="flex w-full items-center justify-center gap-2 rounded-full bg-beige py-3.5 text-sm font-semibold text-navy transition-transform hover:-translate-y-0.5 shadow-md"
-                >
-                  <span>{t("applyNow")}</span>
-                  <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
-                </Link>
-              </div>
             </div>
+          </div>
+
+          {/* Action CTA */}
+          <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
+            <Link
+              to="/apply"
+              search={{ program: p.slug, duration: selectedDuration }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-beige px-8 py-3.5 text-sm font-bold text-navy shadow-md hover:bg-beige/90 transition-transform hover:-translate-y-0.5"
+            >
+              <span>{t("applyNow")}</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
+            </Link>
+            <span className="text-xs text-muted-foreground">
+              {ar ? "حجز فوري وتأكيد تلقائي للطلب عبر بوابة كينتيكس الرسمية" : "Instant application lock with official receipt"}
+            </span>
           </div>
         </section>
 
-        {/* SECTION 4: CANDIDATE REQUIREMENTS (DEDICATED BOXES) & OFFICIAL DOCUMENTS */}
-        <section className="space-y-8">
-          <div>
-            <p className="eyebrow text-muted-foreground mb-2">
-              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-              {t("requirementsLabel")}
-            </p>
-            <h2 className="text-2xl md:text-3xl font-semibold font-display">
-              {ar ? "شروط الأهلية والقبول ومربعات المتطلبات" : "Candidate Eligibility & Qualification Boxes"}
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
-              {ar
-                ? "مربعات منظمة لكل شرط ومتطلب للتقديم وفق المعايير الرسمية المحددة للوظيفة:"
-                : "Dedicated requirement boxes specifying eligibility criteria for this role:"}
-            </p>
-          </div>
-
-          {/* Dedicated Requirement Boxes: Age, Degree, Language, Experience, Health, Police Record */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* 1. Age Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <User className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "السن والعمر المطلوب" : "Age Requirement"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {p.track === "student" ? (ar ? "من 18 حتى 30 سنة" : "18 to 30 Years") : (ar ? "من 20 حتى 45 سنة" : "20 to 45 Years")}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {ar ? "السن القانوني المسموح به لاستخراج فيزا العمل الرسمية" : "Official statutory age bracket for employment visa"}
-              </p>
+        {/* 10. مراحل رحلتك من التقديم حتى السفر وبدء العمل */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <TrendingUp className="h-6 w-6" strokeWidth={1.75} />
             </div>
-
-            {/* 2. Degree & Qualifications Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <GraduationCap className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "المؤهل الدراسي والشهادات" : "Degree & Education"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {p.track === "student"
-                    ? (ar ? "طالب جامعي مقيد حالياً" : "Current University Student")
-                    : (ar ? "مؤهل متوسط أو عالي معتمد" : "Diploma or Higher Degree")}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {p.track === "student"
-                  ? (ar ? "إثبات قيد جامعي ساري من جامعة أو معهد معتمد" : "Official active student enrollment letter")
-                  : (ar ? "شهادة تخرج موثقة أو بيان درجات معتمد" : "Certified graduation certificate or diploma")}
-              </p>
-            </div>
-
-            {/* 3. English Language Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <Globe className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "مستوى اللغة الإنجليزية" : "English Language Level"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {ar ? "مستوى أساسي إلى متوسط (A2 - B1)" : "Basic to Intermediate (A2 - B1)"}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {ar ? "القدرة على التفاهم البسيط، ولا تشترط شهادات دولية معقدة" : "Conversational workplace English; no IELTS required"}
-              </p>
-            </div>
-
-            {/* 4. Experience Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <Briefcase className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "الخبرة المهنية السابقة" : "Prior Work Experience"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {ar ? "لا تشترط خبرة سابقة معقدة" : "No Prior Experience Required"}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {ar ? "يتم توفير تدريب ميداني عملي وإرشادي في موقع العمل" : "Practical on-site training and orientation provided"}
-              </p>
-            </div>
-
-            {/* 5. Health & Medical Fitness Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <Stethoscope className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "اللياقة الطبية والبدنية" : "Medical & Health Fitness"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {ar ? "لياقة طبية عامة للعمل" : "Fit for Shift Duties"}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {ar ? "خلو من الأمراض المزمنة المعيقة والقدرة على أداء مهام الوردية" : "Free from hindering conditions; physically ready"}
-              </p>
-            </div>
-
-            {/* 6. Police Clearance Box */}
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between shadow-sm">
-              <div>
-                <div className="h-10 w-10 rounded-xl bg-beige/15 flex items-center justify-center text-beige mb-3 border border-beige/30">
-                  <Scale className="h-5 w-5" strokeWidth={1.75} />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                  {ar ? "السجل الجنائي والأمني" : "Criminal Background Check"}
-                </p>
-                <p className="font-bold text-base md:text-lg mt-1 text-foreground">
-                  {ar ? "صحيفة جنائية خالية من السوابق" : "Clean Police Clearance"}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                {ar ? "صحيفة حالة جنائية حديثة (فيش وتشبيه) بدون أحكام" : "Official police clearance with clean judicial record"}
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "10. مراحل رحلتك من التقديم حتى بدء العمل (Roadmap)" : "10. Step-by-Step Mobility Roadmap"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "الجدول الزمني التقديري للخطوات من التسجيل وحتى الوصول وبدء العمل" : "Estimated timeline for every phase from registration to arrival"}
               </p>
             </div>
           </div>
 
-          {/* Official Required Documents Dossier */}
-          <div className="rounded-3xl border border-border bg-secondary/30 p-6 md:p-8">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-              <div>
-                <p className="eyebrow text-muted-foreground mb-1">
-                  <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-                  {t("requiredDocs")}
-                </p>
-                <h3 className="text-xl md:text-2xl font-bold text-foreground">
-                  {ar ? "قائمة المستندات الرسمية المطلوبة للتقديم" : "Official Required Documents Checklist"}
-                </h3>
-              </div>
-              <span className="rounded-full bg-navy/10 text-navy dark:bg-beige/10 dark:text-beige px-3.5 py-1 text-xs font-bold">
-                {ar ? "وثائق رسمية معتمدة" : "Verified Documentation"}
-              </span>
-            </div>
-
-            <p className="text-xs md:text-sm text-muted-foreground mb-6">
-              {ar
-                ? "يمكنك البدء بصورة الجواز والسيرة الذاتية الآن، واستكمال باقي الأوراق لاحقاً عبر لوحة التحكم الخاصة بك:"
-                : "You can start by submitting your passport copy & CV now, and complete remaining documents later via your portal:"}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {(ar ? docsAr : docsEn).map((doc, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-beige/50"
-                >
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-beige/15 text-beige">
-                    <FileText className="h-4 w-4" strokeWidth={1.75} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs md:text-sm font-semibold text-foreground leading-snug">
-                      {doc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 5: STEP-BY-STEP ROADMAP TIMELINE */}
-        <section>
-          <Reveal>
-            <p className="eyebrow text-muted-foreground mb-2">
-              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-              {t("timeline")}
-            </p>
-            <h2 className="text-2xl md:text-4xl font-semibold">
-              {ar ? "مراحل رحلتك من التقديم حتى بدء العمل" : "Step-by-Step Mobility Roadmap"}
-            </h2>
-          </Reveal>
-
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="divide-y divide-border/60">
             {[
               {
                 num: "01",
                 title: ar ? "التسجيل وفحص السيرة الذاتية" : "Application & CV Review",
                 time: ar ? "1 إلى 3 أيام" : "1–3 Days",
-                desc: ar ? "تسجيل الحساب وتقديم السيرة الذاتية وفحص الأهلية المبدئي مع مستشارك." : "Free initial eligibility & CV evaluation with your career advisor."
+                desc: ar ? "تسجيل الحساب وتقديم السيرة الذاتية وفحص الأهلية المبدئي مع مستشارك المهني." : "Free initial eligibility & CV evaluation with your career advisor."
               },
               {
                 num: "02",
-                title: ar ? "حجز المقعد ومقابلة العمل" : "Deposit & Employer Interview",
+                title: ar ? "حجز المقعد ومقابلة العمل الرسمية" : "Deposit & Employer Interview",
                 time: ar ? "1 إلى 2 أسبوع" : "1–2 Weeks",
-                desc: ar ? "سداد مقدم التعاقد وتجهيز المقابلة الشخصية الرسمية مع صاحب العمل." : "Locking position and coordinating official employer video interview."
+                desc: ar ? "سداد مقدم التعاقد وتجهيز المقابلة الشخصية الرسمية عبر الفيديو مع جهة العمل." : "Locking position and coordinating official employer video interview."
               },
               {
                 num: "03",
-                title: ar ? "تصريح العمل وملف التأشيرة" : "Work Permit & Visa File",
+                title: ar ? "صدور تصريح العمل وملف التأشيرة" : "Work Permit & Visa File",
                 time: ar ? "3 إلى 5 أسابيع" : "3–5 Weeks",
-                desc: ar ? "صدور تصريح العمل الرسمي من وزارة العمل بالدولة وتجهيز ملف السفارة." : "Issuing government work permit and scheduling embassy visa stamping."
+                desc: ar ? "صدور تصريح العمل الرسمي من وزارة العمل بالدولة وتجهيز ملف السفارة للمطابقة والتأشيرة." : "Issuing government work permit and scheduling embassy visa stamping."
               },
               {
                 num: "04",
-                title: ar ? "السفر واستلام السكن والعمل" : "Arrival, Housing & Work",
+                title: ar ? "السفر واستلام السكن وبدء مهام العمل" : "Arrival, Housing & Work",
                 time: ar ? "اليوم الأول" : "Day 1",
-                desc: ar ? "الاستقبال في المطار، استلام السكن، وبدء مهام العمل الرسمية." : "Airport pickup, moving into furnished lodging, and starting your career abroad."
+                desc: ar ? "الاستقبال في المطار من مندوبنا، استلام السكن المؤثث، وبدء مهام العمل الرسمية." : "Airport pickup, moving into furnished lodging, and starting your career abroad."
               },
             ].map((step, idx) => (
-              <div key={idx} className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between">
-                <div>
-                  <span className="font-display text-2xl font-bold text-beige">{step.num}</span>
-                  <h4 className="font-semibold text-base mt-2">{step.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{step.desc}</p>
+              <div key={idx} className="py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-6">
+                <div className="flex items-center gap-3 sm:w-1/3 shrink-0">
+                  <span className="font-display text-lg font-bold text-beige">{step.num}</span>
+                  <span className="text-xs md:text-sm font-bold text-foreground">{step.title}</span>
                 </div>
-                <div className="mt-5 pt-3 border-t border-border flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3.5 w-3.5 text-beige" strokeWidth={1.5} />
-                  <span>{step.time}</span>
+                <div className="sm:w-2/3">
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-beige font-semibold mt-1">
+                    <Clock className="h-3 w-3" strokeWidth={1.5} />
+                    <span>{step.time}</span>
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* SECTION 6: FAQ ACCORDION FOR THIS JOB */}
-        <section className="rounded-3xl border border-border bg-card p-8 md:p-12">
-          <div className="max-w-2xl mb-8">
-            <p className="eyebrow text-muted-foreground mb-2">
-              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-              {t("faq")}
-            </p>
-            <h3 className="text-2xl md:text-3xl font-semibold">
-              {ar ? "الأسئلة الأكثر شيوعاً حول هذه الفرصة" : "Frequently Asked Questions About This Role"}
-            </h3>
+        {/* 11. الأسئلة الشائعة حول هذه الوظيفة */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-3.5 pb-4 border-b-2 border-border/80">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+              <HelpCircle className="h-6 w-6" strokeWidth={1.75} />
+            </div>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                {ar ? "11. الأسئلة الشائعة حول هذه الوظيفة" : "11. Frequently Asked Questions"}
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                {ar ? "إجابات وافية ومباشرة على أبرز استفسارات المتقدمين" : "Answers to common queries regarding this specific placement"}
+              </p>
+            </div>
           </div>
 
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border/60">
             {faqs.map((faq, index) => {
               const isOpen = activeFaq === index;
               return (
-                <div key={index} className="py-4">
+                <div key={index} className="py-3.5">
                   <button
                     type="button"
                     onClick={() => setActiveFaq(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between text-start font-medium text-base hover:text-beige transition-colors py-2"
+                    className="flex w-full items-center justify-between text-start font-bold text-sm md:text-base hover:text-beige transition-colors py-1"
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
@@ -1046,7 +1113,7 @@ export function ProgramDetailPage() {
                     />
                   </button>
                   {isOpen && (
-                    <div className="mt-2 text-sm text-muted-foreground leading-relaxed ps-1 animate-in fade-in duration-200">
+                    <div className="mt-2 text-xs md:text-sm text-muted-foreground leading-relaxed ps-1 animate-in fade-in duration-200">
                       {faq.a}
                     </div>
                   )}
@@ -1056,101 +1123,95 @@ export function ProgramDetailPage() {
           </div>
         </section>
 
-        {/* SECTION 7: OTHER OPPORTUNITIES IN THE SAME COUNTRY */}
+        {/* 12. وظائف وفرص عمل أخرى في الدولة */}
         {otherPrograms.length > 0 && (
-          <section>
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <p className="eyebrow text-muted-foreground mb-1">
-                  <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-                  {ar ? `فرص عمل أخرى في ${countryName}` : `More Opportunities in ${countryName}`}
-                </p>
-                <h3 className="text-2xl md:text-3xl font-semibold">
-                  {ar ? "وظائف بديلة قد تناسبك" : "Alternative Positions Available"}
-                </h3>
+          <section className="space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b-2 border-border/80">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30">
+                  <Globe className="h-6 w-6" strokeWidth={1.75} />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground font-display">
+                    {ar ? `12. فرص عمل أخرى متوفرة في ${countryName}` : `12. More Opportunities in ${countryName}`}
+                  </h2>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                    {ar ? "وظائف بديلة في نفس الدولة قد تناسب اهتماماتك ومؤهلاتك" : "Alternative positions available in this country"}
+                  </p>
+                </div>
               </div>
               <Link
                 to="/countries/$slug"
                 params={{ slug: c.slug }}
-                className="text-sm font-medium text-beige hover:underline hidden sm:inline-flex items-center gap-1"
+                className="text-xs md:text-sm font-semibold text-beige hover:underline hidden sm:inline-flex items-center gap-1"
               >
-                <span>{ar ? "عرض جميع برامج الدولة" : "View all country programs"}</span>
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
+                <span>{ar ? "عرض الكل" : "View all"}</span>
+                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.5} />
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {otherPrograms.slice(0, 3).map((op) => (
-                <Link
-                  key={op.slug}
-                  to="/programs/$slug"
-                  params={{ slug: op.slug }}
-                  className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-beige/50 hover:shadow-md flex flex-col justify-between"
-                >
+            <div className="divide-y divide-border/60">
+              {otherPrograms.slice(0, 4).map((op) => (
+                <div key={op.slug} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                      <span>{ar ? op.categoryAr : op.category}</span>
-                      <span>{op.duration}</span>
-                    </div>
-                    <h4 className="font-semibold text-lg group-hover:text-beige transition-colors">
+                    <span className="text-xs text-muted-foreground block">{ar ? op.categoryAr : op.category} • {op.duration}</span>
+                    <Link
+                      to="/programs/$slug"
+                      params={{ slug: op.slug }}
+                      className="text-sm md:text-base font-bold text-foreground hover:text-beige transition-colors"
+                    >
                       {ar ? op.titleAr : op.title}
-                    </h4>
+                    </Link>
                     {op.expectedSalary && (
-                      <p className="mt-2 text-xs font-semibold text-beige">
+                      <span className="text-xs font-semibold text-beige block mt-0.5">
                         {ar ? op.expectedSalaryAr ?? op.expectedSalary : op.expectedSalary}
-                      </p>
+                      </span>
                     )}
                   </div>
-
-                  <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] text-muted-foreground block">{ar ? "المقدم" : "Deposit"}</span>
-                      <span className="font-display font-bold text-sm">{eur(op.deposit)}</span>
-                    </div>
-                    <span className="text-xs font-medium text-foreground inline-flex items-center gap-1 group-hover:text-beige">
-                      <span>{ar ? "تفاصيل الفرصة" : "View"}</span>
-                      <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.5} />
-                    </span>
-                  </div>
-                </Link>
+                  <Link
+                    to="/programs/$slug"
+                    params={{ slug: op.slug }}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-beige hover:underline"
+                  >
+                    <span>{ar ? "عرض تفاصيل الوظيفة" : "View Details"}</span>
+                    <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.5} />
+                  </Link>
+                </div>
               ))}
             </div>
           </section>
         )}
 
-        {/* SECTION 8: BOTTOM CTA BANNER */}
-        <section className="relative rounded-3xl border border-beige/30 bg-gradient-to-r from-navy via-navy-soft to-navy p-8 md:p-14 text-center text-ivory overflow-hidden shadow-2xl">
-          <div className="mx-auto max-w-2xl">
-            <span className="eyebrow text-beige mb-3 block">
-              <span className="me-2 inline-block h-px w-6 bg-beige align-middle" />
-              {ar ? "ابدأ خطوتك القادمة الآن" : "Take Your Next Step Today"}
-            </span>
-            <h3 className="text-3xl md:text-5xl font-semibold">
+        {/* 13. زر التقديم النهائي وبوابة الثقة */}
+        <section className="pt-8 border-t-2 border-border/80 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 className="text-lg md:text-xl font-bold text-foreground">
               {ar ? `جاهز للتقديم على ${title}؟` : `Ready to Apply for ${title}?`}
             </h3>
-            <p className="mt-4 text-base text-ivory/70 max-w-xl mx-auto">
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">
               {ar
-                ? "سجّل حسابك في دقائق، وارفع سيرتك الذاتية، وسيقوم مستشارك المهني في كينتيكس بالتواصل معك لبدء تجهيز الملف والمقابلة."
-                : "Create your free account, upload your CV, and our career advisor will coordinate your employer placement."}
+                ? "سجّل طلبك الآن، وسيقوم مستشارك المهني في كينتيكس بالتواصل معك لبدء تجهيز الملف والمقابلة."
+                : "Submit your application now and your career advisor will initiate your employer file."}
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to="/apply"
-                search={{ program: p.slug, duration: selectedDuration }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-beige px-8 py-4 font-semibold text-navy transition-transform hover:-translate-y-0.5 shadow-lg"
-              >
-                <span>{ar ? "ابدأ التقديم على هذه الوظيفة" : "Start Application"}</span>
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
-              </Link>
-              <Link
-                to="/trust"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-ivory/25 px-6 py-4 text-sm font-medium text-ivory hover:border-beige hover:text-beige transition-colors"
-              >
-                <span>{ar ? "بوابة الثقة وتراخيص الشركة" : "Trust Gate & Licenses"}</span>
-              </Link>
-            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <Link
+              to="/apply"
+              search={{ program: p.slug, duration: selectedDuration }}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-beige px-8 py-3.5 font-bold text-sm text-navy shadow-md hover:bg-beige/90 transition-transform hover:-translate-y-0.5"
+            >
+              <span>{ar ? "ابدأ التقديم الآن" : "Apply Now"}</span>
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
+            </Link>
+            <Link
+              to="/trust"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-xs font-semibold text-foreground hover:border-beige hover:text-beige transition-colors"
+            >
+              <span>{ar ? "بوابة الثقة وتراخيص الشركة" : "Trust Gate & Licenses"}</span>
+            </Link>
           </div>
         </section>
+
       </div>
 
       <Footer />

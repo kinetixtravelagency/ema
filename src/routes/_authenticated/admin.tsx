@@ -24,7 +24,7 @@ import {
   Mail, Phone, MapPin, Calendar, Copy, Check, ExternalLink, Link2, Trash2, RefreshCw,
   Sparkles, Filter, Layers, CheckSquare, Loader2, CreditCard, BookOpen, Send, User,
   FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck, FileBadge,
-  Mic, Info, ArrowRight, Home, type LucideIcon,
+  Mic, Info, ArrowRight, Home, Wand2, Building2, Coffee, Clock3, LayoutGrid, List, SlidersHorizontal, type LucideIcon,
 } from "lucide-react";
 import { AdminChatTab } from "@/components/admin/AdminChatTab";
 import { AdminMaterialsTab } from "@/components/admin/AdminMaterialsTab";
@@ -1677,9 +1677,226 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   );
 }
 
-/* ═══════════════════════════════════════
-   PROGRAMS TAB
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   PRESETS & AUTO-TRANSLATION ENGINE (EN -> AR)
+═══════════════════════════════════════════════════════════════ */
+const PRESET_JOB_TITLES = [
+  { en: "Seasonal Hotel & Hospitality Staff", ar: "طاقم الضيافة والفنادق الموسمية", category: "Hospitality & Tourism" },
+  { en: "Resort Guest Service Associate", ar: "مسؤول خدمات النزلاء بالمنتجعات السياحية", category: "Hospitality & Tourism" },
+  { en: "Hotel Housekeeping & Room Attendant", ar: "خدمات الإشراف الداخلي والغرف الفندقية", category: "Hospitality & Tourism" },
+  { en: "Food & Beverage / Restaurant Server", ar: "طاقم تقديم الأغذية والمشروبات بالمطاعم", category: "Culinary & F&B" },
+  { en: "Kitchen Assistant & Commis Chef", ar: "مساعد مطبخ وتجهيز أطعمة", category: "Culinary & F&B" },
+  { en: "Logistics & Warehouse Operations Crew", ar: "طاقم تشغيل المخازن والمستودعات واللوجستيات", category: "Logistics & Supply Chain" },
+  { en: "Order Picker & Packaging Specialist", ar: "أخصائي فرز وتعبئة وشحن طلبات", category: "Logistics & Supply Chain" },
+  { en: "Agricultural Harvest & Greenhouses Crew", ar: "طاقم المحاصيل والبيوت الزراعية المحمية", category: "Agriculture & Farming" },
+  { en: "Construction Site Support Worker", ar: "عامل مساعد بالمواقع الإنشائية والصيانة", category: "Construction & Trades" },
+  { en: "Customer Support & Front Desk Agent", ar: "موظف خدمة عملاء واستقبال", category: "Customer Care & Support" },
+  { en: "Healthcare & Caregiving Assistant", ar: "مساعد رعاية صحية وتمريض", category: "Healthcare & Caregiving" },
+  { en: "General Operations & Facility Worker", ar: "عامل تشغيل وخدمات عامة بالمرافق", category: "General Operations" },
+];
+
+const PRESET_CATEGORIES = [
+  { en: "Hospitality & Tourism", ar: "ضيافة وسياحة وفنادق" },
+  { en: "Culinary & F&B", ar: "أغذية ومشروبات ومطاعم" },
+  { en: "Logistics & Supply Chain", ar: "لوجستيات وسلاسل إمداد ومستودعات" },
+  { en: "Agriculture & Farming", ar: "زراعة وإنتاج محاصيل" },
+  { en: "Construction & Trades", ar: "إنشاءات وصيانة وحرف مهنية" },
+  { en: "Customer Care & Support", ar: "خدمة عملاء ودعم فني" },
+  { en: "Healthcare & Caregiving", ar: "رعاية صحية وتمريض" },
+  { en: "Information Technology", ar: "تكنولوجيا المعلومات والبرمجة" },
+  { en: "General Operations", ar: "تشغيل وخدمات عامة" },
+];
+
+const PRESET_SALARIES = [
+  { en: "€600 – €900 / month", ar: "600€ – 900€ / شهرياً (صافي)" },
+  { en: "€700 – €1,000 / month", ar: "700€ – 1,000€ / شهرياً (صافي)" },
+  { en: "€800 – €1,200 / month", ar: "800€ – 1,200€ / شهرياً (صافي)" },
+  { en: "€900 – €1,300 / month", ar: "900€ – 1,300€ / شهرياً (صافي)" },
+  { en: "€1,000 – €1,400 / month", ar: "1,000€ – 1,400€ / شهرياً (صافي)" },
+  { en: "€1,200 – €1,600 / month", ar: "1,200€ – 1,600€ / شهرياً (صافي)" },
+  { en: "€1,400 – €1,800 / month", ar: "1,400€ – 1,800€ / شهرياً (صافي)" },
+  { en: "€1,500 – €2,200 / month", ar: "1,500€ – 2,200€ / شهرياً (صافي)" },
+  { en: "€9 – €12 / hour (Overtime €14–€17/hr)", ar: "9€ – 12€ / ساعة (الإضافي 14€ – 17€)" },
+  { en: "€10 – €14 / hour (Overtime €16–€20/hr)", ar: "10€ – 14€ / ساعة (الإضافي 16€ – 20€)" },
+];
+
+const PRESET_WORKING_HOURS = [
+  { en: "8 hrs/day · 5–6 days/week (40–48 hrs/wk)", ar: "8 ساعات يومياً · 5 إلى 6 أيام أسبوعياً (40-48 س/أسبوع)" },
+  { en: "8 hrs/day · 5 days/week (40 hrs/week)", ar: "8 ساعات يومياً · 5 أيام أسبوعياً (40 ساعة/أسبوع)" },
+  { en: "8 hrs/day · 6 days/week (48 hrs/week)", ar: "8 ساعات يومياً · 6 أيام أسبوعياً (48 ساعة/أسبوع)" },
+  { en: "Rotating shifts · 8 hrs/day · Overtime available", ar: "ورديات دورية · 8 ساعات يومياً · إمكانية ساعات إضافية" },
+  { en: "Morning & Evening shifts · 40 hrs/week", ar: "ورديات صباحية ومسائية مجدولة · 40 ساعة/أسبوع" },
+  { en: "Flexible shifts · 35–40 hrs/week", ar: "ورديات مرنة · 35 إلى 40 ساعة أسبوعياً" },
+];
+
+const PRESET_ACCOMMODATION = [
+  { en: "Provided free by employer (Furnished staff housing)", ar: "سكن موظفين مؤثث بالكامل مجاناً من جهة العمل" },
+  { en: "Shared staff apartment near work (Utilities included)", ar: "شقق موظفين مجهزة بالقرب من العمل شاملة الفواتير" },
+  { en: "Provided on-site with utilities & Wi-Fi covered", ar: "سكن بمقر العمل مع تغطية كاملة للمرافق والإنترنت" },
+  { en: "Subsidized staff residence with free transit", ar: "سكن موظفين مدعوم مع توفير مواصلات العمل مجاناً" },
+  { en: "Provided by employer", ar: "توفرها جهة العمل" },
+];
+
+const PRESET_DURATIONS_STUDENT = [
+  { en: "3 months", ar: "3 أشهر" },
+  { en: "4 months", ar: "4 أشهر" },
+  { en: "5 months", ar: "5 أشهر" },
+  { en: "6 months", ar: "6 أشهر" },
+  { en: "3–6 months", ar: "3 إلى 6 أشهر" },
+];
+
+const PRESET_DURATIONS_GRADUATE = [
+  { en: "9 months", ar: "9 أشهر" },
+  { en: "12 months", ar: "12 شهر (سنة)" },
+  { en: "15 months", ar: "15 شهر" },
+  { en: "18 months", ar: "18 شهر" },
+  { en: "24 months", ar: "24 شهر (سنتين)" },
+  { en: "12–24 months", ar: "12 إلى 24 شهراً" },
+];
+
+const PRESET_REQUIREMENTS_CHIPS = [
+  { en: "Age 18–30 (Statutory working age for students)", ar: "السن من 18 إلى 30 سنة (السن القانوني للطلاب)" },
+  { en: "Age 20–45 (Statutory working age for graduates)", ar: "السن من 20 إلى 45 سنة (السن القانوني للخريجين)" },
+  { en: "Basic conversational English (A2 level)", ar: "مستوى لغة إنجليزية أساسي للتواصل (A2)" },
+  { en: "Intermediate English proficiency (B1 level)", ar: "مستوى لغة إنجليزية متوسط (B1)" },
+  { en: "Official proof of active university enrollment", ar: "شهادة إثبات قيد جامعي رسمي ساري للطلاب" },
+  { en: "Certified university degree or accredited diploma", ar: "مؤهل دراسي أو دبلوم معتمد وموثق للخريجين" },
+  { en: "Good physical fitness for shift duties", ar: "لياقة طبية وبدنية جيدة لأداء مهام الوردية" },
+  { en: "Clean criminal background record certificate", ar: "صحيفة حالة جنائية خالية من السوابق (فيش وتشبيه)" },
+  { en: "Valid passport (at least 6 months remaining)", ar: "جواز سفر صالح لمدة لا تقل عن 6 أشهر" },
+  { en: "Military service status resolved for male applicants", ar: "موقف محدد وساري من التجنيد للمتقدمين الذكور" },
+];
+
+function autoTranslateToAr(
+  field: "title" | "category" | "salary" | "hours" | "accommodation" | "duration" | "requirement" | "general",
+  enText: string
+): string {
+  if (!enText || !enText.trim()) return "";
+  const trimmed = enText.trim();
+
+  // 1. Direct Presets Check
+  const pJob = PRESET_JOB_TITLES.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pJob) return pJob.ar;
+  const pCat = PRESET_CATEGORIES.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pCat) return pCat.ar;
+  const pSal = PRESET_SALARIES.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pSal) return pSal.ar;
+  const pHours = PRESET_WORKING_HOURS.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pHours) return pHours.ar;
+  const pAccom = PRESET_ACCOMMODATION.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pAccom) return pAccom.ar;
+  const pDurSt = PRESET_DURATIONS_STUDENT.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pDurSt) return pDurSt.ar;
+  const pDurGr = PRESET_DURATIONS_GRADUATE.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pDurGr) return pDurGr.ar;
+  const pReq = PRESET_REQUIREMENTS_CHIPS.find((x) => x.en.toLowerCase() === trimmed.toLowerCase());
+  if (pReq) return pReq.ar;
+
+  // 2. Intelligent pattern replacements
+  let out = trimmed;
+
+  // Numbers & month/year durations
+  out = out
+    .replace(/(\d+)\s*months?/gi, "$1 أشهر")
+    .replace(/(\d+)\s*years?/gi, "$1 سنوات")
+    .replace(/(\d+)\s*[-–]\s*(\d+)\s*months?/gi, "$1 إلى $2 أشهر");
+
+  // Salary replacements
+  out = out
+    .replace(/€\s*(\d+)\s*[-–]\s*€?\s*(\d+)\s*\/\s*(?:month|mo)/gi, "$1€ – $2€ / شهرياً (صافي)")
+    .replace(/€\s*(\d+)\s*\/\s*(?:month|mo)/gi, "$1€ / شهرياً (صافي)")
+    .replace(/€\s*(\d+)\s*[-–]\s*€?\s*(\d+)\s*\/\s*(?:hour|hr)/gi, "$1€ – $2€ / ساعة")
+    .replace(/€\s*(\d+)\s*\/\s*(?:hour|hr)/gi, "$1€ / ساعة");
+
+  // Hours replacements
+  out = out
+    .replace(/(\d+)\s*hrs?\s*\/\s*day/gi, "$1 ساعات يومياً")
+    .replace(/(\d+)\s*[-–]\s*(\d+)\s*days?\s*\/\s*week/gi, "$1 إلى $2 أيام أسبوعياً")
+    .replace(/(\d+)\s*days?\s*\/\s*week/gi, "$1 أيام أسبوعياً")
+    .replace(/(\d+)\s*hrs?\s*\/\s*week/gi, "$1 ساعة أسبوعياً")
+    .replace(/overtime\s*available/gi, "إمكانية ساعات إضافية");
+
+  // Accommodation
+  out = out
+    .replace(/provided free by employer/gi, "سكن مجاني ومؤثث من جهة العمل")
+    .replace(/furnished staff housing/gi, "سكن موظفين مؤثث بالكامل")
+    .replace(/shared staff apartment/gi, "شقق موظفين مجهزة")
+    .replace(/utilities included/gi, "شامل كافة الفواتير")
+    .replace(/provided by employer/gi, "توفرها جهة العمل")
+    .replace(/free transit/gi, "مواصلات عمل مجانية");
+
+  // Requirements & Terms
+  out = out
+    .replace(/age\s*(\d+)\s*[-–]\s*(\d+)/gi, "السن من $1 إلى $2 سنة")
+    .replace(/basic\s*english/gi, "مستوى لغة إنجليزية أساسي")
+    .replace(/intermediate\s*english/gi, "مستوى لغة إنجليزية متوسط")
+    .replace(/university\s*enrollment\s*proof/gi, "إثبات قيد جامعي ساري")
+    .replace(/clean\s*criminal\s*(?:record|background)/gi, "صحيفة حالة جنائية خالية من السوابق")
+    .replace(/medical\s*fitness/gi, "لياقة طبية وبدنية للعمل")
+    .replace(/passport\s*valid\s*for\s*at\s*least\s*(\d+)\s*months/gi, "جواز سفر صالح لمدة لا تقل عن $1 أشهر");
+
+  // Job title keywords if in title/category field
+  if (field === "title" || field === "category" || field === "general") {
+    const wordMap: Record<string, string> = {
+      hospitality: "ضيافة وفنادق",
+      hotel: "فندق",
+      hotels: "فنادق",
+      resort: "منتجع",
+      resorts: "منتجعات",
+      seasonal: "موسمي",
+      logistics: "لوجستيات ومستودعات",
+      warehouse: "مستودعات ومخازن",
+      supply: "إمداد",
+      chain: "سلاسل إمداد",
+      culinary: "طهي ومطاعم",
+      kitchen: "مطبخ",
+      restaurant: "مطعم",
+      food: "أغذية",
+      beverage: "مشروبات",
+      server: "طاقم تقديم",
+      agriculture: "زراعة",
+      agricultural: "زراعي",
+      harvest: "حصاد ومحاصيل",
+      farming: "إنتاج زراعي",
+      construction: "إنشاءات وصيانة",
+      trades: "حرف مهنية",
+      customer: "عملاء",
+      care: "رعاية",
+      support: "دعم",
+      healthcare: "رعاية صحية",
+      caregiving: "رعاية وتمريض",
+      general: "عام",
+      operations: "تشغيل",
+      assistant: "مساعد",
+      associate: "مسؤول",
+      specialist: "أخصائي",
+      crew: "طاقم عمل",
+      staff: "طاقم كوادر",
+      worker: "عامل",
+      operator: "مشغل",
+      attendant: "مشرف وخدمات",
+      housekeeping: "إشراف داخلي وغرف",
+      packer: "عامل تعبئة",
+      packaging: "تعبئة وتغليف",
+      picker: "جامع طلبات",
+    };
+
+    if (out === trimmed) {
+      const words = trimmed.split(/[\s&/·,-]+/);
+      const translatedWords = words.map((w) => wordMap[w.toLowerCase()] || "");
+      const matched = translatedWords.filter(Boolean);
+      if (matched.length > 0) {
+        return matched.join(" ");
+      }
+    }
+  }
+
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRAMS TAB (REDESIGNED & FULLY RESPONSIVE)
+═══════════════════════════════════════════════════════════════ */
 function ProgramsTab({ programs, countries, onChange }: { programs: any[]; countries: any[]; onChange: () => void }) {
   const setPrice = useServerFn(adminUpdateProgramPrice);
   const createProg = useServerFn(adminCreateProgram);
@@ -1691,6 +1908,8 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
   const [countryFilter, setCountryFilter] = useState("all");
   const [trackFilter, setTrackFilter] = useState<"all" | "student" | "graduate">("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [syncing, setSyncing] = useState(false);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
@@ -1702,6 +1921,13 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const countryNames = Array.from(new Set(programs.map((p: any) => p.countries?.name_en).filter(Boolean)));
+  const categoriesList = Array.from(new Set(programs.map((p: any) => p.category_en).filter(Boolean)));
+
+  const totalPrograms = programs.length;
+  const publishedCount = programs.filter((p: any) => p.published !== false).length;
+  const draftsCount = programs.filter((p: any) => p.published === false).length;
+  const studentsCount = programs.filter((p: any) => p.track === "student").length;
+  const graduatesCount = programs.filter((p: any) => p.track === "graduate").length;
 
   const filtered = programs.filter((p: any) => {
     const matchesSearch =
@@ -1716,7 +1942,8 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "published" ? p.published !== false : p.published === false);
-    return matchesSearch && matchesCountry && matchesTrack && matchesStatus;
+    const matchesCategory = categoryFilter === "all" || p.category_en === categoryFilter;
+    return matchesSearch && matchesCountry && matchesTrack && matchesStatus && matchesCategory;
   });
 
   const handleSync = async () => {
@@ -1725,10 +1952,10 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
     setSyncMessage(null);
     try {
       const res = await syncCatalog();
-      setSyncMessage(`✓ Synced ${res.count} programs from master catalog.`);
+      setSyncMessage(`✓ تم تحديث ومزامنة ${res.count} برنامج من الكتالوج المعتمد.`);
       onChange();
     } catch (e: any) {
-      setSyncMessage(`Failed to sync: ${e.message}`);
+      setSyncMessage(`فشل التحديث: ${e.message}`);
     } finally {
       setSyncing(false);
     }
@@ -1754,163 +1981,269 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
   };
 
   return (
-    <div className="space-y-4">
-      {/* ══ 1. Search — always at the very top ══ */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <input
-          className="w-full rounded-2xl border border-input bg-card pl-11 pr-4 py-3 text-sm placeholder:text-muted-foreground outline-none focus:border-navy shadow-xs"
-          placeholder="Search programs, job titles, slug, category…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {search && (
-          <button onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-secondary transition-colors">
-            <X className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
-        )}
+    <div className="space-y-5 animate-in fade-in duration-200">
+      {/* ══ 1. TOP KPI DASHBOARD TILES ══ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground mb-1">
+            <span className="text-xs font-semibold">إجمالي البرامج</span>
+            <Briefcase className="h-4 w-4 text-beige" />
+          </div>
+          <p className="font-display text-2xl font-bold text-foreground">{totalPrograms}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            {studentsCount} مسار طلاب · {graduatesCount} خريجون
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground mb-1">
+            <span className="text-xs font-semibold">المفعّلة على الموقع</span>
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+          </div>
+          <p className="font-display text-2xl font-bold text-emerald-600 dark:text-emerald-400">{publishedCount}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            مرئية للعملاء والشركاء في الكتالوج
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground mb-1">
+            <span className="text-xs font-semibold">المسودات المؤجلة</span>
+            <Clock className="h-4 w-4 text-amber-500" />
+          </div>
+          <p className="font-display text-2xl font-bold text-muted-foreground">{draftsCount}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            برامج قيد التجهيز أو مؤقتة
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground mb-1">
+            <span className="text-xs font-semibold">نطاق مقدم التعاقد</span>
+            <DollarSign className="h-4 w-4 text-beige" />
+          </div>
+          <p className="font-display text-lg font-bold text-navy dark:text-beige mt-0.5">10k – 12k EGP</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            (≈ 185€ – 222€ بسعر الصرف الحالي)
+          </p>
+        </div>
       </div>
 
-      {/* ══ 2. Header banner ══ */}
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-base flex items-center gap-2">
-                Program & Deposit Management
-                <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground font-normal">
-                  {programs.length} Total
-                </span>
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Target Deposit Range: <strong className="text-foreground">10,000 – 12,000 EGP</strong> (≈ €185 – €222 at 54 EGP/EUR)
-              </p>
-            </div>
+      {/* ══ 2. HEADER BANNER & ACTION BAR ══ */}
+      <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-beige" />
+              إدارة برامج وفرص العمل والمقدمات
+            </h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              التحكم الكامل في تفاصيل الوظائف، الأسعار، السكن، ساعات العمل، والترجمة الفورية.
+            </p>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={handleSync}
               disabled={syncing}
-              className="flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium hover:border-beige transition-colors disabled:opacity-60"
+              className="flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium hover:border-beige transition-colors disabled:opacity-60 shadow-xs"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${syncing ? "animate-spin text-beige" : ""}`} />
-              {syncing ? "Syncing…" : "Sync Catalog"}
+              <span>{syncing ? "جاري المزامنة…" : "تحديث الكتالوج"}</span>
             </button>
+
             <button
               onClick={() => { setSelectedProgram(null); setModalMode("add"); setModalOpen(true); }}
-              className="flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-semibold text-ivory hover:opacity-90 shadow-sm transition-opacity"
+              className="flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-xs font-bold text-ivory hover:opacity-90 shadow-sm transition-opacity"
             >
-              <Plus className="h-3.5 w-3.5" /> Add New Program
+              <Plus className="h-4 w-4" />
+              <span>إضافة برنامج جديد +</span>
             </button>
           </div>
-        </div>
-
-        {/* Deposit tier chips */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/60">
-          <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-            <DollarSign className="h-3 w-3" /> Standard Tiers:
-          </span>
-          {[["€185","9,990","Lowest"],["€196","10,584","Standard"],["€204","11,016","Mid-High"],["€214","11,556","Premium"],["€222","11,988","Top"]].map(([eur, egp, label]) => (
-            <span key={eur} className="rounded-lg bg-secondary/80 border border-border px-2.5 py-1 text-xs">
-              <strong className="text-foreground">{eur}</strong>
-              <span className="text-muted-foreground"> ≈ {egp} EGP · {label}</span>
-            </span>
-          ))}
         </div>
 
         {syncMessage && (
-          <p className="text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-200">
-            <Check className="inline h-3.5 w-3.5 mr-1" />{syncMessage}
-          </p>
-        )}
-      </div>
-
-      {/* ══ 3. Filters ══ */}
-      <div className="flex flex-wrap items-center gap-2">
-        <select value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)}
-          className="rounded-xl border border-input bg-card px-3 py-2 text-xs font-medium outline-none focus:border-navy">
-          <option value="all">All Countries ({countryNames.length})</option>
-          {countryNames.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <select value={trackFilter} onChange={(e) => setTrackFilter(e.target.value as any)}
-          className="rounded-xl border border-input bg-card px-3 py-2 text-xs font-medium outline-none focus:border-navy">
-          <option value="all">All Tracks</option>
-          <option value="student">Students</option>
-          <option value="graduate">Graduates</option>
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as any)}
-          className="rounded-xl border border-input bg-card px-3 py-2 text-xs font-medium outline-none focus:border-navy">
-          <option value="all">All Status</option>
-          <option value="published">Published</option>
-          <option value="draft">Drafts</option>
-        </select>
-        <p className="ml-auto text-xs text-muted-foreground">
-          <span className="font-bold text-foreground">{filtered.length}</span> of {programs.length} programs
-        </p>
-      </div>
-
-
-      {/* ══ 4. Programs Table ══ */}
-      <div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-secondary/50 text-xs text-muted-foreground">
-              <th className="p-4 text-start font-semibold">Program / Job Opportunity</th>
-              <th className="p-4 text-start font-semibold">Country</th>
-              <th className="p-4 text-start font-semibold">Track</th>
-              <th className="p-4 text-start font-semibold">Duration</th>
-              <th className="p-4 text-center font-semibold">Total Price (€)</th>
-              <th className="p-4 text-center font-semibold">Deposit (€)</th>
-              <th className="p-4 text-center font-semibold">Max Inst.</th>
-              <th className="p-4 text-center font-semibold">Status</th>
-              <th className="p-4 text-end font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {filtered.map((p) => (
-              <ProgramRow
-                key={p.id}
-                p={p}
-                onEdit={() => {
-                  setSelectedProgram(p);
-                  setModalMode("edit");
-                  setModalOpen(true);
-                }}
-                onSavePrice={async (v) => {
-                  await setPrice({ data: { id: p.id, ...v } });
-                  onChange();
-                }}
-                onTogglePublished={() => handleTogglePublished(p)}
-                onDelete={() => setDeleteConfirmId(p.id)}
-                isDeleting={deletingId === p.id}
-              />
-            ))}
-          </tbody>
-        </table>
-
-        {filtered.length === 0 && (
-          <div className="py-16 text-center space-y-3">
-            <p className="text-sm text-muted-foreground">No programs match the current filters or search.</p>
-            <button
-              onClick={() => {
-                setSearch("");
-                setCountryFilter("all");
-                setTrackFilter("all");
-                setStatusFilter("all");
-              }}
-              className="text-xs text-navy dark:text-beige underline font-medium"
-            >
-              Clear filters
-            </button>
+          <div className="rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-3 text-xs font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+            <Check className="h-4 w-4 shrink-0" />
+            <span>{syncMessage}</span>
           </div>
         )}
+
+        {/* Search & Filter Bar */}
+        <div className="space-y-3 pt-2 border-t border-border/70">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              className="w-full rounded-2xl border border-input bg-background pl-11 pr-10 py-2.5 text-xs sm:text-sm placeholder:text-muted-foreground outline-none focus:border-beige transition-all shadow-xs"
+              placeholder="ابحث باسم الوظيفة، التصنيف، كود البرنامج (Slug)، أو الدولة..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-secondary text-muted-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={countryFilter}
+                onChange={(e) => setCountryFilter(e.target.value)}
+                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-medium outline-none focus:border-beige"
+              >
+                <option value="all">جميع الدول ({countryNames.length})</option>
+                {countryNames.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+
+              <select
+                value={trackFilter}
+                onChange={(e) => setTrackFilter(e.target.value as any)}
+                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-medium outline-none focus:border-beige"
+              >
+                <option value="all">كافة المسارات</option>
+                <option value="student">مسار الطلاب (Seasonal)</option>
+                <option value="graduate">مسار الخريجين (Careers)</option>
+              </select>
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-medium outline-none focus:border-beige"
+              >
+                <option value="all">كافة الحالات</option>
+                <option value="published">مفعل (Published)</option>
+                <option value="draft">مسودة (Draft)</option>
+              </select>
+
+              {categoriesList.length > 0 && (
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-medium outline-none focus:border-beige"
+                >
+                  <option value="all">جميع التخصصات</option>
+                  {categoriesList.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+
+            {/* View Mode Switcher */}
+            <div className="flex items-center gap-1 rounded-xl border border-border bg-secondary/50 p-1 ms-auto">
+              <button
+                type="button"
+                onClick={() => setViewMode("cards")}
+                className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                  viewMode === "cards" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="عرض الكروت المنظمة"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">كروت</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                  viewMode === "table" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                }`}
+                title="عرض الجدول المكتبي"
+              >
+                <List className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">جدول</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Edit / Add Modal */}
+      {/* ══ 3. MAIN CONTENT: CARDS VIEW OR TABLE VIEW ══ */}
+      {viewMode === "cards" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((p) => (
+            <ProgramCard
+              key={p.id}
+              p={p}
+              onEdit={() => {
+                setSelectedProgram(p);
+                setModalMode("edit");
+                setModalOpen(true);
+              }}
+              onTogglePublished={() => handleTogglePublished(p)}
+              onDelete={() => setDeleteConfirmId(p.id)}
+              isDeleting={deletingId === p.id}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-secondary/50 text-xs text-muted-foreground">
+                <th className="p-4 text-start font-semibold">البرنامج والوظيفة</th>
+                <th className="p-4 text-start font-semibold">الدولة</th>
+                <th className="p-4 text-start font-semibold">المسار</th>
+                <th className="p-4 text-start font-semibold">المدة</th>
+                <th className="p-4 text-center font-semibold">السعر (€)</th>
+                <th className="p-4 text-center font-semibold">المقدم (€)</th>
+                <th className="p-4 text-center font-semibold">أقصى قسط</th>
+                <th className="p-4 text-center font-semibold">الحالة</th>
+                <th className="p-4 text-end font-semibold">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filtered.map((p) => (
+                <ProgramRow
+                  key={p.id}
+                  p={p}
+                  onEdit={() => {
+                    setSelectedProgram(p);
+                    setModalMode("edit");
+                    setModalOpen(true);
+                  }}
+                  onSavePrice={async (v) => {
+                    await setPrice({ data: { id: p.id, ...v } });
+                    onChange();
+                  }}
+                  onTogglePublished={() => handleTogglePublished(p)}
+                  onDelete={() => setDeleteConfirmId(p.id)}
+                  isDeleting={deletingId === p.id}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {filtered.length === 0 && (
+        <div className="rounded-3xl border border-border bg-card p-12 text-center space-y-3">
+          <p className="text-sm font-semibold text-foreground">لا توجد نتائج تطابق فلاتر البحث الحالية.</p>
+          <p className="text-xs text-muted-foreground">جرب تغيير كلمة البحث أو إعادة تعيين الفلاتر.</p>
+          <button
+            onClick={() => {
+              setSearch("");
+              setCountryFilter("all");
+              setTrackFilter("all");
+              setStatusFilter("all");
+              setCategoryFilter("all");
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold hover:border-beige transition-colors"
+          >
+            إلغاء جميع الفلاتر
+          </button>
+        </div>
+      )}
+
+      {/* ══ 4. ADD / EDIT FULL PROGRAM MODAL ══ */}
       {modalOpen && (
         <ProgramModal
           mode={modalMode}
@@ -1933,32 +2266,32 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
         />
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* ══ 5. DELETE CONFIRMATION MODAL ══ */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
           <div className="w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-xl space-y-4">
             <div className="flex items-center gap-3 text-red-600">
               <div className="rounded-full bg-red-100 dark:bg-red-950/60 p-2.5">
                 <Trash2 className="h-5 w-5" />
               </div>
-              <h3 className="font-semibold text-lg text-foreground">Delete Program</h3>
+              <h3 className="font-semibold text-lg text-foreground">تأكيد حذف البرنامج نهائياً</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Are you sure you want to permanently delete this program? Any applications referencing it might be affected.
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              هل أنت متأكد من رغبتك في حذف هذا البرنامج نهائياً من قاعدة البيانات؟ قد تتأثر الطلبات المرتبطة به.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
                 className="rounded-full border border-border px-4 py-2 text-xs font-medium hover:bg-secondary"
               >
-                Cancel
+                إلغاء
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
                 disabled={Boolean(deletingId)}
-                className="rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-full bg-red-600 px-5 py-2 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50"
               >
-                {deletingId ? "Deleting…" : "Confirm Delete"}
+                {deletingId ? "جاري الحذف…" : "تأكيد الحذف"}
               </button>
             </div>
           </div>
@@ -1968,6 +2301,164 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   PROGRAM CARD (MODERN & MOBILE-OPTIMIZED)
+═══════════════════════════════════════════════════════════════ */
+function ProgramCard({
+  p,
+  onEdit,
+  onTogglePublished,
+  onDelete,
+  isDeleting,
+}: {
+  p: any;
+  onEdit: () => void;
+  onTogglePublished: () => Promise<void>;
+  onDelete: () => void;
+  isDeleting: boolean;
+}) {
+  const isPublished = p.published !== false;
+  const depositEgp = Math.round((p.deposit || 0) * 54);
+  const priceEgp = Math.round((p.price || 0) * 54);
+  const isDepositInRange = depositEgp >= 9900 && depositEgp <= 12100;
+
+  return (
+    <div className="rounded-3xl border border-border bg-card p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-beige/40 transition-all">
+      {/* Top Header */}
+      <div>
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-2.5 py-0.5 text-xs font-semibold text-foreground">
+            <span>{p.countries?.flag || "🌍"}</span>
+            <span>{p.countries?.name_en || "General"}</span>
+          </span>
+
+          <div className="flex items-center gap-1.5">
+            <span
+              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                p.track === "student"
+                  ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
+                  : "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300"
+              }`}
+            >
+              {p.track === "student" ? "طلاب" : "خريجون"}
+            </span>
+
+            <button
+              onClick={onTogglePublished}
+              className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold transition-colors ${
+                isPublished
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                  : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+              }`}
+              title="انقر لتبديل الحالة بين مفعل ومسودة"
+            >
+              {isPublished ? "مفعّل ✓" : "مسودة"}
+            </button>
+          </div>
+        </div>
+
+        {/* Titles */}
+        <h4 className="font-bold text-base text-foreground line-clamp-1 mt-1">{p.title_en}</h4>
+        {p.title_ar && <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{p.title_ar}</p>}
+
+        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+          <span className="rounded-lg bg-secondary/80 px-2 py-0.5 text-[11px] font-medium text-foreground">
+            {p.category_en || "General"}
+          </span>
+          <span className="text-[10px] font-mono text-muted-foreground">
+            {p.slug}
+          </span>
+        </div>
+      </div>
+
+      {/* Middle Specs Grid */}
+      <div className="grid grid-cols-2 gap-2 text-[11px] rounded-2xl bg-secondary/30 p-3 border border-border/60">
+        <div>
+          <span className="text-muted-foreground block text-[10px]">الراتب المتوقع:</span>
+          <span className="font-bold text-foreground truncate block">
+            {p.expected_salary || "—"}
+          </span>
+        </div>
+
+        <div>
+          <span className="text-muted-foreground block text-[10px]">مدة العقد:</span>
+          <span className="font-bold text-foreground truncate block">
+            {p.duration || "12–24 mo"}
+          </span>
+        </div>
+
+        <div>
+          <span className="text-muted-foreground block text-[10px]">أوقات العمل:</span>
+          <span className="font-medium text-foreground truncate block">
+            {p.working_hours || "8 hrs/day · 5–6 days"}
+          </span>
+        </div>
+
+        <div>
+          <span className="text-muted-foreground block text-[10px]">السكن الموفر:</span>
+          <span className="font-medium text-foreground truncate block">
+            {p.accommodation || "Provided free"}
+          </span>
+        </div>
+      </div>
+
+      {/* Financials Row */}
+      <div className="pt-2 border-t border-border/60 flex items-center justify-between text-xs">
+        <div>
+          <span className="text-muted-foreground block text-[10px]">السعر الإجمالي:</span>
+          <span className="font-display font-bold text-base text-navy dark:text-beige">€{p.price}</span>
+          <span className="text-[10px] text-muted-foreground ms-1">({priceEgp.toLocaleString()} EGP)</span>
+        </div>
+
+        <div className="text-end">
+          <span className="text-muted-foreground block text-[10px]">المقدم:</span>
+          <span className={`font-display font-bold text-base ${isDepositInRange ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>
+            €{p.deposit}
+          </span>
+          <span className="text-[10px] text-muted-foreground ms-1">({depositEgp.toLocaleString()} EGP)</span>
+        </div>
+      </div>
+
+      {/* Bottom Action Buttons */}
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40">
+        <Link
+          to="/programs/$slug"
+          params={{ slug: p.slug }}
+          target="_blank"
+          className="inline-flex items-center gap-1 text-[11px] text-navy dark:text-beige hover:underline font-semibold"
+        >
+          <ExternalLink className="h-3 w-3" />
+          <span>معاينة الرابط</span>
+        </Link>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onEdit}
+            className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:border-beige transition-colors shadow-2xs"
+          >
+            <Pencil className="h-3 w-3" />
+            <span>تعديل</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onDelete}
+            disabled={isDeleting}
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+            title="حذف البرنامج"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRAM TABLE ROW (FOR DESKTOP POWER USERS)
+═══════════════════════════════════════════════════════════════ */
 function ProgramRow({
   p,
   onEdit,
@@ -2029,7 +2520,7 @@ function ProgramRow({
               : "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300"
           }`}
         >
-          {p.track === "student" ? "Student" : "Graduate"}
+          {p.track === "student" ? "طلاب" : "خريجون"}
         </span>
       </td>
 
@@ -2090,7 +2581,7 @@ function ProgramRow({
             onChange={(e) => setInst(+e.target.value)}
           />
           <span className="text-[10px] text-muted-foreground mt-0.5">
-            {inst} months
+            {inst} أشهر
           </span>
         </div>
       </td>
@@ -2104,9 +2595,9 @@ function ProgramRow({
               ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950 dark:text-emerald-300"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400"
           }`}
-          title="Click to toggle published / draft"
+          title="تبديل الحالة"
         >
-          {isPublished ? "Published" : "Draft"}
+          {isPublished ? "مفعّل" : "مسودة"}
         </button>
       </td>
 
@@ -2122,15 +2613,15 @@ function ProgramRow({
                 setSaving(false);
               }}
               className="flex items-center gap-1 rounded-full bg-navy px-3 py-1 text-xs text-ivory font-semibold hover:opacity-90 disabled:opacity-60 shadow-sm"
-              title="Save inline prices"
+              title="حفظ الأسعار فورياً"
             >
-              <Save className="h-3 w-3" /> Save
+              <Save className="h-3 w-3" /> حفظ
             </button>
           )}
           <button
             onClick={onEdit}
             className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground hover:border-beige hover:text-foreground transition-colors"
-            title="Edit full program details"
+            title="تعديل كافة بيانات البرنامج"
           >
             <Pencil className="h-3.5 w-3.5" />
           </button>
@@ -2138,7 +2629,7 @@ function ProgramRow({
             onClick={onDelete}
             disabled={isDeleting}
             className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-red-500 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
-            title="Delete program"
+            title="حذف البرنامج"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
@@ -2148,8 +2639,15 @@ function ProgramRow({
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   PROGRAM MODAL (ADD / EDIT FULL WITH AUTO-TRANSLATION & DROPDOWNS)
+═══════════════════════════════════════════════════════════════ */
 function ProgramModal({
-  mode, program, countries, onClose, onSave,
+  mode,
+  program,
+  countries,
+  onClose,
+  onSave,
 }: {
   mode: "add" | "edit";
   program?: any;
@@ -2181,9 +2679,40 @@ function ProgramModal({
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<"basic" | "details" | "financial">("basic");
 
-  const studentDurations = ["3 months", "4 months", "5 months", "6 months"];
-  const graduateDurations = ["9 months", "12 months", "15 months", "18 months", "24 months"];
-  const durationOptions = track === "student" ? studentDurations : graduateDurations;
+  // Selection states for dropdowns vs custom
+  const [selectedJobPreset, setSelectedJobPreset] = useState<string>(
+    PRESET_JOB_TITLES.some((x) => x.en === program?.title_en) ? program?.title_en : "custom"
+  );
+  const [selectedCatPreset, setSelectedCatPreset] = useState<string>(
+    PRESET_CATEGORIES.some((x) => x.en === program?.category_en) ? program?.category_en : "custom"
+  );
+  const [selectedSalaryPreset, setSelectedSalaryPreset] = useState<string>(
+    PRESET_SALARIES.some((x) => x.en === program?.expected_salary) ? program?.expected_salary : "custom"
+  );
+  const [selectedHoursPreset, setSelectedHoursPreset] = useState<string>(
+    PRESET_WORKING_HOURS.some((x) => x.en === program?.working_hours) ? program?.working_hours : "custom"
+  );
+  const [selectedAccomPreset, setSelectedAccomPreset] = useState<string>(
+    PRESET_ACCOMMODATION.some((x) => x.en === program?.accommodation) ? program?.accommodation : "custom"
+  );
+
+  const durationOptions = track === "student" ? PRESET_DURATIONS_STUDENT : PRESET_DURATIONS_GRADUATE;
+
+  // Auto-translate entire form to Arabic at once!
+  const handleAutoTranslateAll = () => {
+    if (titleEn) setTitleAr(autoTranslateToAr("title", titleEn));
+    if (categoryEn) setCategoryAr(autoTranslateToAr("category", categoryEn));
+    if (expectedSalary) setExpectedSalaryAr(autoTranslateToAr("salary", expectedSalary));
+    if (accommodation) setAccommodationAr(autoTranslateToAr("accommodation", accommodation));
+
+    // Translate requirements line by line
+    if (requirements.length > 0) {
+      const translatedReqs = requirements
+        .filter((r) => r.trim().length > 0)
+        .map((r) => autoTranslateToAr("requirement", r));
+      setRequirementsAr(translatedReqs);
+    }
+  };
 
   const handleAutoSlug = () => {
     const sel = countries.find((c) => c.id === countryId);
@@ -2200,19 +2729,22 @@ function ProgramModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!titleEn.trim()) return alert("English title is required.");
-    if (!slug.trim()) return alert("Slug is required.");
-    if (!countryId) return alert("Please select a country.");
-    if (track === "student" && priceEgp > 35000) return alert(`Student total price (${priceEgp.toLocaleString()} EGP) exceeds 35,000 EGP limit.`);
+    if (!titleEn.trim()) return alert("يرجى كتابة المسمى الوظيفي بالإنجليزية.");
+    if (!slug.trim()) return alert("يرجى كتابة كود الرابط (Slug).");
+    if (!countryId) return alert("يرجى اختيار دولة العمل.");
+    if (track === "student" && priceEgp > 35000) {
+      return alert(`إجمالي سعر الطالب (${priceEgp.toLocaleString()} EGP) يتجاوز الحد المسموح به 35,000 ج.م.`);
+    }
+
     setSaving(true);
     try {
       await onSave({
         country_id: countryId,
         track,
         title_en: titleEn.trim(),
-        title_ar: titleAr.trim() || titleEn.trim(),
+        title_ar: titleAr.trim() || autoTranslateToAr("title", titleEn.trim()),
         category_en: categoryEn.trim() || "General",
-        category_ar: categoryAr.trim() || "عام",
+        category_ar: categoryAr.trim() || autoTranslateToAr("category", categoryEn.trim()),
         slug: slug.trim(),
         duration: duration.trim() || (track === "student" ? "3–6 months" : "9–24 months"),
         price: Math.max(0, Math.round(Number(price))),
@@ -2220,276 +2752,832 @@ function ProgramModal({
         flight_price: flightEnabled ? Math.max(0, Math.round(Number(flightPrice))) : 0,
         max_installments: Math.max(1, Math.min(12, Math.round(Number(installments)))),
         expected_salary: expectedSalary.trim(),
-        expected_salary_ar: expectedSalaryAr.trim(),
-        working_hours: workingHours.trim(),
-        accommodation: accommodation.trim(),
-        accommodation_ar: accommodationAr.trim(),
+        expected_salary_ar: expectedSalaryAr.trim() || autoTranslateToAr("salary", expectedSalary.trim()),
+        working_hours: workingHours.trim() || (track === "student" ? "8 hrs/day · 5–6 days/week" : "8 hrs/day · 5–6 days/week"),
+        accommodation: accommodation.trim() || "Provided free by employer",
+        accommodation_ar: accommodationAr.trim() || autoTranslateToAr("accommodation", accommodation.trim() || "Provided free by employer"),
         requirements: requirements.filter(Boolean),
         requirements_ar: requirementsAr.filter(Boolean),
         published,
       });
     } catch (err: any) {
-      alert(`Error saving program: ${err.message}`);
+      alert(`خطأ أثناء الحفظ: ${err.message}`);
     } finally {
       setSaving(false);
     }
   };
 
   const tabCls = (t: string) =>
-    `px-4 py-2 text-xs font-semibold rounded-full transition-all ${activeTab === t ? "bg-navy text-ivory" : "text-muted-foreground hover:bg-secondary"}`;
+    `px-4 py-2 text-xs font-bold rounded-full transition-all ${
+      activeTab === t
+        ? "bg-navy text-ivory shadow-xs"
+        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+    }`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 backdrop-blur-xs overflow-y-auto">
-      <div className="w-full max-w-2xl my-4 rounded-3xl border border-border bg-card shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-2 sm:p-4 backdrop-blur-xs overflow-y-auto">
+      <div className="w-full max-w-3xl my-auto rounded-3xl border border-border bg-card shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
 
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-navy text-ivory shrink-0">
+        {/* Modal Sticky Header */}
+        <div className="flex flex-wrap items-center justify-between border-b border-border bg-secondary/60 px-5 py-4 gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-navy text-ivory shrink-0 shadow-xs">
               {mode === "add" ? <Plus className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
             </div>
             <div>
-              <h3 className="font-semibold text-sm text-foreground">
-                {mode === "add" ? "Add New Program / Opportunity" : `Edit: ${program?.title_en}`}
+              <h3 className="font-bold text-sm sm:text-base text-foreground">
+                {mode === "add" ? "إضافة فرصة عمل وبرنامج جديد" : `تعديل البرنامج: ${program?.title_en}`}
               </h3>
-              <p className="text-[11px] text-muted-foreground">All fields marked * are visible to clients & partners</p>
+              <p className="text-[11px] text-muted-foreground">
+                اكتب بالإنجليزية وسيترجم تلقائياً للعربية مع خيارات القوائم المنسدلة
+              </p>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary transition-colors">
-            <X className="h-4 w-4" />
+
+          <div className="flex items-center gap-2">
+            {/* Auto-Translate All Button */}
+            <button
+              type="button"
+              onClick={handleAutoTranslateAll}
+              className="inline-flex items-center gap-1.5 rounded-full bg-beige/20 text-navy dark:text-beige border border-beige/40 px-3 py-1.5 text-xs font-bold hover:bg-beige/30 transition-colors shadow-2xs"
+              title="ترجمة جميع البيانات المكتوبة بالإنجليزية إلى العربية فورياً"
+            >
+              <Wand2 className="h-3.5 w-3.5 text-beige" />
+              <span>⚡ ترجمة الكل للعربية</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Sub-Tabs */}
+        <div className="flex items-center gap-1.5 px-5 py-2.5 border-b border-border bg-card overflow-x-auto">
+          <button type="button" className={tabCls("basic")} onClick={() => setActiveTab("basic")}>
+            1. المسمى والتصنيف والدولة
+          </button>
+          <button type="button" className={tabCls("details")} onClick={() => setActiveTab("details")}>
+            2. تفاصيل العمل والسكن والراتب
+          </button>
+          <button type="button" className={tabCls("financial")} onClick={() => setActiveTab("financial")}>
+            3. الأسعار والأقساط وتذكرة الطيران
           </button>
         </div>
 
-        {/* Tab nav */}
-        <div className="flex items-center gap-1.5 px-5 py-3 border-b border-border bg-card">
-          <button type="button" className={tabCls("basic")} onClick={() => setActiveTab("basic")}>Basic Info</button>
-          <button type="button" className={tabCls("details")} onClick={() => setActiveTab("details")}>Client Details ★</button>
-          <button type="button" className={tabCls("financial")} onClick={() => setActiveTab("financial")}>Pricing</button>
-        </div>
+        {/* Form Body */}
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-6 overflow-y-auto flex-1">
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
-
-          {/* ── TAB: BASIC ─────────────────────────── */}
+          {/* ════════ TAB 1: BASIC & JOB ROLE ════════ */}
           {activeTab === "basic" && (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Country & Track */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="field-label">Country *</label>
-                  <select value={countryId} onChange={(e) => setCountryId(e.target.value)} className={inp} required>
-                    {countries.map((c) => <option key={c.id} value={c.id}>{c.name_en} {c.name_ar ? `(${c.name_ar})` : ""}</option>)}
+                  <label className="field-label font-bold flex items-center gap-1 text-xs mb-1.5">
+                    <Globe className="h-3.5 w-3.5 text-beige" />
+                    <span>دولة وجهة العمل *</span>
+                  </label>
+                  <select
+                    value={countryId}
+                    onChange={(e) => setCountryId(e.target.value)}
+                    className={inp}
+                    required
+                  >
+                    {countries.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.flag ? `${c.flag} ` : ""}
+                        {c.name_en} {c.name_ar ? `(${c.name_ar})` : ""}
+                      </option>
+                    ))}
                   </select>
                 </div>
+
                 <div>
-                  <label className="field-label">Track / Audience *</label>
-                  <select value={track} onChange={(e) => { setTrack(e.target.value as any); setDuration(""); }} className={inp}>
-                    <option value="student">Students — عمل موسمي/دراسة</option>
-                    <option value="graduate">Graduates — توظيف وعقود</option>
+                  <label className="field-label font-bold flex items-center gap-1 text-xs mb-1.5">
+                    <GraduationCap className="h-3.5 w-3.5 text-beige" />
+                    <span>المسار المستهدف *</span>
+                  </label>
+                  <select
+                    value={track}
+                    onChange={(e) => {
+                      const nextTrack = e.target.value as "student" | "graduate";
+                      setTrack(nextTrack);
+                      setDuration(nextTrack === "student" ? "3–6 months" : "12–24 months");
+                    }}
+                    className={inp}
+                  >
+                    <option value="student">مسار الطلاب (Students — عمل موسمي صيفي)</option>
+                    <option value="graduate">مسار الخريجين (Graduates — عقود عمل وتوظيف)</option>
                   </select>
                 </div>
               </div>
 
-              {/* Titles */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="field-label">Title (English) * <span className="text-beige">👁 client-visible</span></label>
-                  <input className={inp} placeholder="e.g. Seasonal Hotel & Hospitality Services" value={titleEn} onChange={(e) => setTitleEn(e.target.value)} required />
+              {/* Job Title: Dropdown Selector + English Input + Arabic Input */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Briefcase className="h-3.5 w-3.5 text-beige" />
+                    <span>المسمى الوظيفي المعتمد (Job Title) *</span>
+                  </label>
+
+                  {/* Preset Dropdown */}
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">اختر من النماذج الجاهزة:</span>
+                    <select
+                      value={selectedJobPreset}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedJobPreset(val);
+                        if (val !== "custom") {
+                          const matched = PRESET_JOB_TITLES.find((x) => x.en === val);
+                          if (matched) {
+                            setTitleEn(matched.en);
+                            setTitleAr(matched.ar);
+                            if (matched.category) {
+                              setCategoryEn(matched.category);
+                              setCategoryAr(autoTranslateToAr("category", matched.category));
+                            }
+                          }
+                        }
+                      }}
+                      className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
+                    >
+                      <option value="custom">✍️ مسمى وظيفي مخصص (Custom)...</option>
+                      {PRESET_JOB_TITLES.map((item) => (
+                        <option key={item.en} value={item.en}>
+                          {item.en} ({item.ar})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="field-label">العنوان (عربي) * <span className="text-beige">👁 مرئي للعميل</span></label>
-                  <input className={inp} placeholder="مثال: عمل موسمي في الفنادق" value={titleAr} onChange={(e) => setTitleAr(e.target.value)} dir="rtl" />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] font-semibold text-muted-foreground">English Job Title *</span>
+                      <button
+                        type="button"
+                        onClick={() => setTitleAr(autoTranslateToAr("title", titleEn))}
+                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
+                      >
+                        <Wand2 className="h-2.5 w-2.5" /> ترجم للعربية
+                      </button>
+                    </div>
+                    <input
+                      className={inp}
+                      placeholder="e.g. Seasonal Hotel & Hospitality Staff"
+                      value={titleEn}
+                      onChange={(e) => {
+                        setTitleEn(e.target.value);
+                        // Auto-translate if Arabic empty or matches auto-translation
+                        if (!titleAr || titleAr === autoTranslateToAr("title", titleEn)) {
+                          setTitleAr(autoTranslateToAr("title", e.target.value));
+                        }
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">المسمى الوظيفي بالعربية *</span>
+                    <input
+                      className={inp}
+                      placeholder="مثال: طاقم الضيافة والفنادق الموسمية"
+                      value={titleAr}
+                      onChange={(e) => setTitleAr(e.target.value)}
+                      dir="rtl"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Categories */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="field-label">Category (EN) * <span className="text-beige">👁 client-visible</span></label>
-                  <input className={inp} placeholder="e.g. Hospitality, Logistics, Healthcare" value={categoryEn} onChange={(e) => setCategoryEn(e.target.value)} />
+              {/* Category / Sector: Dropdown + EN + AR */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Tag className="h-3.5 w-3.5 text-beige" />
+                    <span>القطاع والتخصص المهني (Category / Industry)</span>
+                  </label>
+
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground">اختر قطاعاً جاهزاً:</span>
+                    <select
+                      value={selectedCatPreset}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setSelectedCatPreset(val);
+                        if (val !== "custom") {
+                          const matched = PRESET_CATEGORIES.find((x) => x.en === val);
+                          if (matched) {
+                            setCategoryEn(matched.en);
+                            setCategoryAr(matched.ar);
+                          }
+                        }
+                      }}
+                      className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
+                    >
+                      <option value="custom">✍️ قطاع مخصص (Custom)...</option>
+                      {PRESET_CATEGORIES.map((item) => (
+                        <option key={item.en} value={item.en}>
+                          {item.en} ({item.ar})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="field-label">التخصص (عربي) * <span className="text-beige">👁 مرئي للعميل</span></label>
-                  <input className={inp} placeholder="مثال: ضيافة وفنادق" value={categoryAr} onChange={(e) => setCategoryAr(e.target.value)} dir="rtl" />
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] font-semibold text-muted-foreground">Category (English)</span>
+                      <button
+                        type="button"
+                        onClick={() => setCategoryAr(autoTranslateToAr("category", categoryEn))}
+                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
+                      >
+                        <Wand2 className="h-2.5 w-2.5" /> ترجم
+                      </button>
+                    </div>
+                    <input
+                      className={inp}
+                      placeholder="e.g. Hospitality & Tourism"
+                      value={categoryEn}
+                      onChange={(e) => {
+                        setCategoryEn(e.target.value);
+                        if (!categoryAr || categoryAr === autoTranslateToAr("category", categoryEn)) {
+                          setCategoryAr(autoTranslateToAr("category", e.target.value));
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">التخصص بالعربية</span>
+                    <input
+                      className={inp}
+                      placeholder="مثال: ضيافة وسياحة وفنادق"
+                      value={categoryAr}
+                      onChange={(e) => setCategoryAr(e.target.value)}
+                      dir="rtl"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Duration */}
+              {/* Contract Duration Presets & Input */}
               <div>
-                <label className="field-label">Contract Duration * <span className="text-beige">👁 client-visible</span></label>
-                <p className="text-[11px] text-muted-foreground mb-2">
-                  {track === "student" ? "Students: 3, 4, 5, 6 months" : "Graduates: 9, 12, 15, 18, 24 months"} — click to select:
-                </p>
-                <div className="flex flex-wrap gap-2 mb-2">
+                <label className="text-xs font-bold text-foreground block mb-1.5 flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5 text-beige" />
+                  <span>مدة العقد وفترة العمل *</span>
+                </label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
                   {durationOptions.map((d) => (
-                    <button key={d} type="button" onClick={() => setDuration(d)}
-                      className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${duration === d ? "bg-navy border-navy text-ivory" : "border-border hover:border-beige"}`}>
-                      {d}
+                    <button
+                      key={d.en}
+                      type="button"
+                      onClick={() => setDuration(d.en)}
+                      className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all ${
+                        duration === d.en
+                          ? "bg-navy text-ivory border-navy shadow-xs"
+                          : "border-border bg-secondary/50 text-muted-foreground hover:border-beige hover:text-foreground"
+                      }`}
+                    >
+                      {d.en} ({d.ar})
                     </button>
                   ))}
                 </div>
-                <input className={inp} placeholder="Or type custom range e.g. 3–6 months" value={duration} onChange={(e) => setDuration(e.target.value)} />
+                <input
+                  className={inp}
+                  placeholder="أو اكتب مدة مخصصة مثل: 3–6 months أو 12 months"
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  required
+                />
               </div>
 
-              {/* Slug */}
+              {/* Slug (URL Identifier) */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="field-label">URL Slug *</label>
-                  <button type="button" onClick={handleAutoSlug} className="text-[11px] text-navy underline font-medium">Auto-generate</button>
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1">
+                    <Link2 className="h-3.5 w-3.5 text-beige" />
+                    <span>كود الرابط (URL Slug) *</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAutoSlug}
+                    className="text-[11px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
+                  >
+                    <Sparkles className="h-3 w-3" /> توليد تلقائي من العنوان
+                  </button>
                 </div>
-                <input className={inp} placeholder="e.g. bulgaria-student-hospitality" value={slug} onChange={(e) => setSlug(e.target.value)} required />
+                <input
+                  className={inp}
+                  placeholder="مثال: greece-summer-hospitality-crew"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  required
+                />
               </div>
 
-              {/* Published */}
-              <div className="flex items-center gap-2.5 rounded-xl border border-border bg-secondary/40 p-3">
-                <input type="checkbox" id="prog-pub" checked={published} onChange={(e) => setPublished(e.target.checked)} className="h-4 w-4 rounded accent-navy" />
-                <label htmlFor="prog-pub" className="text-xs font-medium cursor-pointer">
-                  <span className="text-foreground">Published</span>
-                  <span className="text-muted-foreground ml-1">— visible to candidates, partners & on the website</span>
+              {/* Published Toggle */}
+              <div className="flex items-center gap-3 rounded-2xl border border-border bg-secondary/40 p-4">
+                <input
+                  type="checkbox"
+                  id="prog-pub-switch"
+                  checked={published}
+                  onChange={(e) => setPublished(e.target.checked)}
+                  className="h-4 w-4 rounded accent-navy"
+                />
+                <label htmlFor="prog-pub-switch" className="text-xs font-medium cursor-pointer">
+                  <span className="font-bold text-foreground">تفعيل ونشر البرنامج على الموقع فوراً (Published)</span>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    عند التفعيل يظهر البرنامج للعملاء في الكتالوج ونموذج التقديم وللشركاء المسوقين.
+                  </p>
                 </label>
               </div>
             </div>
           )}
 
-          {/* ── TAB: CLIENT DETAILS ─────────────────── */}
+          {/* ════════ TAB 2: JOB DETAILS & CLIENT VIEW ════════ */}
           {activeTab === "details" && (
-            <div className="space-y-4">
-              <div className="rounded-xl bg-beige/10 border border-beige/30 p-3 text-xs text-foreground">
-                <strong className="text-beige">★ Client-Visible Section</strong> — Everything here appears on the apply page and program cards shown to applicants and sales partners.
-              </div>
-
-              {/* Expected Salary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-5">
+              <div className="rounded-2xl bg-beige/10 border border-beige/30 p-3.5 text-xs text-foreground flex items-start gap-2.5">
+                <Sparkles className="h-4 w-4 text-beige shrink-0 mt-0.5" />
                 <div>
-                  <label className="field-label">Expected Salary (EN) <span className="text-beige">👁</span></label>
-                  <input className={inp} placeholder="e.g. €700–€1,200 / month" value={expectedSalary} onChange={(e) => setExpectedSalary(e.target.value)} />
-                </div>
-                <div>
-                  <label className="field-label">الراتب المتوقع (عربي) <span className="text-beige">👁</span></label>
-                  <input className={inp} placeholder="مثال: €700–€1,200 / شهرياً" value={expectedSalaryAr} onChange={(e) => setExpectedSalaryAr(e.target.value)} dir="rtl" />
+                  <strong className="text-foreground">تفاصيل مرئية للعميل في استمارة الوظيفة</strong>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    البيانات هنا تظهر في صفحة تفاصيل الوظيفة الرسمية، استمارة التقديم، ولوحة تحكم المتقدم.
+                  </p>
                 </div>
               </div>
 
-              {/* Working Hours */}
-              <div>
-                <label className="field-label">Working Hours <span className="text-beige">👁 client-visible</span></label>
-                <input className={inp} placeholder="e.g. 8 hrs/day · 5–6 days/week" value={workingHours} onChange={(e) => setWorkingHours(e.target.value)} />
+              {/* Expected Salary: Dropdown + EN + AR */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <DollarSign className="h-3.5 w-3.5 text-beige" />
+                    <span>الراتب الشهري المتوقع (Expected Salary)</span>
+                  </label>
+
+                  <select
+                    value={selectedSalaryPreset}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedSalaryPreset(val);
+                      if (val !== "custom") {
+                        const matched = PRESET_SALARIES.find((x) => x.en === val);
+                        if (matched) {
+                          setExpectedSalary(matched.en);
+                          setExpectedSalaryAr(matched.ar);
+                        }
+                      }
+                    }}
+                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
+                  >
+                    <option value="custom">✍️ راتب مخصص (Custom)...</option>
+                    {PRESET_SALARIES.map((item) => (
+                      <option key={item.en} value={item.en}>
+                        {item.en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] font-semibold text-muted-foreground">Salary (English)</span>
+                      <button
+                        type="button"
+                        onClick={() => setExpectedSalaryAr(autoTranslateToAr("salary", expectedSalary))}
+                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
+                      >
+                        <Wand2 className="h-2.5 w-2.5" /> ترجم
+                      </button>
+                    </div>
+                    <input
+                      className={inp}
+                      placeholder="e.g. €800–€1,200 / month"
+                      value={expectedSalary}
+                      onChange={(e) => {
+                        setExpectedSalary(e.target.value);
+                        if (!expectedSalaryAr || expectedSalaryAr === autoTranslateToAr("salary", expectedSalary)) {
+                          setExpectedSalaryAr(autoTranslateToAr("salary", e.target.value));
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">الراتب بالعربية</span>
+                    <input
+                      className={inp}
+                      placeholder="مثال: 800€ – 1,200€ / شهرياً (صافي)"
+                      value={expectedSalaryAr}
+                      onChange={(e) => setExpectedSalaryAr(e.target.value)}
+                      dir="rtl"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Accommodation */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="field-label">Accommodation (EN) <span className="text-beige">👁</span></label>
-                  <input className={inp} placeholder="e.g. Provided by employer" value={accommodation} onChange={(e) => setAccommodation(e.target.value)} />
-                </div>
-                <div>
-                  <label className="field-label">السكن (عربي) <span className="text-beige">👁</span></label>
-                  <input className={inp} placeholder="مثال: توفرها جهة العمل" value={accommodationAr} onChange={(e) => setAccommodationAr(e.target.value)} dir="rtl" />
-                </div>
-              </div>
+              {/* Working Hours & Shifts: Dropdown + Input */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Clock3 className="h-3.5 w-3.5 text-beige" />
+                    <span>مواعيد وساعات ونظام العمل (Working Hours & Shifts)</span>
+                  </label>
 
-              {/* Requirements */}
-              <div>
-                <label className="field-label">Requirements (EN) — one per line <span className="text-beige">👁</span></label>
-                <textarea rows={4} className={inp}
-                  placeholder={"Age 18–35\nBasic English\nUniversity enrollment proof"}
-                  value={requirements.join("\n")}
-                  onChange={(e) => setRequirements(e.target.value.split("\n"))}
+                  <select
+                    value={selectedHoursPreset}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedHoursPreset(val);
+                      if (val !== "custom") {
+                        const matched = PRESET_WORKING_HOURS.find((x) => x.en === val);
+                        if (matched) {
+                          setWorkingHours(matched.en);
+                        }
+                      }
+                    }}
+                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
+                  >
+                    <option value="custom">✍️ ساعات عمل مخصصة...</option>
+                    {PRESET_WORKING_HOURS.map((item) => (
+                      <option key={item.en} value={item.en}>
+                        {item.en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <input
+                  className={inp}
+                  placeholder="مثال: 8 hrs/day · 5–6 days/week (40–48 hrs/wk)"
+                  value={workingHours}
+                  onChange={(e) => setWorkingHours(e.target.value)}
                 />
               </div>
-              <div>
-                <label className="field-label">المتطلبات (عربي) — سطر لكل متطلب <span className="text-beige">👁</span></label>
-                <textarea rows={4} className={inp} dir="rtl"
-                  placeholder={"العمر 18–35\nإنجليزية بسيطة\nإثبات قيد الدراسة"}
-                  value={requirementsAr.join("\n")}
-                  onChange={(e) => setRequirementsAr(e.target.value.split("\n"))}
-                />
+
+              {/* Accommodation: Dropdown + EN + AR */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5 text-beige" />
+                    <span>مواصفات السكن الموفر (Accommodation)</span>
+                  </label>
+
+                  <select
+                    value={selectedAccomPreset}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedAccomPreset(val);
+                      if (val !== "custom") {
+                        const matched = PRESET_ACCOMMODATION.find((x) => x.en === val);
+                        if (matched) {
+                          setAccommodation(matched.en);
+                          setAccommodationAr(matched.ar);
+                        }
+                      }
+                    }}
+                    className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-medium outline-none focus:border-beige"
+                  >
+                    <option value="custom">✍️ سكن مخصص (Custom)...</option>
+                    {PRESET_ACCOMMODATION.map((item) => (
+                      <option key={item.en} value={item.en}>
+                        {item.en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] font-semibold text-muted-foreground">Housing (English)</span>
+                      <button
+                        type="button"
+                        onClick={() => setAccommodationAr(autoTranslateToAr("accommodation", accommodation))}
+                        className="text-[10px] text-navy dark:text-beige underline font-semibold flex items-center gap-0.5"
+                      >
+                        <Wand2 className="h-2.5 w-2.5" /> ترجم
+                      </button>
+                    </div>
+                    <input
+                      className={inp}
+                      placeholder="e.g. Provided free by employer (Furnished staff housing)"
+                      value={accommodation}
+                      onChange={(e) => {
+                        setAccommodation(e.target.value);
+                        if (!accommodationAr || accommodationAr === autoTranslateToAr("accommodation", accommodation)) {
+                          setAccommodationAr(autoTranslateToAr("accommodation", e.target.value));
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">السكن بالعربية</span>
+                    <input
+                      className={inp}
+                      placeholder="مثال: سكن موظفين مؤثث بالكامل مجاناً من جهة العمل"
+                      value={accommodationAr}
+                      onChange={(e) => setAccommodationAr(e.target.value)}
+                      dir="rtl"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Requirements & Criteria with Quick Chips */}
+              <div className="rounded-2xl border border-border bg-secondary/30 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <CheckSquare className="h-3.5 w-3.5 text-beige" />
+                    <span>شروط ومتطلبات القبول (سطر لكل شرط)</span>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const translated = requirements
+                        .filter((r) => r.trim().length > 0)
+                        .map((r) => autoTranslateToAr("requirement", r));
+                      setRequirementsAr(translated);
+                    }}
+                    className="text-[11px] text-navy dark:text-beige underline font-semibold flex items-center gap-1"
+                  >
+                    <Wand2 className="h-3 w-3" /> ترجمة كافة الشروط للعربية
+                  </button>
+                </div>
+
+                {/* Quick Add Chips */}
+                <div>
+                  <span className="text-[11px] text-muted-foreground block mb-1.5">
+                    إضافة سريعة باللغتين للشرط (انقر للإضافة):
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {PRESET_REQUIREMENTS_CHIPS.map((chip) => (
+                      <button
+                        key={chip.en}
+                        type="button"
+                        onClick={() => {
+                          if (!requirements.includes(chip.en)) {
+                            setRequirements([...requirements, chip.en]);
+                            setRequirementsAr([...requirementsAr, chip.ar]);
+                          }
+                        }}
+                        className="rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-beige transition-colors shadow-2xs"
+                      >
+                        + {chip.en}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">Requirements (EN) — Line by line</span>
+                    <textarea
+                      rows={5}
+                      className={inp}
+                      placeholder={"Age 18–30\nBasic conversational English (A2)\nActive university enrollment letter"}
+                      value={requirements.join("\n")}
+                      onChange={(e) => setRequirements(e.target.value.split("\n"))}
+                    />
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground block mb-1">المتطلبات (عربي) — سطر لكل شرط</span>
+                    <textarea
+                      rows={5}
+                      className={inp}
+                      dir="rtl"
+                      placeholder={"السن من 18 إلى 30 سنة\nمستوى لغة إنجليزية أساسي\nإثبات قيد جامعي ساري"}
+                      value={requirementsAr.join("\n")}
+                      onChange={(e) => setRequirementsAr(e.target.value.split("\n"))}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* ── TAB: PRICING ────────────────────────── */}
+          {/* ════════ TAB 3: PRICING, DEPOSIT & FLIGHT ════════ */}
           {activeTab === "financial" && (
-            <div className="space-y-4">
-              {/* Student price warning */}
+            <div className="space-y-5">
+              {/* Student price limit notice */}
               {track === "student" && (
-                <div className={`rounded-xl border p-3 text-xs font-medium ${isStudentPriceOk ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-red-300 bg-red-50 text-red-800"}`}>
+                <div
+                  className={`rounded-2xl border p-3.5 text-xs font-semibold ${
+                    isStudentPriceOk
+                      ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300"
+                      : "border-red-300 bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-300"
+                  }`}
+                >
                   {isStudentPriceOk
-                    ? `✓ Student price: ${priceEgp.toLocaleString()} EGP — within 35,000 EGP limit`
-                    : `⚠ Student price: ${priceEgp.toLocaleString()} EGP — EXCEEDS 35,000 EGP limit!`}
+                    ? `✓ سعر مسار الطلاب: ${priceEgp.toLocaleString()} ج.م — متوافق مع حد 35,000 ج.م كحد أقصى.`
+                    : `⚠️ تنبيه: إجمالي السعر (${priceEgp.toLocaleString()} ج.م) يتجاوز الحد الأقصى لمسار الطلاب (35,000 ج.م)!`}
                 </div>
               )}
 
+              {/* Price, Deposit, Installments Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="field-label">Total Price (€) * <span className="text-beige">👁</span></label>
-                  <input type="number" className={inp} min={0} value={price} onChange={(e) => setPrice(+e.target.value)} required />
-                  <span className="text-[11px] text-muted-foreground mt-1 block">≈ {priceEgp.toLocaleString()} EGP</span>
+                <div className="rounded-2xl border border-border bg-secondary/30 p-4">
+                  <label className="text-xs font-bold text-foreground block mb-1">إجمالي سعر البرنامج (€) *</label>
+                  <input
+                    type="number"
+                    className={inp}
+                    min={0}
+                    value={price}
+                    onChange={(e) => setPrice(+e.target.value)}
+                    required
+                  />
+                  <span className="text-[11px] font-semibold text-muted-foreground mt-1.5 block">
+                    ≈ {priceEgp.toLocaleString()} جنيه مصري
+                  </span>
                 </div>
-                <div>
-                  <label className="field-label">Deposit (€) * <span className="text-beige">👁</span></label>
-                  <input type="number" className={`${inp} ${isDepositInRange ? "border-emerald-500 font-bold" : ""}`} min={0} value={deposit} onChange={(e) => setDeposit(+e.target.value)} required />
-                  <div className="flex items-center justify-between mt-1">
-                    <span className={`text-[11px] font-bold ${isDepositInRange ? "text-emerald-600" : "text-muted-foreground"}`}>≈ {depositEgp.toLocaleString()} EGP</span>
-                    {isDepositInRange ? <span className="text-[10px] text-emerald-600 font-semibold">✓ In range</span> : <span className="text-[10px] text-amber-600">Target 10k–12k</span>}
+
+                <div className="rounded-2xl border border-border bg-secondary/30 p-4">
+                  <label className="text-xs font-bold text-foreground block mb-1">مقدم التعاقد (€) *</label>
+                  <input
+                    type="number"
+                    className={`${inp} ${isDepositInRange ? "border-emerald-500 font-bold" : ""}`}
+                    min={0}
+                    value={deposit}
+                    onChange={(e) => setDeposit(+e.target.value)}
+                    required
+                  />
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className={`text-[11px] font-bold ${isDepositInRange ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
+                      ≈ {depositEgp.toLocaleString()} ج.م
+                    </span>
+                    {isDepositInRange ? (
+                      <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.2 text-[10px] font-bold">
+                        ✓ في النطاق
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-amber-600 font-semibold">المستهدف 10k–12k</span>
+                    )}
                   </div>
                 </div>
-                <div>
-                  <label className="field-label">Max Installments *</label>
-                  <input type="number" className={inp} min={1} max={12} value={installments} onChange={(e) => setInstallments(+e.target.value)} required />
-                  <span className="text-[11px] text-muted-foreground mt-1 block">{monthly}€/mo ≈ {Math.round(monthly*54).toLocaleString()} EGP</span>
+
+                <div className="rounded-2xl border border-border bg-secondary/30 p-4">
+                  <label className="text-xs font-bold text-foreground block mb-1">أقصى عدد أقساط شهرية *</label>
+                  <input
+                    type="number"
+                    className={inp}
+                    min={1}
+                    max={12}
+                    value={installments}
+                    onChange={(e) => setInstallments(+e.target.value)}
+                    required
+                  />
+                  <span className="text-[11px] font-semibold text-muted-foreground mt-1.5 block">
+                    {monthly}€/شهر ≈ {Math.round(monthly * 54).toLocaleString()} ج.م
+                  </span>
                 </div>
               </div>
 
-              {/* Deposit presets */}
-              <div className="rounded-xl border border-border bg-secondary/40 p-3 space-y-2">
-                <p className="text-[11px] font-semibold text-muted-foreground">Deposit Presets (10k–12k EGP range):</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {[[185,"~9,990"],[196,"~10,580"],[204,"~11,016"],[214,"~11,556"],[222,"~11,988"]].map(([v,l]) => (
-                    <button key={v} type="button" onClick={() => setDeposit(Number(v))}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-medium border transition-all ${deposit === v ? "bg-navy text-ivory border-navy" : "bg-background border-border hover:border-beige"}`}>
-                      €{v} ({l} EGP)
+              {/* Deposit Presets Chips */}
+              <div className="rounded-2xl border border-border bg-secondary/40 p-4 space-y-2">
+                <span className="text-xs font-bold text-foreground block">
+                  نماذج المقدمات القياسية المعتمدة (نطاق 10,000 إلى 12,000 ج.م):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    [185, "~9,990 ج.م (الحد الأدنى)"],
+                    [196, "~10,580 ج.م (القياسي الموصى به)"],
+                    [204, "~11,016 ج.م (المتوسط المعتمد)"],
+                    [214, "~11,556 ج.م (المميز)"],
+                    [222, "~11,988 ج.م (الحد الأقصى)"],
+                  ].map(([val, label]) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => setDeposit(Number(val))}
+                      className={`rounded-xl px-3 py-1.5 text-xs font-semibold border transition-all ${
+                        deposit === val
+                          ? "bg-navy text-ivory border-navy shadow-xs"
+                          : "bg-background border-border text-foreground hover:border-beige"
+                      }`}
+                    >
+                      €{val} — {label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Flight option */}
-              <div className="rounded-xl border border-border bg-secondary/40 p-3 space-y-3">
+              {/* Flight Ticket Option */}
+              <div className="rounded-2xl border border-border bg-secondary/40 p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                    <Plane className="h-3.5 w-3.5 text-beige" />
-                    Flight Option <span className="text-beige">👁 client-visible</span>
-                  </p>
+                  <span className="text-xs font-bold text-foreground flex items-center gap-2">
+                    <Plane className="h-4 w-4 text-beige" />
+                    <span>خيار تذكرة الطيران كإضافة اختيارية</span>
+                  </span>
+
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={flightEnabled} onChange={(e) => setFlightEnabled(e.target.checked)} className="accent-navy h-4 w-4" />
-                    <span className="text-xs font-medium">{flightEnabled ? "Enabled" : "Disabled"}</span>
+                    <input
+                      type="checkbox"
+                      checked={flightEnabled}
+                      onChange={(e) => setFlightEnabled(e.target.checked)}
+                      className="accent-navy h-4 w-4 rounded"
+                    />
+                    <span className="text-xs font-bold">
+                      {flightEnabled ? "مفعّل للمرشحين" : "غير متاح"}
+                    </span>
                   </label>
                 </div>
+
                 {flightEnabled && (
-                  <div>
-                    <label className="field-label">Flight Add-on Price (€) — shown to client when they select flight</label>
-                    <input type="number" className={inp} min={100} value={flightPrice} onChange={(e) => setFlightPrice(+e.target.value)} />
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {[[185,"~10k EGP"],[204,"~11k EGP"],[222,"~12k EGP"],[278,"~15k EGP (Ireland)"]].map(([v,l]) => (
-                        <button key={v} type="button" onClick={() => setFlightPrice(Number(v))}
-                          className={`rounded-lg px-2.5 py-1 text-xs border transition-all ${flightPrice === v ? "bg-navy text-ivory border-navy" : "bg-background border-border hover:border-beige"}`}>
-                          €{v} ({l})
+                  <div className="space-y-2 pt-2 border-t border-border/60">
+                    <label className="text-[11px] font-semibold text-muted-foreground block">
+                      سعر إضافة تذكرة الطيران (€):
+                    </label>
+                    <input
+                      type="number"
+                      className={inp}
+                      min={100}
+                      value={flightPrice}
+                      onChange={(e) => setFlightPrice(+e.target.value)}
+                    />
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {[
+                        [185, "~10k ج.م"],
+                        [204, "~11k ج.م (القياسي)"],
+                        [222, "~12k ج.م"],
+                        [278, "~15k ج.م (أيرلندا / بريميوم)"],
+                      ].map(([val, lbl]) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => setFlightPrice(Number(val))}
+                          className={`rounded-lg px-2.5 py-1 text-xs font-semibold border transition-all ${
+                            flightPrice === val
+                              ? "bg-navy text-ivory border-navy shadow-xs"
+                              : "bg-background border-border text-foreground hover:border-beige"
+                          }`}
+                        >
+                          €{val} ({lbl})
                         </button>
                       ))}
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-1">Client sees: +€{flightPrice} ≈ +{Math.round(Number(flightPrice)*54).toLocaleString()} EGP when flight included</p>
                   </div>
                 )}
               </div>
             </div>
           )}
 
-          {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border sticky bottom-0 bg-card pb-1">
-            <button type="button" onClick={onClose} className="rounded-full border border-border px-5 py-2.5 text-xs font-medium hover:bg-secondary transition-colors">Cancel</button>
-            <button type="submit" disabled={saving} className="flex items-center gap-2 rounded-full bg-navy px-6 py-2.5 text-xs font-semibold text-ivory hover:opacity-90 disabled:opacity-50 shadow-sm">
-              {saving ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving…</> : <><Check className="h-3.5 w-3.5" /> {mode === "add" ? "Create Program" : "Save Changes"}</>}
+          {/* Sticky Modal Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-border sticky bottom-0 bg-card pb-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full border border-border px-5 py-2.5 text-xs font-bold text-foreground hover:bg-secondary transition-colors"
+            >
+              إلغاء
             </button>
+
+            <div className="flex items-center gap-2">
+              {activeTab !== "financial" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (activeTab === "basic") setActiveTab("details");
+                    else if (activeTab === "details") setActiveTab("financial");
+                  }}
+                  className="rounded-full border border-border bg-secondary px-5 py-2.5 text-xs font-bold text-foreground hover:border-beige transition-colors"
+                >
+                  التالي ←
+                </button>
+              )}
+
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex items-center gap-2 rounded-full bg-navy px-7 py-2.5 text-xs font-bold text-ivory hover:opacity-90 disabled:opacity-50 shadow-sm transition-all"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>جاري الحفظ…</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4" />
+                    <span>{mode === "add" ? "إنشاء ونشر البرنامج" : "حفظ التعديلات"}</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>
