@@ -51,6 +51,10 @@ function Dashboard() {
   const [faculty, setFaculty] = useState<string>("");
   const [englishLevel, setEnglishLevel] = useState<string>("");
   const [nationalId, setNationalId] = useState<string>("");
+  const [currentAddress, setCurrentAddress] = useState<string>("");
+  const [hometownCity, setHometownCity] = useState<string>("");
+  const [hometownAddress, setHometownAddress] = useState<string>("");
+  const [militaryStatus, setMilitaryStatus] = useState<string>("");
 
   const [savingProfile, setSavingProfile] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -66,7 +70,7 @@ function Dashboard() {
     const meta = acc.metadata || {};
     setFullName(acc.profile?.full_name || meta.full_name || "");
     setPhoneNumber(acc.profile?.phone || meta.phone || "");
-    setCity(meta.city || "");
+    setCity(meta.city || meta.current_city || meta.governorate || "");
     setGovernorate(meta.governorate || "");
     setGender(meta.gender || "");
     setBirthDate(meta.birth_date || "");
@@ -75,6 +79,10 @@ function Dashboard() {
     setFaculty(meta.faculty || "");
     setEnglishLevel(meta.english_level || "");
     setNationalId(meta.national_id || "");
+    setCurrentAddress(meta.current_address || "");
+    setHometownCity(meta.hometown_city || "");
+    setHometownAddress(meta.hometown_address || "");
+    setMilitaryStatus(meta.military_status || "");
   }, [data]);
 
   if (isLoading || !data) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">…</div>;
@@ -109,6 +117,11 @@ function Dashboard() {
           faculty,
           english_level: englishLevel,
           national_id: nationalId,
+          current_city: city,
+          current_address: currentAddress,
+          hometown_city: hometownCity,
+          hometown_address: hometownAddress,
+          military_status: militaryStatus,
         },
       });
       setSaveSuccess(true);
@@ -402,6 +415,8 @@ function Dashboard() {
                             ...a,
                             full_name: a.full_name || account.profile?.full_name || fullName,
                             phone: a.phone || account.profile?.phone || phoneNumber,
+                            email: account.profile?.email || user?.email,
+                            user_metadata: account.metadata || {},
                           }}
                           onDocChange={() => queryClient.invalidateQueries({ queryKey: ["account"] })}
                         />
@@ -510,7 +525,7 @@ function Dashboard() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                            {tr("Governorate / City", "المحافظة / المدينة")}
+                            {tr("Governorate / Current City", "محافظة الإقامة الحالية")}
                           </label>
                           <input
                             className={input}
@@ -520,6 +535,46 @@ function Dashboard() {
                           />
                         </div>
 
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                            {tr("Current Detailed Address", "العنوان الحالي بالتفصيل")}
+                          </label>
+                          <input
+                            className={input}
+                            value={currentAddress}
+                            onChange={(e) => setCurrentAddress(e.target.value)}
+                            placeholder={tr("Street, building, district...", "الشارع، رقم العمارة، الحي...")}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                            {tr("Hometown Governorate (Origin)", "المحافظة الأصلية (محل الميلاد / الوطن)")}
+                          </label>
+                          <input
+                            className={input}
+                            value={hometownCity}
+                            onChange={(e) => setHometownCity(e.target.value)}
+                            placeholder={tr("Original governorate...", "محافظة النشأة أو الميلاد...")}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                            {tr("Hometown Detailed Address", "العنوان الأصلي (محل الإقامة الدائم)")}
+                          </label>
+                          <input
+                            className={input}
+                            value={hometownAddress}
+                            onChange={(e) => setHometownAddress(e.target.value)}
+                            placeholder={tr("Original hometown address...", "العنوان الدائم بالأصل...")}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-xs font-semibold text-muted-foreground block mb-1">
                             {tr("Gender", "النوع / الجنس")}
@@ -532,6 +587,24 @@ function Dashboard() {
                             <option value="">{tr("Select Gender", "اختر النوع")}</option>
                             <option value="male">{tr("Male", "ذكر")}</option>
                             <option value="female">{tr("Female", "أنثى")}</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                            {tr("Military Service Status (Males)", "الموقف من التجنيد (للذكور)")}
+                          </label>
+                          <select
+                            className={input}
+                            value={militaryStatus}
+                            onChange={(e) => setMilitaryStatus(e.target.value)}
+                          >
+                            <option value="">{tr("Select status", "اختر الموقف التجنيدي")}</option>
+                            <option value="مؤجل دراسياً">{tr("Student Deferment (مؤجل دراسياً)", "مؤجل دراسياً")}</option>
+                            <option value="أدى الخدمة العسكرية">{tr("Completed Service (أدى الخدمة)", "أدى الخدمة العسكرية")}</option>
+                            <option value="إعفاء نهائي">{tr("Final Exemption (إعفاء نهائي)", "إعفاء نهائي")}</option>
+                            <option value="إعفاء مؤقت">{tr("Temporary Exemption (إعفاء مؤقت)", "إعفاء مؤقت")}</option>
+                            <option value="غير مطلوب للتجنيد">{tr("Not Required / Female (غير مطلوب)", "غير مطلوب للتجنيد")}</option>
                           </select>
                         </div>
                       </div>

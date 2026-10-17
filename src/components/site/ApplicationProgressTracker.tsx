@@ -62,39 +62,47 @@ interface ApplicationProgressTrackerProps {
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
-function parseTrackerNotes(raw: any) {
-  if (!raw) return { meta: {} as Record<string, any>, rejectionReason: "" };
-  if (typeof raw === "object") {
-    return {
-      meta: raw,
-      rejectionReason: String(raw["rejection_reason"] || raw["rejectionReason"] || ""),
-    };
-  }
-  const text = String(raw).trim();
-  let rejectionReason = "";
+function parseTrackerNotes(raw: any, userMeta?: any) {
   let meta: Record<string, any> = {};
+  let rejectionReason = "";
 
-  const rejMatch = text.match(/\[REJECTION_REASON:\s*([^\]]+)\]/i);
-  if (rejMatch && rejMatch[1]) {
-    rejectionReason = rejMatch[1].trim();
+  if (userMeta && typeof userMeta === "object") {
+    meta = { ...userMeta };
   }
 
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    try {
-      meta = JSON.parse(jsonMatch[0]);
-      if (meta["rejection_reason"] && !rejectionReason) {
-        rejectionReason = String(meta["rejection_reason"]);
+  if (raw) {
+    if (typeof raw === "object") {
+      meta = { ...meta, ...raw };
+      rejectionReason = String(raw["rejection_reason"] || raw["rejectionReason"] || "");
+    } else {
+      const text = String(raw).trim();
+      const rejMatch = text.match(/\[REJECTION_REASON:\s*([^\]]+)\]/i);
+      if (rejMatch && rejMatch[1]) {
+        rejectionReason = rejMatch[1].trim();
       }
-    } catch {}
-  } else {
-    try {
-      meta = JSON.parse(text);
-      if (meta["rejection_reason"] && !rejectionReason) {
-        rejectionReason = String(meta["rejection_reason"]);
+
+      const genderMatch = text.match(/\[GENDER:\s*([^\]]+)\]/i);
+      if (genderMatch && genderMatch[1] && !meta["gender"]) {
+        meta["gender"] = genderMatch[1].trim();
       }
-    } catch {}
+
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          meta = { ...meta, ...parsed };
+          if (parsed["rejection_reason"]) rejectionReason = String(parsed["rejection_reason"]);
+        } catch {}
+      } else {
+        try {
+          const parsed = JSON.parse(text);
+          meta = { ...meta, ...parsed };
+          if (parsed["rejection_reason"]) rejectionReason = String(parsed["rejection_reason"]);
+        } catch {}
+      }
+    }
   }
+
   return { meta, rejectionReason };
 }
 
@@ -108,7 +116,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   const [uploadSuccessMsg, setUploadSuccessMsg] = useState<string | null>(null);
 
   // Parse notes and rejection metadata
-  const { meta: notesData, rejectionReason } = parseTrackerNotes(application.notes);
+  const { meta: notesData, rejectionReason } = parseTrackerNotes(application.notes, application.user_metadata);
   const isRejected = application.status === "rejected";
 
   // 6 Journey Milestones
@@ -894,6 +902,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
+            {/* 1. Full Name */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "الاسم الكامل" : "Full Name"}</span>
               <p className="font-bold text-foreground text-sm">
@@ -901,27 +910,90 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               </p>
             </div>
 
+            {/* 2. Phone / WhatsApp */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "رقم الهاتف / الواتساب" : "Phone / WhatsApp"}</span>
-              <p className="font-mono font-bold text-foreground text-sm">
+              <p className="font-mono font-bold text-foreground text-sm" dir="ltr">
                 {application.phone || "—"}
               </p>
             </div>
 
+            {/* 3. Email */}
+            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
+              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "البريد الإلكتروني" : "Email Address"}</span>
+              <p className="font-mono font-bold text-foreground truncate text-xs" title={application.email || notesData["email"] || "—"}>
+                {application.email || notesData["email"] || "—"}
+              </p>
+            </div>
+
+            {/* 4. National ID */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "الرقم القومي المصري" : "National ID"}</span>
-              <p className="font-mono font-bold text-foreground text-sm">
+              <p className="font-mono font-bold text-foreground text-sm" dir="ltr">
                 {notesData["national_id"] || "—"}
               </p>
             </div>
 
+            {/* 5. Gender & Birth Date */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "النوع وتاريخ الميلاد" : "Gender & Birth Date"}</span>
               <p className="font-bold text-foreground">
-                {isMale ? (ar ? "ذكر" : "Male") : (ar ? "أنثى" : "Female")} · {notesData["birth_date"] || "—"}
+                {isMale ? (ar ? "ذكر" : "Male") : (ar ? "أنثى" : "Female")} {notesData["birth_date"] ? `· ${notesData["birth_date"]}` : ""}
               </p>
             </div>
 
+            {/* 6. English Level */}
+            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
+              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "مستوى اللغة الإنجليزية" : "English Level"}</span>
+              <p className="font-bold text-foreground">
+                {notesData["english_level"] || notesData["english"] || "—"}
+              </p>
+            </div>
+
+            {/* 7. Current Residence (محل الإقامة الحالي) */}
+            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
+              <span className="text-muted-foreground block text-[11px] mb-1 flex items-center gap-1">
+                <MapPin className="h-3 w-3 text-beige" />
+                {ar ? "محل الإقامة الحالي (المحافظة والعنوان)" : "Current Residence"}
+              </span>
+              <p className="font-bold text-foreground">
+                {notesData["current_city"] || notesData["city"] || "—"}
+              </p>
+              {(notesData["current_address"] || notesData["address"]) && (
+                <p className="text-[11px] text-muted-foreground mt-0.5 break-words">
+                  {notesData["current_address"] || notesData["address"]}
+                </p>
+              )}
+            </div>
+
+            {/* 8. Hometown / Origin (الوطن ومحل الإقامة الأصلي) */}
+            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
+              <span className="text-muted-foreground block text-[11px] mb-1 flex items-center gap-1">
+                <Home className="h-3 w-3 text-beige" />
+                {ar ? "الوطن ومحل الإقامة الأصلي" : "Hometown / Origin"}
+              </span>
+              <p className="font-bold text-foreground">
+                {notesData["hometown_city"] || notesData["origin_city"] || notesData["governorate"] || notesData["current_city"] || "—"}
+              </p>
+              {(notesData["hometown_address"] || notesData["origin_address"]) && (
+                <p className="text-[11px] text-muted-foreground mt-0.5 break-words">
+                  {notesData["hometown_address"] || notesData["origin_address"]}
+                </p>
+              )}
+            </div>
+
+            {/* 9. Military Status (الموقف التجنيدي للذكور) */}
+            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
+              <span className="text-muted-foreground block text-[11px] mb-1 flex items-center gap-1">
+                <ShieldCheck className="h-3 w-3 text-beige" />
+                {ar ? "الموقف من التجنيد" : "Military Status"}
+              </span>
+              <p className="font-bold text-foreground">
+                {notesData["military_status"] || (isMale ? (ar ? "مؤجل دراسياً / تصريح سفر سياحي" : "Student deferment") : (ar ? "معفاة (أنثى)" : "Exempt (Female)"))}
+              </p>
+            </div>
+
+            {/* 10. University & Faculty */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "الجامعة والكلية" : "University & Faculty"}</span>
               <p className="font-bold text-foreground">
@@ -929,6 +1001,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               </p>
             </div>
 
+            {/* 11. Academic Status */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
               <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "الموقف الدراسي / الأكاديمي" : "Academic Status"}</span>
               <p className="font-bold text-foreground">
@@ -936,25 +1009,17 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               </p>
             </div>
 
+            {/* 12. Promo Code & Contract Duration */}
             <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
-              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "المحافظة والعنوان" : "Governorate & Address"}</span>
-              <p className="font-bold text-foreground">
-                {notesData["current_city"] || notesData["city"] || "—"} {notesData["current_address"] ? `— ${notesData["current_address"]}` : ""}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
-              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "الموقف التجنيدي (للذكور)" : "Military Status"}</span>
-              <p className="font-bold text-foreground">
-                {notesData["military_status"] || (isMale ? (ar ? "مؤجل دراسياً / تصريح سفر سياحي" : "Student deferment") : "—")}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-secondary/30 p-3.5">
-              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "كود الخصم الترويجي" : "Promo Code"}</span>
+              <span className="text-muted-foreground block text-[11px] mb-1">{ar ? "كود الخصم والمدة" : "Promo Code & Duration"}</span>
               <p className="font-mono font-bold text-foreground">
                 {application.promo_code ? `🏷 ${application.promo_code}` : "—"}
               </p>
+              {notesData["contract_duration"] && (
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  ⏱ {notesData["contract_duration"]}
+                </p>
+              )}
             </div>
           </div>
 
@@ -1076,13 +1141,13 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
 
             <div className="space-y-2.5">
               {[
-                ar ? "جواز السفر (سارٍ لأكثر من 12 شهر)" : "Valid passport (12+ months)",
+                ar ? "جواز السفر (سارٍ لمدة 6 أشهر على الأقل)" : "Valid Passport (at least 6 months validity)",
                 ar ? "بطاقة الرقم القومي (الوجهان)" : "National ID (Both sides)",
-                ar ? "صورة شخصية حديثة بخلفية بيضاء" : "Recent passport photo",
-                ar ? "الشهادة / إثبات القيد الجامعي" : "Degree / University certificate",
-                ar ? "صحيفة الحالة الجنائية (فيش وتشبيه)" : "Police clearance",
-                ar ? "شهادة صحية / فحص طبي" : "Medical certificate",
-                ...(isMale ? [ar ? "وثيقة الموقف من التجنيد 🪖" : "Military Service Status Document 🪖"] : []),
+                ar ? "صورة شخصية حديثة (خلفية بيضاء)" : "Recent Personal Photo (White background)",
+                ar ? "المؤهل الدراسي / إثبات القيد الجامعي" : "Degree / University Certificate",
+                ar ? "شهادة الموقف من التجنيد (للذكور)" : "Military Service Certificate (for males)",
+                ar ? "صحيفة الحالة الجنائية (فيش وتشبيه)" : "Criminal Record Clearance",
+                ar ? "شهادة صحية / فحص طبي" : "Medical Health Certificate",
               ].map((dt) => {
                 const doc = docs.find((d) => d.doc_type === dt || d.doc_type.includes(dt.slice(0, 8)));
                 const isApproved = doc?.status === "approved";

@@ -24,7 +24,7 @@ import {
   Mail, Phone, MapPin, Calendar, Copy, Check, ExternalLink, Link2, Trash2, RefreshCw,
   Sparkles, Filter, Layers, CheckSquare, Loader2, CreditCard, BookOpen, Send, User,
   FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck, FileBadge,
-  Mic, Info, ArrowRight, type LucideIcon,
+  Mic, Info, ArrowRight, Home, type LucideIcon,
 } from "lucide-react";
 import { AdminChatTab } from "@/components/admin/AdminChatTab";
 import { AdminMaterialsTab } from "@/components/admin/AdminMaterialsTab";
@@ -69,7 +69,9 @@ function statusColor(s: string) {
 }
 
 function Admin() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const ar = lang === "ar";
+  const tr = (en: string, a: string) => (ar ? a : en);
   const qc = useQueryClient();
   const fetchAdmin = useServerFn(getAdminFull);
   const setComm = useServerFn(adminSetCommission);
@@ -137,15 +139,15 @@ function Admin() {
   }, []);
 
   const tabs: [Tab, string, typeof Globe][] = [
-    ["overview", "Overview", LayoutDashboard],
-    ["chat", "Live Chat", MessageSquare],
-    ["applications", "Applications", Briefcase],
-    ["programs", "Programs", TrendingUp],
-    ["countries", "Countries", Globe],
-    ["partners", "Partners", Users],
-    ["partner_settings", "Partner Settings", Award],
-    ["materials", "Materials", BookOpen],
-    ["broadcast", "Broadcast", Send],
+    ["overview", tr("Overview", "نظرة عامة"), LayoutDashboard],
+    ["chat", tr("Live Chat", "الدردشة الحية"), MessageSquare],
+    ["applications", tr("Applications", "الطلبات والتقديمات"), Briefcase],
+    ["programs", tr("Programs", "البرامج والوظائف"), TrendingUp],
+    ["countries", tr("Countries", "الدول والوجهات"), Globe],
+    ["partners", tr("Partners", "الشركاء والمسوقين"), Users],
+    ["partner_settings", tr("Partner Settings", "إعدادات العمولات"), Award],
+    ["materials", tr("Materials", "المواد التسويقية"), BookOpen],
+    ["broadcast", tr("Broadcast", "البث والإشعارات"), Send],
   ];
 
   if (isLoading) return <div className="flex min-h-screen items-center justify-center text-muted-foreground animate-pulse">Loading…</div>;
@@ -431,14 +433,38 @@ const STAGE_LABELS_EN = ["Application & Docs", "Deposit", "Pre-Interview", "Inte
 const STAGE_LABELS_AR = ["تقديم ومستندات", "ديبوزت", "بري انترفيو", "انترفيو", "التصريح والتأشيرة", "جاهز للسفر"];
 
 const PREDEFINED_REJECTION_REASONS = [
-  "عدم استيفاء الشروط الأساسية أو المؤهلات المطلوبة لهذا البرنامج",
-  "المستندات أو الأوراق المرفقة غير واضحة أو ناقصة (مثل الجواز أو شهادة التخرج)",
-  "عدم توافق المؤهل الدراسي أو الخبرة العملية مع شروط دولة العمل المستضيفة",
-  "تم اكتمال العدد المطلوب والمقاعد المتاحة لهذا البرنامج في الوقت الحالي",
-  "جواز السفر غير سارٍ أو متبقي عليه مدة صلاحية أقل من 12 شهراً",
-  "الموقف من التجنيد غير مكتمل أو لا يسمح بالسفر في الفترة الحالية",
-  "عدم اجتياز متطلبات المقابلة الشخصية أو مستوى اللغة المطلوب",
-  "custom",
+  {
+    ar: "عدم استيفاء الشروط الأساسية أو المؤهلات المطلوبة لهذا البرنامج",
+    en: "Does not meet essential criteria or qualifications required for this program",
+  },
+  {
+    ar: "المستندات أو الأوراق المرفقة غير واضحة أو ناقصة (مثل الجواز أو شهادة التخرج)",
+    en: "Uploaded documents are incomplete or unclear (e.g. passport or degree certificate)",
+  },
+  {
+    ar: "عدم توافق المؤهل الدراسي أو الخبرة العملية مع شروط دولة العمل المستضيفة",
+    en: "Educational qualification or work experience does not match host country requirements",
+  },
+  {
+    ar: "تم اكتمال العدد المطلوب والمقاعد المتاحة لهذا البرنامج في الوقت الحالي",
+    en: "Available quotas and slots for this program are currently fully booked",
+  },
+  {
+    ar: "جواز السفر غير سارٍ أو متبقي عليه مدة صلاحية أقل من 6 أشهر",
+    en: "Passport validity is expired or less than the required 6 months",
+  },
+  {
+    ar: "الموقف من التجنيد غير مكتمل أو لا يسمح بالسفر في الفترة الحالية",
+    en: "Military status is unresolved or does not permit travel at this time",
+  },
+  {
+    ar: "عدم اجتياز متطلبات المقابلة الشخصية أو مستوى اللغة المطلوب",
+    en: "Did not meet English language proficiency or personal interview benchmarks",
+  },
+  {
+    ar: "custom",
+    en: "custom",
+  },
 ];
 
 interface ApplicantMeta {
@@ -450,40 +476,64 @@ interface ApplicantMeta {
   faculty?: string;
   academic_year?: string;
   graduation_year?: string;
+  english_level?: string;
+  english?: string;
   current_city?: string;
+  city?: string;
   current_address?: string;
+  address?: string;
   hometown_city?: string;
+  origin_city?: string;
+  governorate?: string;
   hometown_address?: string;
+  origin_address?: string;
   gender?: string;
   military_status?: string;
   birth_date?: string;
   flight_included?: boolean | string;
   contract_duration?: string;
   rejection_reason?: string;
+  email?: string;
 }
 
-function parseAppNotes(notes: string | null | undefined): { meta: ApplicantMeta; rejectionReason: string | null } {
-  if (!notes) return { meta: {}, rejectionReason: null };
+function parseAppNotes(notes: string | null | undefined, userMeta?: Record<string, any>): { meta: ApplicantMeta; rejectionReason: string | null } {
   let meta: ApplicantMeta = {};
   let rejectionReason: string | null = null;
 
-  const rejMatch = notes.match(/\[REJECTION_REASON:\s*([^\]]+)\]/);
-  if (rejMatch && rejMatch[1]) {
-    rejectionReason = rejMatch[1].trim();
+  if (userMeta && typeof userMeta === "object") {
+    meta = { ...userMeta };
   }
 
-  const jsonMatch = notes.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    try {
-      meta = JSON.parse(jsonMatch[0]);
-      if (meta.rejection_reason) rejectionReason = meta.rejection_reason;
-    } catch {}
+  if (notes) {
+    const rejMatch = notes.match(/\[REJECTION_REASON:\s*([^\]]+)\]/);
+    if (rejMatch && rejMatch[1]) {
+      rejectionReason = rejMatch[1].trim();
+    }
+
+    const jsonMatch = notes.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+        meta = { ...meta, ...parsed };
+        if (parsed.rejection_reason) rejectionReason = parsed.rejection_reason;
+      } catch {}
+    } else {
+      try {
+        const parsed = JSON.parse(notes);
+        meta = { ...meta, ...parsed };
+        if (parsed.rejection_reason) rejectionReason = parsed.rejection_reason;
+      } catch {}
+    }
   }
 
   return { meta, rejectionReason };
 }
 
 function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void }) {
+  const { lang } = useLang();
+  const ar = lang === "ar";
+  const tr = (en: string, a: string) => (ar ? a : en);
+
   const setStatus   = useServerFn(adminUpdateApplicationStatus);
   const upd         = useServerFn(adminUpdateApplication);
   const setDoc      = useServerFn(adminSetDocumentStatus);
@@ -503,11 +553,18 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
   // Rejection modal state
   const [rejectionModal, setRejectionModal] = useState<{ id: string; name: string; currentReason: string } | null>(null);
-  const [rejectionSelect, setRejectionSelect] = useState<string>(PREDEFINED_REJECTION_REASONS[0] ?? "");
+  const [rejectionSelect, setRejectionSelect] = useState<string>(ar ? PREDEFINED_REJECTION_REASONS[0]!.ar : PREDEFINED_REJECTION_REASONS[0]!.en);
   const [rejectionCustomText, setRejectionCustomText] = useState<string>("");
   const [savingRejection, setSavingRejection] = useState(false);
 
-  const statuses = ["all", "submitted", "in_review", "documents", "approved", "rejected"];
+  const statuses = [
+    { key: "all", en: "All", ar: "الكل" },
+    { key: "submitted", en: "Submitted", ar: "مستلم" },
+    { key: "in_review", en: "In Review", ar: "قيد المراجعة" },
+    { key: "documents", en: "Documents", ar: "مطلوب مستندات" },
+    { key: "approved", en: "Approved", ar: "مقبول مبدئياً" },
+    { key: "rejected", en: "Rejected", ar: "مرفوض" },
+  ];
 
   const isPaymentApp = (a: any) => {
     if (!a.notes) return false;
@@ -521,7 +578,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       return true;
     }
     try {
-      if (a.notes.startsWith("{")) {
+      if (typeof a.notes === "string" && a.notes.startsWith("{")) {
         const p = JSON.parse(a.notes);
         return Boolean(p.payment_method || p.payment_requested_at || p.payment_option || p.payment_summary);
       }
@@ -532,7 +589,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const paymentsCount = apps.filter(isPaymentApp).length;
   const stageCounts   = STAGE_LABELS_EN.map((_, i) => apps.filter(a => (a.stage ?? 0) === i).length);
   const statusCounts: Record<string, number> = {};
-  statuses.slice(1).forEach(s => { statusCounts[s] = apps.filter(a => a.status === s).length; });
+  statuses.slice(1).forEach(s => { statusCounts[s.key] = apps.filter(a => a.status === s.key).length; });
 
   const getEff = (a: any) => ({
     status:  optimistic[a.id]?.status       ?? a.status,
@@ -543,19 +600,25 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
   const filtered = apps.filter(a => {
     const eff = getEff(a);
-    const { meta } = parseAppNotes(eff.notes);
+    const { meta } = parseAppNotes(eff.notes, a.user_metadata);
     if (filter === "payments" && !isPaymentApp(a)) return false;
     if (filter !== "all" && filter !== "payments" && eff.status !== filter) return false;
     if (stageFilter !== "all" && eff.stage !== stageFilter) return false;
-    const q = search.toLowerCase();
-    return !q ||
+    const q = search.toLowerCase().trim();
+    if (!q) return true;
+    return (
       (a.full_name ?? "").toLowerCase().includes(q) ||
       (a.phone ?? "").includes(q) ||
       (a.promo_code ?? "").toLowerCase().includes(q) ||
       (a.user_email ?? "").toLowerCase().includes(q) ||
       (a.passport_number ?? "").toLowerCase().includes(q) ||
       (meta.national_id ?? "").includes(q) ||
-      (meta.university ?? "").toLowerCase().includes(q);
+      (meta.university ?? "").toLowerCase().includes(q) ||
+      (meta.current_city ?? "").toLowerCase().includes(q) ||
+      (meta.current_address ?? "").toLowerCase().includes(q) ||
+      (meta.hometown_city ?? "").toLowerCase().includes(q) ||
+      (meta.military_status ?? "").toLowerCase().includes(q)
+    );
   });
 
   const openDoc = async (path: string) => {
@@ -578,13 +641,13 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const doStatus = async (appId: string, newStatus: string, applicantName?: string) => {
     if (newStatus === "rejected") {
       const app = apps.find(x => x.id === appId);
-      const { rejectionReason } = parseAppNotes(app?.notes);
+      const { rejectionReason } = parseAppNotes(app?.notes, app?.user_metadata);
       setRejectionModal({
         id: appId,
-        name: applicantName || app?.full_name || "Applicant",
+        name: applicantName || app?.full_name || tr("Applicant", "المتقدم"),
         currentReason: rejectionReason || "",
       });
-      setRejectionSelect(PREDEFINED_REJECTION_REASONS[0] ?? "");
+      setRejectionSelect(ar ? PREDEFINED_REJECTION_REASONS[0]!.ar : PREDEFINED_REJECTION_REASONS[0]!.en);
       setRejectionCustomText(rejectionReason || "");
       return;
     }
@@ -597,12 +660,13 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
   const handleConfirmRejection = async () => {
     if (!rejectionModal) return;
-    const reason = rejectionSelect === "custom"
+    const isCustom = rejectionSelect === "custom" || rejectionSelect.includes("custom") || rejectionSelect.includes("سبب آخر") || rejectionSelect.includes("Other reason");
+    const reason = isCustom
       ? rejectionCustomText.trim()
       : rejectionSelect + (rejectionCustomText.trim() ? ` — ${rejectionCustomText.trim()}` : "");
 
     if (!reason) {
-      alert("الرجاء اختيار أو كتابة سبب الرفض الموجه للمتقدم");
+      alert(tr("Please select or write the rejection reason for the candidate.", "الرجاء اختيار أو كتابة سبب الرفض الموجه للمتقدم"));
       return;
     }
 
@@ -614,7 +678,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       setRejectionModal(null);
       onChange();
     } catch (e: any) {
-      alert(e?.message || "Failed to update rejection");
+      alert(e?.message || tr("Failed to update rejection", "فشل تحديث حالة الرفض"));
       rollback(appId, "status");
     } finally {
       setSavingRejection(false);
@@ -637,15 +701,17 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   };
 
   const doDeleteApp = async (appId: string, applicantName: string) => {
-    if (!confirm(`Are you sure you want to permanently delete the application for "${applicantName}"? This action cannot be undone.`)) {
-      return;
-    }
+    const confirmMsg = tr(
+      `Are you sure you want to permanently delete the application for "${applicantName}"? This action cannot be undone.`,
+      `هل أنت متأكد من رغبتك في حذف طلب "${applicantName}" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`
+    );
+    if (!confirm(confirmMsg)) return;
     setUpdatingId(appId);
     try {
       await delApp({ data: { id: appId } });
       onChange();
     } catch (e: any) {
-      alert(e?.message || "Failed to delete application");
+      alert(e?.message || tr("Failed to delete application", "فشل حذف الطلب"));
     } finally {
       setUpdatingId(null);
     }
@@ -668,71 +734,99 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
       {/* ══ 1. Search Bar ══ */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
-          className="w-full rounded-2xl border border-input bg-card pl-11 pr-4 py-3 text-sm placeholder:text-muted-foreground outline-none focus:border-navy shadow-xs"
-          placeholder="Search by name, National ID, phone, email, passport number, or promo code…"
+          className="w-full rounded-2xl border border-input bg-card ps-11 pe-10 py-3 text-sm placeholder:text-muted-foreground outline-none focus:border-navy dark:focus:border-beige shadow-xs transition-colors"
+          placeholder={tr(
+            "Search by candidate name, National ID, phone, email, passport, university, or promo code…",
+            "ابحث باسم المتقدم، الرقم القومي، الهاتف، الإيميل، الجواز، الجامعة، أو كود الخصم…"
+          )}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
         {search && (
           <button onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-secondary transition-colors">
+            className="absolute end-3 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-secondary transition-colors"
+            title={tr("Clear search", "مسح البحث")}>
             <X className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
         )}
       </div>
 
-      {/* ══ 2. Stage Filter Cards ══ */}
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-        {STAGE_LABELS_EN.map((label, i) => {
+      {/* ══ 2. Stage Filter Cards (Mobile & Desktop Responsive Grid) ══ */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+        {STAGE_LABELS_EN.map((labelEn, i) => {
           const Icon = (STAGE_ICONS[i] ?? ClipboardList) as LucideIcon;
           const active = stageFilter === i;
+          const labelAr = STAGE_LABELS_AR[i] ?? "";
           return (
             <button key={i}
               onClick={() => setStageFilter(active ? "all" : i)}
-              className={`flex flex-col items-start gap-1.5 rounded-2xl border p-3 text-left transition-all ${
-                active ? "border-navy bg-navy text-ivory shadow-md" : "border-border bg-card hover:border-beige hover:shadow-xs"
+              className={`flex flex-col items-start gap-1.5 rounded-2xl border p-3 text-start transition-all ${
+                active
+                  ? "border-navy bg-navy text-ivory shadow-md dark:border-beige dark:bg-beige dark:text-navy"
+                  : "border-border bg-card hover:border-beige hover:shadow-xs text-foreground"
               }`}>
-              <Icon className={`h-4 w-4 ${active ? "text-beige" : "text-muted-foreground"}`} />
-              <p className={`text-[10px] font-semibold uppercase tracking-wider leading-tight truncate w-full ${active ? "text-beige" : "text-muted-foreground"}`}>{label}</p>
-              <p className={`text-xl font-display font-bold ${active ? "text-ivory" : "text-foreground"}`}>{stageCounts[i]}</p>
+              <div className="flex w-full items-center justify-between">
+                <Icon className={`h-4 w-4 ${active ? (ar ? "text-navy dark:text-beige" : "text-beige dark:text-navy") : "text-muted-foreground"}`} />
+                <span className={`text-lg font-display font-bold ${active ? "text-inherit" : "text-foreground"}`}>
+                  {stageCounts[i]}
+                </span>
+              </div>
+              <p className={`text-[11px] font-bold leading-tight truncate w-full ${active ? "text-inherit" : "text-foreground"}`}>
+                {ar ? labelAr : labelEn}
+              </p>
+              <p className={`text-[9.5px] truncate w-full opacity-60 ${active ? "text-inherit" : "text-muted-foreground"}`}>
+                {ar ? labelEn : labelAr}
+              </p>
             </button>
           );
         })}
       </div>
 
       {/* ══ 3. Status Filter Pills ══ */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {statuses.map(s => (
-          <button key={s} onClick={() => setFilter(s)}
-            className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all ${
-              filter === s ? "border-navy bg-navy text-ivory" : "border-border hover:border-beige text-foreground"
-            }`}>
-            {s === "all" ? `All (${apps.length})` : `${s} (${statusCounts[s] ?? 0})`}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        {statuses.map(s => {
+          const count = s.key === "all" ? apps.length : (statusCounts[s.key] ?? 0);
+          const active = filter === s.key;
+          return (
+            <button key={s.key} onClick={() => setFilter(s.key)}
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-all shadow-xs ${
+                active
+                  ? "border-navy bg-navy text-ivory dark:border-beige dark:bg-beige dark:text-navy"
+                  : "border-border bg-card hover:border-beige text-foreground"
+              }`}>
+              {ar ? s.ar : s.en} <span className="opacity-70 font-mono text-[11px]">({count})</span>
+            </button>
+          );
+        })}
+
         <button onClick={() => setFilter("payments")}
-          className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-bold transition-all ${
+          className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all shadow-xs ${
             filter === "payments"
               ? "bg-amber-500 text-white border-amber-600"
-              : "border-amber-400/50 bg-amber-500/10 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20"
+              : "border-amber-400/60 bg-amber-500/10 text-amber-900 dark:text-amber-300 hover:bg-amber-500/20"
           }`}>
-          <CreditCard className="h-3 w-3" /> Payment Requests ({paymentsCount})
+          <CreditCard className="h-3.5 w-3.5" />
+          <span>{tr("Payment Requests", "طلبات السداد")}</span>
+          <span className="font-mono text-[11px]">({paymentsCount})</span>
         </button>
+
         {stageFilter !== "all" && (
           <button onClick={() => setStageFilter("all")}
-            className="flex items-center gap-1 rounded-full border border-navy/30 bg-navy/10 px-3 py-1 text-[11px] font-semibold text-navy hover:bg-navy/20 transition-colors">
-            <X className="h-3 w-3" /> Clear Stage
+            className="flex items-center gap-1 rounded-full border border-navy/30 bg-navy/10 px-3 py-1.5 text-xs font-semibold text-navy dark:text-beige hover:bg-navy/20 transition-colors">
+            <X className="h-3 w-3" />
+            <span>{tr("Clear Stage Filter", "إلغاء فلتر المرحلة")}</span>
           </button>
         )}
-        <span className="ml-auto text-xs text-muted-foreground">
-          <span className="font-bold text-foreground">{filtered.length}</span> / {apps.length}
+
+        <span className="ms-auto text-xs text-muted-foreground">
+          {tr("Showing", "المعروض")}: <span className="font-bold text-foreground">{filtered.length}</span> / {apps.length}
         </span>
       </div>
 
       {/* ══ 4. Applications List ══ */}
-      <div className="space-y-3">
+      <div className="space-y-3.5 pt-1">
         {filtered.map(a => {
           const eff        = getEff(a);
           const expanded   = exp === a.id;
@@ -743,190 +837,269 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
           const curTab     = getTab(a.id);
           const StageIcon  = STAGE_ICONS[eff.stage] ?? ClipboardList;
 
-          const { meta, rejectionReason } = parseAppNotes(eff.notes);
-          const contractDuration = meta.contract_duration || a.programs?.duration || "Standard Contract";
+          const { meta, rejectionReason } = parseAppNotes(eff.notes, a.user_metadata);
+          const contractDuration = meta.contract_duration || a.programs?.duration || tr("Standard Placement", "عقد عمل رسمي");
+
+          const candidateName = a.full_name || a.profiles?.full_name || `${meta.first_name || ""} ${meta.second_name || ""}`.trim() || tr("Applicant", "متقدم");
+          const candidatePhone = a.phone || meta.national_id || "";
+          const candidateEmail = a.user_email || a.profiles?.email || meta.email || "";
 
           return (
-            <div key={a.id} className={`rounded-3xl border bg-card overflow-hidden transition-all ${
+            <div key={a.id} className={`rounded-3xl border bg-card overflow-hidden transition-all shadow-xs hover:shadow-md ${
               eff.status === "rejected"
-                ? "border-red-300/80 dark:border-red-900/50 shadow-xs"
+                ? "border-red-300 dark:border-red-900/50 bg-red-50/10"
                 : hasPayment
-                ? "border-amber-400/70 shadow-md"
-                : "border-border shadow-xs hover:shadow-sm"
+                ? "border-amber-400/80 ring-1 ring-amber-400/30"
+                : "border-border"
             }`}>
 
-              {/* ── Summary Row (Clickable) ── */}
-              <button
-                type="button"
-                className="flex w-full items-center gap-3.5 p-4 text-start hover:bg-secondary/20 transition-colors"
-                onClick={() => setExp(expanded ? null : a.id)}>
-
-                {/* Status indicator avatar */}
-                <div className={`shrink-0 flex h-11 w-11 items-center justify-center rounded-2xl shadow-xs ${
-                  eff.status === "rejected"
-                    ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-400"
-                    : eff.deposit
-                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300"
-                    : "bg-secondary text-muted-foreground"
-                }`}>
-                  {eff.status === "rejected" ? <XCircle className="h-5 w-5" /> : <StageIcon className="h-5 w-5" />}
-                </div>
-
-                {/* Main info */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <p className="font-bold text-sm text-foreground">{a.full_name ?? a.profiles?.full_name ?? "Applicant"}</p>
-
-                    {/* Status Pill */}
-                    <span className={`${pill} ${statusColor(eff.status)} text-[11px] font-bold`}>
-                      {eff.status === "rejected" ? "✕ Rejected" : eff.status}
-                    </span>
-
-                    {/* Contract Duration Badge */}
-                    <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 dark:bg-beige/10 border border-navy/20 dark:border-beige/20 px-2.5 py-0.5 text-[11px] font-bold text-navy dark:text-beige">
-                      <Clock className="h-3 w-3" />
-                      <span>{contractDuration}</span>
-                    </span>
-
-                    {/* National ID Badge if available */}
-                    {meta.national_id && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-secondary border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
-                        🪪 {meta.national_id}
-                      </span>
-                    )}
-
-                    {/* Unified deposit badge */}
-                    {eff.deposit && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 text-[11px] font-bold text-emerald-800">
-                        <CheckCircle2 className="h-3 w-3" /> Deposit Paid
-                      </span>
-                    )}
-
-                    {hasPayment && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 text-[11px] font-bold text-amber-800 animate-pulse">
-                        <CreditCard className="h-3 w-3" /> Payment Request
-                      </span>
-                    )}
-
-                    {isBusy && <Loader2 className="h-3.5 w-3.5 animate-spin text-beige" />}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11.5px] text-muted-foreground">
-                    {a.programs?.countries?.name_en && (
-                      <span className="flex items-center gap-1 font-semibold text-foreground/90">
-                        <Globe className="h-3 w-3 text-beige" />
-                        {a.programs.countries.name_en} — {a.programs?.title_en || a.programs?.track}
-                      </span>
-                    )}
-                    {a.phone && (
-                      <span className="flex items-center gap-1 font-mono">
-                        <Phone className="h-3 w-3" />
-                        {a.phone}
-                      </span>
-                    )}
-                    {meta.university && (
-                      <span className="flex items-center gap-1 text-muted-foreground truncate max-w-[200px]">
-                        <GraduationCap className="h-3 w-3" />
-                        {meta.university}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1 ml-auto">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(a.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                    </span>
-                  </div>
-
-                  {/* Rejection Banner in summary if rejected */}
-                  {eff.status === "rejected" && rejectionReason && (
-                    <div className="mt-2 flex items-center gap-1.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 px-2.5 py-1 text-xs text-red-700 dark:text-red-300">
-                      <AlertCircle className="h-3.5 w-3.5 text-red-600 shrink-0" />
-                      <span className="font-bold">سبب الرفض:</span>
-                      <span className="truncate">{rejectionReason}</span>
+              {/* ── Summary Card Header ── */}
+              <div className="p-4 sm:p-5 flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  {/* Left: Avatar + Candidate Core Info */}
+                  <div
+                    className="flex items-start sm:items-center gap-3.5 min-w-0 cursor-pointer flex-1"
+                    onClick={() => setExp(expanded ? null : a.id)}
+                  >
+                    <div className={`shrink-0 flex h-12 w-12 items-center justify-center rounded-2xl shadow-xs ${
+                      eff.status === "rejected"
+                        ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-400"
+                        : eff.deposit
+                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300"
+                        : "bg-secondary text-muted-foreground"
+                    }`}>
+                      {eff.status === "rejected" ? <XCircle className="h-6 w-6" /> : <StageIcon className="h-6 w-6" />}
                     </div>
-                  )}
-                </div>
 
-                {/* Stage progression label */}
-                <div className="shrink-0 hidden sm:flex flex-col items-end gap-0.5 text-right">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Stage</span>
-                  <span className="text-xs font-bold text-foreground">{STAGE_LABELS_EN[eff.stage]}</span>
-                  <div className="flex gap-0.5 mt-1">
-                    {STAGE_LABELS_EN.map((_, i) => (
-                      <div key={i} className={`h-1.5 w-4 rounded-full transition-all ${
-                        i < eff.stage ? "bg-emerald-500" :
-                        i === eff.stage ? "bg-navy" : "bg-border"
-                      }`} />
-                    ))}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h4 className="font-bold text-base text-foreground leading-tight">
+                          {candidateName}
+                        </h4>
+
+                        {/* Status Pill */}
+                        <span className={`${pill} ${statusColor(eff.status)} text-[11px] font-bold`}>
+                          {eff.status === "rejected"
+                            ? (ar ? "✕ مرفوض ومغلق" : "✕ Rejected")
+                            : eff.status === "approved"
+                            ? (ar ? "✓ موافقة مبدئية" : "✓ Approved")
+                            : eff.status === "documents"
+                            ? (ar ? "⚠️ مطلوب مستندات" : "⚠️ Documents")
+                            : eff.status === "in_review"
+                            ? (ar ? "🔍 قيد المراجعة" : "🔍 In Review")
+                            : (ar ? "⏳ مستلم" : "⏳ Submitted")}
+                        </span>
+
+                        {/* Contract Duration Badge */}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 dark:bg-beige/10 border border-navy/20 dark:border-beige/20 px-2.5 py-0.5 text-[11px] font-bold text-navy dark:text-beige">
+                          <Clock className="h-3 w-3" />
+                          <span>{contractDuration}</span>
+                        </span>
+
+                        {/* National ID Pill */}
+                        {meta.national_id && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-secondary border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground" dir="ltr">
+                            🪪 {meta.national_id}
+                          </span>
+                        )}
+
+                        {/* Deposit Paid badge */}
+                        {eff.deposit && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 text-[11px] font-bold text-emerald-800">
+                            <CheckCircle2 className="h-3 w-3" /> {tr("Deposit Paid", "الديبوزت مدفوع")}
+                          </span>
+                        )}
+
+                        {/* Payment alert badge */}
+                        {hasPayment && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-500/50 px-2.5 py-0.5 text-[11px] font-bold text-amber-900 dark:text-amber-200 animate-pulse">
+                            <CreditCard className="h-3 w-3" /> {tr("Payment Request 💬", "طلب سداد جديد 💬")}
+                          </span>
+                        )}
+
+                        {isBusy && <Loader2 className="h-3.5 w-3.5 animate-spin text-beige" />}
+                      </div>
+
+                      {/* Subtitle Details: Country, Phone, Email, Academic, Date */}
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        {a.programs?.countries?.name_en && (
+                          <span className="flex items-center gap-1 font-semibold text-foreground/90">
+                            <Globe className="h-3.5 w-3.5 text-beige" />
+                            {ar ? (a.programs.countries.name_ar || a.programs.countries.name_en) : a.programs.countries.name_en} — {ar ? (a.programs?.title_ar || a.programs?.title_en) : a.programs?.title_en}
+                          </span>
+                        )}
+
+                        {a.phone && (
+                          <span className="flex items-center gap-1 font-mono text-foreground/80" dir="ltr">
+                            <Phone className="h-3 w-3" />
+                            {a.phone}
+                          </span>
+                        )}
+
+                        {meta.current_city && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3 text-beige" />
+                            {meta.current_city}
+                          </span>
+                        )}
+
+                        {meta.university && (
+                          <span className="flex items-center gap-1 truncate max-w-[200px]">
+                            <GraduationCap className="h-3 w-3" />
+                            {meta.university}
+                          </span>
+                        )}
+
+                        <span className="flex items-center gap-1 ms-auto text-[11px]">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(a.created_at).toLocaleDateString(ar ? "ar-EG" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Quick Action Buttons (Call, WhatsApp, Copy, Expand) */}
+                  <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50 justify-between sm:justify-end">
+                    {a.phone && (
+                      <>
+                        <a
+                          href={`tel:${a.phone.replace(/[^0-9+]/g, "")}`}
+                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 px-3 py-1.5 text-xs font-bold hover:bg-blue-100 transition-colors shadow-2xs"
+                          title={tr("Direct Phone Call", "اتصال هاتفي مباشر")}
+                        >
+                          <Phone className="h-3.5 w-3.5" />
+                          <span className="hidden md:inline">{tr("Call", "اتصال")}</span>
+                        </a>
+
+                        <a
+                          href={`https://wa.me/${a.phone.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-3 py-1.5 text-xs font-bold hover:bg-emerald-100 transition-colors shadow-2xs"
+                          title={tr("Chat on WhatsApp", "محادثة واتساب مباشرة")}
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const copyPayload = [
+                          `👤 ${candidateName}`,
+                          `📞 ${a.phone || "—"}`,
+                          `🪪 ${meta.national_id || "—"}`,
+                          `🌍 ${a.programs?.countries?.name_en || "—"} (${contractDuration})`,
+                          meta.current_city ? `📍 ${meta.current_city} — ${meta.current_address || ""}` : "",
+                          meta.military_status ? `🛡️ ${meta.military_status}` : "",
+                        ].filter(Boolean).join("\n");
+                        copyText(copyPayload, `quick-${a.id}`);
+                      }}
+                      className="inline-flex items-center justify-center gap-1 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-beige transition-colors shadow-2xs"
+                      title={tr("Copy applicant dossier snapshot", "نسخ ملخص بيانات المتقدم")}
+                    >
+                      {copied === `quick-${a.id}` ? (
+                        <>
+                          <Check className="h-3.5 w-3.5 text-emerald-600" />
+                          <span className="text-emerald-600 font-bold">{tr("Copied!", "تم النسخ!")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3.5 w-3.5" />
+                          <span className="hidden md:inline">{tr("Copy", "نسخ")}</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setExp(expanded ? null : a.id)}
+                      className="inline-flex items-center justify-center gap-1 rounded-xl bg-secondary/80 hover:bg-secondary px-3 py-1.5 text-xs font-bold text-foreground transition-all shadow-2xs"
+                    >
+                      <span>{expanded ? tr("Hide", "إخفاء") : tr("Details", "التفاصيل")}</span>
+                      <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+                    </button>
                   </div>
                 </div>
 
-                <ChevronDown className={`shrink-0 h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
-              </button>
+                {/* Rejection Alert Banner in summary if rejected */}
+                {eff.status === "rejected" && rejectionReason && (
+                  <div className="flex items-center gap-2 rounded-2xl bg-red-100/80 dark:bg-red-950/50 border border-red-300 dark:border-red-900/60 p-3 text-xs text-red-900 dark:text-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
+                    <span className="font-bold">{tr("Rejection Reason:", "سبب الرفض الموجه للمتقدم:")}</span>
+                    <span className="font-medium break-words flex-1">{rejectionReason}</span>
+                  </div>
+                )}
+              </div>
 
               {/* ── Expanded Dossier (Full Data View) ── */}
               {expanded && (
                 <div className="border-t border-border">
-                  {/* Tab Navigation */}
-                  <div className="flex gap-0 border-b border-border bg-secondary/30 overflow-x-auto">
+                  {/* Tab Navigation with Smooth Horizontal Scroll */}
+                  <div className="flex gap-1 border-b border-border bg-secondary/30 px-3 sm:px-5 overflow-x-auto scrollbar-hide">
                     {[
-                      { id: "overview",  label: "Workflow & Actions", Icon: LayoutDashboard },
-                      { id: "applicant", label: "Full Applicant Data", Icon: User },
-                      { id: "program",   label: "Contract & Program", Icon: Briefcase },
-                      { id: "documents", label: `Docs (${(a.application_documents ?? []).length})`, Icon: FileText },
-                      { id: "notes",     label: "Notes & Chat",       Icon: ClipboardList },
+                      { id: "overview",  label: tr("Workflow & Controls", "الإجراءات والتحكم"), Icon: LayoutDashboard },
+                      { id: "applicant", label: tr("Full Applicant Dossier", "بيانات المتقدم الشاملة"), Icon: User },
+                      { id: "program",   label: tr("Contract & Placement", "تفاصيل العقد والبرنامج"), Icon: Briefcase },
+                      { id: "documents", label: `${tr("Documents", "المستندات")} (${(a.application_documents ?? []).length})`, Icon: FileText },
+                      { id: "notes",     label: tr("Notes & Chat Log", "الملاحظات والشات"), Icon: ClipboardList },
                     ].map(t => (
                       <button key={t.id} onClick={() => setTab(a.id, t.id)}
-                        className={`flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-xs font-bold whitespace-nowrap transition-all ${
+                        className={`flex items-center gap-1.5 border-b-2 px-4 py-3 text-xs font-bold whitespace-nowrap transition-all ${
                           curTab === t.id
                             ? "border-navy text-navy bg-card dark:border-beige dark:text-beige"
-                            : "border-transparent text-muted-foreground hover:text-foreground hover:bg-card/60"
+                            : "border-transparent text-muted-foreground hover:text-foreground hover:bg-card/50"
                         }`}>
                         <t.Icon className="h-3.5 w-3.5" /> {t.label}
                       </button>
                     ))}
                   </div>
 
-                  <div className="p-5 space-y-5">
+                  <div className="p-4 sm:p-6 space-y-5">
 
-                    {/* ══ TAB 1: OVERVIEW & WORKFLOW ══ */}
+                    {/* ══ TAB 1: WORKFLOW & CONTROLS ══ */}
                     {curTab === "overview" && (
                       <div className="space-y-4">
                         {/* Status update + Rejection banner */}
                         {eff.status === "rejected" && (
                           <div className="rounded-2xl border-2 border-red-500/40 bg-red-50 dark:bg-red-950/30 p-4 space-y-2">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
                               <p className="text-xs font-bold text-red-900 dark:text-red-200 flex items-center gap-1.5">
                                 <AlertCircle className="h-4 w-4 text-red-600" />
-                                <span>طلب مرفوض — يظهر هذا الإشعار للمتقدم على لوحة حسابه:</span>
+                                <span>{tr("Application Rejected — This reason is displayed on candidate dashboard:", "طلب مرفوض — يظهر هذا الإشعار للمتقدم على حسابه:")}</span>
                               </p>
                               <button
                                 type="button"
-                                onClick={() => doStatus(a.id, "rejected", a.full_name)}
-                                className="text-xs font-semibold text-red-700 dark:text-red-300 underline hover:no-underline"
+                                onClick={() => doStatus(a.id, "rejected", candidateName)}
+                                className="text-xs font-bold text-red-700 dark:text-red-300 underline hover:no-underline"
                               >
-                                تعديل سبب الرفض
+                                {tr("Edit Reason", "تعديل سبب الرفض")}
                               </button>
                             </div>
-                            <p className="text-xs font-semibold text-red-950 dark:text-red-100 bg-white/70 dark:bg-black/20 p-2.5 rounded-xl border border-red-200 dark:border-red-900/50">
-                              {rejectionReason || "عدم استيفاء شروط البرنامج"}
+                            <p className="text-xs font-semibold text-red-950 dark:text-red-100 bg-white/70 dark:bg-black/20 p-3 rounded-xl border border-red-200 dark:border-red-900/50">
+                              {rejectionReason || tr("Criteria not met", "عدم استيفاء شروط البرنامج")}
                             </p>
                           </div>
                         )}
 
                         <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
                           <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-3">
-                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Application Controls</p>
+                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                              {tr("Application Controls & Status", "لوحة التحكم وحالة الطلب")}
+                            </p>
                             <div className="flex items-center gap-2">
                               {isBusy && <Loader2 className="h-4 w-4 animate-spin text-beige" />}
                               <button
                                 type="button"
-                                onClick={() => doDeleteApp(a.id, a.full_name || a.profiles?.full_name || "Applicant")}
+                                onClick={() => doDeleteApp(a.id, candidateName)}
                                 disabled={isBusy}
-                                className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 font-semibold px-2.5 py-1 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/40 transition-colors disabled:opacity-50"
-                                title="Permanently Delete Application"
+                                className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 font-semibold px-2.5 py-1.5 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/40 transition-colors disabled:opacity-50"
+                                title={tr("Permanently Delete Application", "حذف الطلب نهائياً")}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
-                                <span>Delete Application</span>
+                                <span>{tr("Delete Application", "حذف الطلب")}</span>
                               </button>
                             </div>
                           </div>
@@ -934,54 +1107,53 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           {/* Status + Deposit Controls */}
                           <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground font-medium">Status:</span>
+                              <span className="text-xs text-muted-foreground font-medium">{tr("Change Status:", "الحالة:")}</span>
                               <select
                                 value={eff.status}
-                                onChange={e => doStatus(a.id, e.target.value, a.full_name)}
+                                onChange={e => doStatus(a.id, e.target.value, candidateName)}
                                 disabled={isBusy}
-                                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-bold outline-none focus:border-navy cursor-pointer disabled:opacity-50"
+                                className="rounded-xl border border-input bg-background px-3 py-1.5 text-xs font-bold outline-none focus:border-navy dark:focus:border-beige cursor-pointer disabled:opacity-50"
                               >
-                                <option value="submitted">submitted (استلام الطلب)</option>
-                                <option value="in_review">in_review (قيد المراجعة)</option>
-                                <option value="documents">documents (مطلوب مستندات)</option>
-                                <option value="approved">approved (موافقة مبدئية)</option>
-                                <option value="rejected">rejected (رفض الطلب ✕)</option>
+                                <option value="submitted">{tr("submitted (Application Received)", "submitted (استلام الطلب)")}</option>
+                                <option value="in_review">{tr("in_review (Active Review)", "in_review (قيد المراجعة)")}</option>
+                                <option value="documents">{tr("documents (Documents Action)", "documents (مطلوب مستندات)")}</option>
+                                <option value="approved">{tr("approved (Passed Screening)", "approved (موافقة مبدئية)")}</option>
+                                <option value="rejected">{tr("rejected (Reject & Close ✕)", "rejected (رفض الطلب ✕)")}</option>
                               </select>
-                              <span className={`${pill} ${statusColor(eff.status)} text-[11px]`}>{eff.status}</span>
                             </div>
 
                             {/* Direct Reject Button */}
                             {eff.status !== "rejected" && (
                               <button
                                 type="button"
-                                onClick={() => doStatus(a.id, "rejected", a.full_name)}
+                                onClick={() => doStatus(a.id, "rejected", candidateName)}
                                 className="inline-flex items-center gap-1 rounded-xl border border-red-300 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 px-3 py-1.5 text-xs font-bold text-red-700 dark:text-red-400 hover:bg-red-100 transition-colors"
                               >
                                 <XCircle className="h-3.5 w-3.5" />
-                                <span>رفض الطلب مع تحديد السبب</span>
+                                <span>{tr("Reject with Reason", "رفض الطلب مع تحديد السبب")}</span>
                               </button>
                             )}
 
                             {/* Deposit toggle */}
                             <button onClick={() => doDeposit(a.id, Boolean(eff.deposit))} disabled={isBusy}
-                              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 ml-auto ${
+                              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 sm:ms-auto ${
                                 eff.deposit
-                                  ? "bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200"
+                                  ? "bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300"
                                   : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-emerald-400 hover:text-emerald-700"
                               }`}>
                               {eff.deposit
-                                ? <><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Deposit Paid ({eur(due ?? 0)})</>
-                                : <><DollarSign className="h-3.5 w-3.5" /> Mark Deposit Paid ({eur(due ?? 0)})</>}
+                                ? <><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> {tr("Deposit Paid", "الديبوزت مدفوع")} ({eur(due ?? 0)})</>
+                                : <><DollarSign className="h-3.5 w-3.5" /> {tr("Mark Deposit Paid", "تأكيد سداد الديبوزت")} ({eur(due ?? 0)})</>}
                             </button>
                           </div>
 
                           {/* Stage progression buttons */}
                           <div>
                             <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
-                              Relocation Stage (Click to Advance):
+                              {tr("Relocation Journey Stage (Click to update):", "محطة رحلة السفر الرسمية (اضغط للتحديث):")}
                             </p>
                             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-                              {STAGE_LABELS_EN.map((label, i) => {
+                              {STAGE_LABELS_EN.map((labelEn, i) => {
                                 const SIcon = (STAGE_ICONS[i] ?? ClipboardList) as LucideIcon;
                                 const isCurr = eff.stage === i;
                                 const isPast = eff.stage > i || (i === 1 && eff.deposit);
@@ -989,7 +1161,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                   <button key={i} onClick={() => doStage(a.id, i)} disabled={isBusy}
                                     className={`flex flex-col items-center gap-1 rounded-2xl p-2.5 text-xs border transition-all disabled:opacity-50 ${
                                       isCurr ? "bg-navy text-ivory border-navy shadow ring-2 ring-beige/30 dark:bg-beige dark:text-navy"
-                                      : isPast ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:border-emerald-400"
+                                      : isPast ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:border-emerald-400 dark:bg-emerald-950/30 dark:text-emerald-300"
                                       : "bg-card text-muted-foreground border-border hover:border-beige"
                                     }`}>
                                     <span className={`flex h-7 w-7 items-center justify-center rounded-full ${
@@ -997,8 +1169,12 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                     }`}>
                                       {isPast && !isCurr ? <Check className="h-3.5 w-3.5" /> : <SIcon className="h-3.5 w-3.5" />}
                                     </span>
-                                    <span className="font-semibold text-center leading-tight text-[10px]">{label}</span>
-                                    <span className="text-[9px] text-center opacity-60 leading-tight">{STAGE_LABELS_AR[i]}</span>
+                                    <span className="font-semibold text-center leading-tight text-[10px]">
+                                      {ar ? STAGE_LABELS_AR[i] : labelEn}
+                                    </span>
+                                    <span className="text-[9px] text-center opacity-60 leading-tight">
+                                      {ar ? labelEn : STAGE_LABELS_AR[i]}
+                                    </span>
                                   </button>
                                 );
                               })}
@@ -1006,19 +1182,19 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           </div>
                         </div>
 
-                        {/* Quick Data Highlights Grid */}
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        {/* Quick Highlights Grid */}
+                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                           {[
-                            { label: "Full Name",        value: a.full_name ?? "—",               Icon: User },
-                            { label: "National ID",      value: meta.national_id ?? "—",         Icon: FileBadge, copy: meta.national_id },
-                            { label: "Contract Duration",value: contractDuration,                 Icon: Clock },
-                            { label: "Phone",            value: a.phone ?? "—",                  Icon: Phone, copy: a.phone, wa: a.phone },
-                            { label: "Passport",         value: a.passport_number ?? "—",        Icon: Plane, copy: a.passport_number },
-                            { label: "Country & Track",  value: `${a.programs?.countries?.name_en ?? "—"} (${a.programs?.track ?? "—"})`, Icon: Globe },
-                            { label: "Payment Plan",     value: a.payment_plan === "full" ? "Full Payment" : `${a.installments}× Installments`, Icon: CreditCard },
-                            { label: "Partner & Code",   value: partner ? `${partner} (${a.promo_code || "Code"})` : (a.promo_code || "Direct"), Icon: Tag },
+                            { label: tr("Candidate Name", "الاسم الكامل"), value: candidateName, Icon: User },
+                            { label: tr("National ID", "الرقم القومي"), value: meta.national_id ?? "—", Icon: FileBadge, copy: meta.national_id },
+                            { label: tr("Contract Duration", "مدة العقد"), value: contractDuration, Icon: Clock },
+                            { label: tr("Phone / WhatsApp", "الهاتف والواتساب"), value: a.phone ?? "—", Icon: Phone, copy: a.phone, wa: a.phone },
+                            { label: tr("Passport Number", "رقم الجواز"), value: a.passport_number ?? "—", Icon: Plane, copy: a.passport_number },
+                            { label: tr("Country & Track", "الوجهة والمسار"), value: `${a.programs?.countries?.name_en ?? "—"} (${a.programs?.track ?? "—"})`, Icon: Globe },
+                            { label: tr("Payment Plan", "نظام السداد"), value: a.payment_plan === "full" ? tr("Full Payment", "دفع كامل") : `${a.installments}× ${tr("Installments", "أقساط")}`, Icon: CreditCard },
+                            { label: tr("Promo Code", "كود الخصم والمسوق"), value: partner ? `${partner} (${a.promo_code || "Code"})` : (a.promo_code || tr("Direct", "مباشر")), Icon: Tag },
                           ].map((item, idx) => (
-                            <div key={idx} className="rounded-xl border border-border bg-card p-3">
+                            <div key={idx} className="rounded-2xl border border-border bg-card p-3 shadow-2xs">
                               <p className="flex items-center gap-1 text-[10px] uppercase font-semibold text-muted-foreground tracking-wider mb-1">
                                 <item.Icon className="h-3 w-3 text-beige" /> {item.label}
                               </p>
@@ -1047,46 +1223,48 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
                             <FileBadge className="h-4 w-4 text-beige" />
-                            <span>الهوية والبيانات الشخصية (Civil Identity)</span>
+                            <span>{tr("Civil Identity & Personal Info", "الهوية والبيانات الشخصية الرسمية")}</span>
                           </p>
                           <div className="space-y-2.5 text-xs">
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">الاسم الكامل</span>
-                              <span className="font-bold text-foreground">{a.full_name || `${meta.first_name || ""} ${meta.second_name || ""}`.trim() || "—"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Full Name", "الاسم الكامل")}</span>
+                              <span className="font-bold text-foreground">{candidateName}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">الرقم القومي (14 رقم)</span>
-                              <div className="flex items-center gap-1.5">
+                              <span className="text-muted-foreground font-medium">{tr("National ID (14 digits)", "الرقم القومي (14 رقم)")}</span>
+                              <div className="flex items-center gap-1.5" dir="ltr">
                                 <span className="font-mono font-bold text-foreground">{meta.national_id || "—"}</span>
                                 {meta.national_id && (
-                                  <button onClick={() => copyText(meta.national_id!, `nid-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                  <button onClick={() => copyText(meta.national_id!, `nid-${a.id}`)} className="text-muted-foreground hover:text-foreground" title={tr("Copy", "نسخ")}>
                                     {copied === `nid-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                               </div>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">رقم جواز السفر</span>
-                              <div className="flex items-center gap-1.5">
+                              <span className="text-muted-foreground font-medium">{tr("Passport Number", "رقم جواز السفر")}</span>
+                              <div className="flex items-center gap-1.5" dir="ltr">
                                 <span className="font-mono font-bold text-foreground">{a.passport_number || "—"}</span>
                                 {a.passport_number && (
-                                  <button onClick={() => copyText(a.passport_number!, `pass-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                  <button onClick={() => copyText(a.passport_number!, `pass-${a.id}`)} className="text-muted-foreground hover:text-foreground" title={tr("Copy", "نسخ")}>
                                     {copied === `pass-${a.id}` ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
                                   </button>
                                 )}
                               </div>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">تاريخ الميلاد</span>
+                              <span className="text-muted-foreground font-medium">{tr("Birth Date", "تاريخ الميلاد")}</span>
                               <span className="font-semibold">{a.birth_date || meta.birth_date || "—"}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">النوع / الجنس</span>
-                              <span className="font-semibold">{meta.gender === "female" ? "أنثى (Female)" : "ذكر (Male)"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Gender", "النوع / الجنس")}</span>
+                              <span className="font-semibold">{meta.gender === "female" ? tr("Female", "أنثى") : tr("Male", "ذكر")}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2">
-                              <span className="text-muted-foreground font-medium">الموقف من التجنيد</span>
-                              <span className="font-semibold">{meta.military_status || "—"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Military Status", "الموقف من التجنيد")}</span>
+                              <span className="font-bold text-navy dark:text-beige">
+                                {meta.military_status || (meta.gender === "female" ? tr("Exempt (Female)", "معفاة (أنثى)") : tr("Student deferment", "مؤجل دراسياً / تصريح سفر سياحي"))}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -1095,48 +1273,60 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
                             <GraduationCap className="h-4 w-4 text-beige" />
-                            <span>المؤهل والمسار التعليمي (Academic Profile)</span>
+                            <span>{tr("Education & Academic Profile", "المؤهل والمسار التعليمي واللغة")}</span>
                           </p>
                           <div className="space-y-2.5 text-xs">
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">المستوى التعليمي</span>
-                              <span className="font-bold text-foreground">{meta.education_level === "student" ? "طالب مقيد (Student)" : "خريج جامعي (Graduate)"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Academic Level", "المستوى التعليمي")}</span>
+                              <span className="font-bold text-foreground">{meta.education_level === "student" ? tr("Enrolled Student", "طالب مقيد (Student)") : tr("University Graduate", "خريج جامعي (Graduate)")}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">الجامعة</span>
-                              <span className="font-semibold text-foreground text-right">{meta.university || a.education || "—"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("University", "الجامعة")}</span>
+                              <span className="font-semibold text-foreground text-end">{meta.university || a.education || "—"}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">الكلية والتخصص</span>
-                              <span className="font-semibold text-foreground text-right">{meta.faculty || "—"}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Faculty & Major", "الكلية والتخصص")}</span>
+                              <span className="font-semibold text-foreground text-end">{meta.faculty || "—"}</span>
                             </div>
-                            <div className="flex justify-between items-center gap-2">
+                            <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
                               <span className="text-muted-foreground font-medium">
-                                {meta.education_level === "student" ? "الفرقة الدراسية الحالية" : "سنة التخرج"}
+                                {meta.education_level === "student" ? tr("Current Academic Year", "الفرقة الدراسية الحالية") : tr("Graduation Year", "سنة التخرج")}
                               </span>
                               <span className="font-semibold text-foreground">
-                                {meta.education_level === "student" ? (meta.academic_year ? `السنة ${meta.academic_year}` : "—") : (meta.graduation_year || "—")}
+                                {meta.education_level === "student" ? (meta.academic_year ? `${tr("Year", "الفرقة")} ${meta.academic_year}` : "—") : (meta.graduation_year || "—")}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-muted-foreground font-medium">{tr("English Proficiency", "مستوى اللغة الإنجليزية")}</span>
+                              <span className="font-bold text-foreground">
+                                {meta.english_level || meta.english || tr("Intermediate (B1)", "متوسط B1")}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        {/* 3. Address & Contact Information */}
+                        {/* 3. Address & Location (Current Residence + Hometown) */}
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
                             <MapPin className="h-4 w-4 text-beige" />
-                            <span>عناوين الإقامة والتواصل (Location & Contact)</span>
+                            <span>{tr("Location & Contact Details", "محل الإقامة، الوطن ووسائل الاتصال")}</span>
                           </p>
                           <div className="space-y-2.5 text-xs">
                             <div className="border-b border-border/40 pb-2">
-                              <p className="text-muted-foreground font-medium mb-1">الهاتف والواتساب المعتمد</p>
-                              <div className="flex items-center gap-2">
+                              <p className="text-muted-foreground font-medium mb-1">{tr("Phone / WhatsApp", "الهاتف والواتساب المعتمد")}</p>
+                              <div className="flex flex-wrap items-center gap-2" dir="ltr">
                                 <span className="font-bold font-mono text-sm text-foreground">{a.phone || "—"}</span>
                                 {a.phone && (
                                   <>
                                     <button onClick={() => copyText(a.phone, `phtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
                                       {copied === `phtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                                     </button>
+                                    <a
+                                      href={`tel:${a.phone.replace(/[^0-9+]/g,"")}`}
+                                      className="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 px-2.5 py-0.5 text-[11px] font-bold hover:opacity-90"
+                                    >
+                                      <Phone className="h-3 w-3" /> Call
+                                    </a>
                                     <a
                                       href={`https://wa.me/${a.phone.replace(/[^0-9]/g,"")}`}
                                       target="_blank"
@@ -1149,28 +1339,49 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 )}
                               </div>
                             </div>
+
                             <div className="border-b border-border/40 pb-2">
-                              <p className="text-muted-foreground font-medium mb-1">البريد الإلكتروني</p>
+                              <p className="text-muted-foreground font-medium mb-1">{tr("Email Address", "البريد الإلكتروني")}</p>
                               <div className="flex items-center gap-2">
-                                <span className="font-semibold truncate">{a.user_email || a.profiles?.email || "—"}</span>
-                                {(a.user_email || a.profiles?.email) && (
-                                  <button onClick={() => copyText(a.user_email || a.profiles?.email, `emtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
+                                <span className="font-semibold truncate">{candidateEmail || "—"}</span>
+                                {candidateEmail && (
+                                  <button onClick={() => copyText(candidateEmail, `emtab-${a.id}`)} className="text-muted-foreground hover:text-foreground">
                                     {copied === `emtab-${a.id}` ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                                   </button>
                                 )}
                               </div>
                             </div>
+
+                            {/* Current Residence */}
                             <div className="border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium block">محل الإقامة الحالي</span>
-                              <span className="font-semibold text-foreground">
-                                {meta.current_city ? `${meta.current_city} — ` : ""}{meta.current_address || "—"}
+                              <span className="text-muted-foreground font-medium block mb-0.5 flex items-center gap-1">
+                                <MapPin className="h-3 w-3 text-beige" />
+                                {tr("Current Residence (City & Detailed Address)", "محل الإقامة الحالي (المحافظة والعنوان)")}
                               </span>
+                              <span className="font-bold text-foreground block">
+                                {meta.current_city || meta.city || "—"}
+                              </span>
+                              {(meta.current_address || meta.address) && (
+                                <span className="text-[11px] text-muted-foreground block mt-0.5 break-words">
+                                  {meta.current_address || meta.address}
+                                </span>
+                              )}
                             </div>
+
+                            {/* Hometown / Origin */}
                             <div>
-                              <span className="text-muted-foreground font-medium block">المحافظة الأصلية (محل الميلاد)</span>
-                              <span className="font-semibold text-foreground">
-                                {meta.hometown_city ? `${meta.hometown_city} — ` : ""}{meta.hometown_address || "—"}
+                              <span className="text-muted-foreground font-medium block mb-0.5 flex items-center gap-1">
+                                <Home className="h-3 w-3 text-beige" />
+                                {tr("Hometown & Birthplace", "الوطن ومحل الإقامة الأصلي (محل الميلاد)")}
                               </span>
+                              <span className="font-bold text-foreground block">
+                                {meta.hometown_city || meta.origin_city || meta.governorate || meta.current_city || "—"}
+                              </span>
+                              {(meta.hometown_address || meta.origin_address) && (
+                                <span className="text-[11px] text-muted-foreground block mt-0.5 break-words">
+                                  {meta.hometown_address || meta.origin_address}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1179,34 +1390,34 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
                             <Briefcase className="h-4 w-4 text-beige" />
-                            <span>مدة العقد وخيارات الباقة (Contract & Package)</span>
+                            <span>{tr("Contract Period & Financial Plan", "مدة العقد والنظام المالي")}</span>
                           </p>
                           <div className="space-y-2.5 text-xs">
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">مدة العقد المطلوبة</span>
+                              <span className="text-muted-foreground font-medium">{tr("Contract Duration", "مدة العقد المطلوبة")}</span>
                               <span className="font-bold text-navy dark:text-beige bg-navy/5 dark:bg-beige/10 px-2.5 py-1 rounded-lg">
                                 🕒 {contractDuration}
                               </span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">تذكرة الطيران</span>
+                              <span className="text-muted-foreground font-medium">{tr("Flight Ticket", "تذكرة الطيران")}</span>
                               <span className="font-semibold">
-                                {meta.flight_included ? "مشمولة في الباقة ✈️" : "غير مشمولة (على المتقدم)"}
+                                {meta.flight_included ? tr("Included in Package (+€204)", "مشمولة في الباقة (+204€)") : tr("Not included (Self-booked)", "غير مشمولة (حجز شخصي)")}
                               </span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">نظام السداد المختار</span>
+                              <span className="text-muted-foreground font-medium">{tr("Payment Option", "نظام السداد المختار")}</span>
                               <span className="font-bold">
-                                {a.payment_plan === "full" ? "دفع كامل (Full Payment)" : `${a.installments} أقساط شهرية`}
+                                {a.payment_plan === "full" ? tr("Full Payment (Cash)", "دفع كامل (Full Payment)") : `${a.installments} ${tr("Monthly Installments", "أقساط شهرية")}`}
                               </span>
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
-                              <span className="text-muted-foreground font-medium">الشريك المحيل</span>
-                              <span className="font-semibold">{partner ? `${partner} (${a.promo_code || "كود"})` : (a.promo_code || "تقديم مباشر")}</span>
+                              <span className="text-muted-foreground font-medium">{tr("Referring Partner", "الشريك المحيل")}</span>
+                              <span className="font-semibold">{partner ? `${partner} (${a.promo_code || "Code"})` : (a.promo_code || tr("Direct Apply", "تقديم مباشر"))}</span>
                             </div>
                             <div className="flex justify-between items-center gap-2">
-                              <span className="text-muted-foreground font-medium">نسبة الخصم المطبقة</span>
-                              <span className="font-bold text-emerald-600 dark:text-emerald-400">{a.discount_percent ?? 0}% خصم</span>
+                              <span className="text-muted-foreground font-medium">{tr("Promo Discount", "نسبة الخصم المطبقة")}</span>
+                              <span className="font-bold text-emerald-600 dark:text-emerald-400">{a.discount_percent ?? 0}% {tr("Discount", "خصم")}</span>
                             </div>
                           </div>
                         </div>
@@ -1218,37 +1429,37 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2.5">
-                            <Briefcase className="h-4 w-4 text-beige" /> تفاصيل الوظيفة والعقد
+                            <Briefcase className="h-4 w-4 text-beige" /> {tr("Job & Contract Details", "تفاصيل الوظيفة والعقد")}
                           </p>
                           {[
-                            ["الدولة المستضيفة", a.programs?.countries?.name_en ?? "—"],
-                            ["المسمى الوظيفي", a.programs?.title_en ?? "—"],
-                            ["المسار", a.programs?.track === "student" ? "طلاب (Student)" : "خريجين (Graduate)"],
-                            ["مدة العقد المعتمدة", contractDuration],
-                            ["إجمالي التكلفة", eur(a.programs?.price ?? 0)],
-                            ["قيمة الديبوزت", eur(a.programs?.deposit ?? 250)],
+                            [tr("Host Country", "الدولة المستضيفة"), a.programs?.countries?.name_en ?? "—"],
+                            [tr("Job Role", "المسمى الوظيفي"), a.programs?.title_en ?? "—"],
+                            [tr("Track", "المسار"), a.programs?.track === "student" ? tr("Student Track", "طلاب (Student)") : tr("Graduate Track", "خريجين (Graduate)")],
+                            [tr("Certified Contract Period", "مدة العقد المعتمدة"), contractDuration],
+                            [tr("Total Program Cost", "إجمالي التكلفة"), eur(a.programs?.price ?? 0)],
+                            [tr("Deposit Value", "قيمة الديبوزت"), eur(a.programs?.deposit ?? 250)],
                           ].map(([l, v]) => (
                             <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
                               <span className="text-muted-foreground font-medium">{l}</span>
-                              <span className="font-bold text-foreground text-right">{v}</span>
+                              <span className="font-bold text-foreground text-end">{v}</span>
                             </div>
                           ))}
                         </div>
 
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border pb-2.5">
-                            <CreditCard className="h-4 w-4 text-beige" /> الخطة المالية
+                            <CreditCard className="h-4 w-4 text-beige" /> {tr("Financial Breakdown", "الخطة المالية")}
                           </p>
                           {[
-                            ["نظام السداد", a.payment_plan === "full" ? "دفع كامل كاش" : `${a.installments} أقساط`],
-                            ["حالة الديبوزت", eff.deposit ? "مدفوع ومؤكد ✓" : "في انتظار السداد"],
-                            ["المبلغ المطلوب الآن", eur(due ?? 0)],
-                            ["تذكرة الطيران", meta.flight_included ? "مشمولة ✈️" : "غير مشمولة"],
-                            ["كود الخصم", a.promo_code ? `${a.promo_code} (${a.discount_percent ?? 0}% خصم)` : "بدون كود"],
+                            [tr("Payment Plan", "نظام السداد"), a.payment_plan === "full" ? tr("Full Payment (Cash)", "دفع كامل كاش") : `${a.installments} ${tr("Installments", "أقساط")}`],
+                            [tr("Deposit Status", "حالة الديبوزت"), eff.deposit ? tr("Deposit Paid & Verified ✓", "مدفوع ومؤكد ✓") : tr("Awaiting Deposit", "في انتظار السداد")],
+                            [tr("Amount Due Now", "المبلغ المطلوب الآن"), eur(due ?? 0)],
+                            [tr("Flight Ticket", "تذكرة الطيران"), meta.flight_included ? tr("Included ✈️", "مشمولة ✈️") : tr("Not included", "غير مشمولة")],
+                            [tr("Promo Code", "كود الخصم"), a.promo_code ? `${a.promo_code} (${a.discount_percent ?? 0}% ${tr("off", "خصم")})` : tr("None", "بدون كود")],
                           ].map(([l, v]) => (
                             <div key={l} className="flex justify-between gap-2 text-xs border-b border-border/40 pb-2 last:border-0 last:pb-0">
                               <span className="text-muted-foreground font-medium">{l}</span>
-                              <span className="font-bold text-foreground text-right">{v}</span>
+                              <span className="font-bold text-foreground text-end">{v}</span>
                             </div>
                           ))}
                         </div>
@@ -1261,14 +1472,14 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                         {(a.application_documents ?? []).length === 0 ? (
                           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground border border-dashed border-border rounded-2xl bg-secondary/10">
                             <FileText className="h-10 w-10 mb-3 opacity-30" />
-                            <p className="text-sm font-semibold">لم يقم المتقدم برفع أي مستندات حتى الآن</p>
-                            <p className="text-xs text-muted-foreground mt-1">يمكنه رفع الجواز، السيرة الذاتية والمؤهل عبر لوحة تحكم حسابه.</p>
+                            <p className="text-sm font-semibold">{tr("No documents uploaded by candidate yet", "لم يقم المتقدم برفع أي مستندات حتى الآن")}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{tr("Passport, CV, and university enrollment can be uploaded in their dashboard.", "يمكنه رفع الجواز، السيرة الذاتية والمؤهل عبر لوحة تحكم حسابه.")}</p>
                           </div>
                         ) : (
                           <div className="rounded-2xl border border-border bg-card overflow-hidden">
                             <div className="flex items-center justify-between bg-secondary/30 px-4 py-3 border-b border-border">
-                              <p className="text-xs font-bold text-foreground">المستندات المرفوعة ({a.application_documents.length})</p>
-                              <p className="text-[11px] text-muted-foreground">اضغط للاطلاع على الملف · اعتماد أو رفض</p>
+                              <p className="text-xs font-bold text-foreground">{tr("Uploaded Documents", "المستندات المرفوعة")} ({a.application_documents.length})</p>
+                              <p className="text-[11px] text-muted-foreground">{tr("Click to preview · Approve or reject", "اضغط للاطلاع على الملف · اعتماد أو رفض")}</p>
                             </div>
                             <div className="divide-y divide-border">
                               {a.application_documents.map((d: any) => (
@@ -1285,15 +1496,15 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                     <span className={`${pill} ${statusColor(d.status)} text-[11px] font-bold`}>{d.status}</span>
                                     <button onClick={() => openDoc(d.file_path)}
                                       className="flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-semibold hover:border-beige">
-                                      <ExternalLink className="h-3 w-3" /> عرض الملف
+                                      <ExternalLink className="h-3 w-3" /> {tr("View File", "عرض الملف")}
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "approved" } }); onChange(); }}
                                       className={`${pill} border text-[11px] transition-all ${d.status === "approved" ? "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold" : "border-border hover:border-emerald-400 hover:bg-emerald-50"}`}>
-                                      <CheckCircle2 className="inline h-3 w-3 mr-0.5" /> اعتماد
+                                      <CheckCircle2 className="inline h-3 w-3 me-0.5" /> {tr("Approve", "اعتماد")}
                                     </button>
                                     <button onClick={async () => { await setDoc({ data: { id: d.id, status: "rejected" } }); onChange(); }}
                                       className={`${pill} border text-[11px] transition-all ${d.status === "rejected" ? "bg-red-100 text-red-800 border-red-300 font-bold" : "border-border hover:border-red-400 hover:bg-red-50"}`}>
-                                      <XCircle className="inline h-3 w-3 mr-0.5" /> رفض
+                                      <XCircle className="inline h-3 w-3 me-0.5" /> {tr("Reject", "رفض")}
                                     </button>
                                   </div>
                                 </div>
@@ -1304,13 +1515,13 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       </div>
                     )}
 
-                    {/* ══ TAB 5: NOTES & PAYMENT ══ */}
+                    {/* ══ TAB 5: NOTES & CHAT LOG ══ */}
                     {curTab === "notes" && (
                       <div className="space-y-4">
                         {hasPayment && eff.notes && (
                           <div className="rounded-2xl border border-amber-400/60 bg-amber-500/10 p-4">
                             <p className="flex items-center gap-1.5 text-xs font-bold text-amber-800 mb-2">
-                              <CreditCard className="h-4 w-4" /> طلب سداد قادم عبر الشات
+                              <CreditCard className="h-4 w-4" /> {tr("Payment Request from Chat", "طلب سداد قادم عبر الشات")}
                             </p>
                             <p className="text-xs font-mono whitespace-pre-wrap leading-relaxed">{eff.notes}</p>
                           </div>
@@ -1318,26 +1529,26 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
                         <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
                           <div className="flex items-center justify-between">
-                            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Internal Admin Notes</p>
+                            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{tr("Internal Admin Notes", "ملاحظات الإدارة الداخلية")}</p>
                             {notesEdit !== a.id ? (
                               <button onClick={() => { setNotesEdit(a.id); setNotesDraft(prev => ({ ...prev, [a.id]: eff.notes })); }}
                                 className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium hover:border-beige">
-                                <Pencil className="h-3 w-3" /> {eff.notes ? "Edit" : "Add Notes"}
+                                <Pencil className="h-3 w-3" /> {eff.notes ? tr("Edit", "تعديل") : tr("Add Notes", "إضافة ملاحظات")}
                               </button>
                             ) : (
                               <div className="flex items-center gap-2">
-                                <button onClick={() => setNotesEdit(null)} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-beige">Cancel</button>
+                                <button onClick={() => setNotesEdit(null)} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground hover:border-beige">{tr("Cancel", "إلغاء")}</button>
                                 <button onClick={() => doNotes(a.id)} disabled={savingNotes}
                                   className="flex items-center gap-1.5 rounded-full bg-navy px-3 py-1 text-xs font-bold text-ivory hover:bg-navy/90 disabled:opacity-50">
-                                  {savingNotes ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />} Save
+                                  {savingNotes ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />} {tr("Save", "حفظ")}
                                 </button>
                               </div>
                             )}
                           </div>
                           {notesEdit === a.id ? (
                             <textarea rows={5}
-                              className="w-full rounded-xl border border-input bg-background p-3 text-xs font-mono resize-none focus:border-navy outline-none"
-                              placeholder="Add internal notes… (payment status, follow-up, special requirements)"
+                              className="w-full rounded-xl border border-input bg-background p-3 text-xs font-mono resize-none focus:border-navy dark:focus:border-beige outline-none"
+                              placeholder={tr("Add internal notes… (payment status, follow-up, interview dates)", "أضف ملاحظات داخلية... (حالة الدفع، المتابعة، مواعيد المقابلات)")}
                               value={notesDraft[a.id] ?? ""}
                               onChange={e => setNotesDraft(prev => ({ ...prev, [a.id]: e.target.value }))}
                             />
@@ -1345,7 +1556,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             <div className="min-h-[70px] rounded-xl border border-border/50 bg-secondary/20 p-3">
                               {eff.notes
                                 ? <p className="text-xs font-mono whitespace-pre-wrap leading-relaxed">{eff.notes}</p>
-                                : <p className="text-xs text-muted-foreground italic">No internal notes.</p>}
+                                : <p className="text-xs text-muted-foreground italic">{tr("No internal notes yet.", "لا توجد ملاحظات داخلية مسجلة.")}</p>}
                             </div>
                           )}
                         </div>
@@ -1360,7 +1571,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
         })}
       </div>
 
-      {/* ══ REJECTION MODAL DIALOG ══ */}
+      {/* ══ REJECTION MODAL DIALOG (BILINGUAL) ══ */}
       {rejectionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
           <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-4">
@@ -1371,10 +1582,10 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                 </div>
                 <div>
                   <h3 className="font-bold text-base text-foreground">
-                    رفض طلب التقديم — {rejectionModal.name}
+                    {tr(`Reject Application — ${rejectionModal.name}`, `رفض طلب التقديم — ${rejectionModal.name}`)}
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    سيتم إغلاق الطلب وإظهار سبب الرفض المحدد للمتقدم على حسابه فوراً
+                    {tr("Application will be marked as rejected and this reason will immediately show on the candidate dashboard.", "سيتم إغلاق الطلب وإظهار سبب الرفض المحدد للمتقدم على حسابه فوراً")}
                   </p>
                 </div>
               </div>
@@ -1390,36 +1601,46 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
             <div className="space-y-3 text-xs">
               <div>
                 <label className="font-bold text-foreground block mb-1.5">
-                  1. اختر سبب الرفض من القائمة:
+                  {tr("1. Select rejection reason from predefined list:", "1. اختر سبب الرفض من القائمة:")}
                 </label>
                 <select
                   value={rejectionSelect}
                   onChange={e => setRejectionSelect(e.target.value)}
                   className="w-full rounded-xl border border-input bg-background p-3 text-xs font-medium outline-none focus:border-red-500"
                 >
-                  {PREDEFINED_REJECTION_REASONS.map((r, i) => (
-                    <option key={i} value={r}>
-                      {r === "custom" ? "✏️ سبب آخر (كتابة يدوية مخصصة)..." : r}
-                    </option>
-                  ))}
+                  {PREDEFINED_REJECTION_REASONS.map((r, i) => {
+                    const label = ar ? r.ar : r.en;
+                    const isCustom = r.ar === "custom";
+                    return (
+                      <option key={i} value={isCustom ? "custom" : label}>
+                        {isCustom ? tr("✏️ Other reason (Write custom reason)...", "✏️ سبب آخر (كتابة يدوية مخصصة)...") : label}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
 
               <div>
                 <label className="font-bold text-foreground block mb-1.5">
-                  2. توضيح أو كتابة تفاصيل سبب الرفض الموجه للعميل:
+                  {tr("2. Clarify or write detailed reason for the candidate:", "2. توضيح أو كتابة تفاصيل سبب الرفض الموجه للعميل:")}
                 </label>
                 <textarea
                   rows={4}
                   value={rejectionCustomText}
                   onChange={e => setRejectionCustomText(e.target.value)}
-                  placeholder="اكتب هنا أي تفاصيل إضافية تود إبلاغ العميل بها (مثل: يرجى التواصل لإعادة التقديم على دولة أخرى)..."
+                  placeholder={tr(
+                    "Write any additional details you wish to inform candidate (e.g. Please contact us to re-apply for another destination)...",
+                    "اكتب هنا أي تفاصيل إضافية تود إبلاغ العميل بها (مثل: يرجى التواصل لإعادة التقديم على دولة أخرى)..."
+                  )}
                   className="w-full rounded-xl border border-input bg-background p-3 text-xs outline-none focus:border-red-500 resize-none"
                 />
               </div>
 
               <div className="rounded-xl border border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-[11.5px] text-amber-900 dark:text-amber-200">
-                ⚠️ بمجرد تأكيد الرفض، سيتحول الطلب إلى حالة "مرفوض" ويظهر السبب للعميل على لوحة تحكمه مع إمكانية استشارته لفريق العمل عبر الشات.
+                ⚠️ {tr(
+                  "Once confirmed, status changes to 'Rejected' and candidate will be able to review this reason and consult support via chat.",
+                  "بمجرد تأكيد الرفض، سيتحول الطلب إلى حالة 'مرفوض' ويظهر السبب للعميل على لوحة تحكمه مع إمكانية استشارته لفريق العمل عبر الشات."
+                )}
               </div>
             </div>
 
@@ -1429,7 +1650,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                 onClick={() => setRejectionModal(null)}
                 className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
               >
-                إلغاء
+                {tr("Cancel", "إلغاء")}
               </button>
               <button
                 type="button"
@@ -1438,7 +1659,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                 className="inline-flex items-center gap-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white px-5 py-2 text-xs font-bold shadow-md transition-all disabled:opacity-50"
               >
                 {savingRejection ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <XCircle className="h-3.5 w-3.5" />}
-                <span>تأكيد رفض الطلب وإغلاقه</span>
+                <span>{tr("Confirm Rejection & Close File", "تأكيد رفض الطلب وإغلاقه")}</span>
               </button>
             </div>
           </div>
@@ -1448,8 +1669,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       {filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
           <Layers className="h-12 w-12 mb-3 opacity-20" />
-          <p className="text-sm font-medium">No applications found</p>
-          <p className="text-xs mt-1 opacity-70">Try adjusting search or filters</p>
+          <p className="text-sm font-medium">{tr("No applications found", "لا توجد طلبات مطابقة للبحث أو الفلتر")}</p>
+          <p className="text-xs mt-1 opacity-70">{tr("Try adjusting search keywords or active filters", "جرب تغيير مصطلح البحث أو الفلاتر النشطة")}</p>
         </div>
       )}
     </div>

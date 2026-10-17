@@ -14,7 +14,7 @@ import { createApplication, requestPaymentSupport } from "@/lib/account.function
 import {
   countries, eur, getProgram, MAX_INSTALLMENTS, type Track,
   STUDENT_DURATION_OPTIONS, GRADUATE_DURATION_OPTIONS,
-  FLIGHT_PRICE_STANDARD, FLIGHT_PRICE_PREMIUM,
+  FLIGHT_PRICE_STANDARD, FLIGHT_PRICE_PREMIUM, getDurationPriceAdjustment,
 } from "@/lib/catalog";
 import {
   UNIVERSITIES, STANDARD_FACULTIES, EGYPTIAN_GOVERNORATES, getFacultyYears
@@ -165,11 +165,13 @@ function Apply() {
   const durationOptions = program.durationOptions ?? (track === "student" ? STUDENT_DURATION_OPTIONS : GRADUATE_DURATION_OPTIONS);
   const effectiveDuration = selectedDuration || durationOptions[durationOptions.length - 1] || program.duration;
 
+  const durationAddOn = getDurationPriceAdjustment(effectiveDuration, track);
+
   // Flight add-on price
   const isIreland = country.slug === "ireland";
   const defaultFlightPrice = isIreland ? FLIGHT_PRICE_PREMIUM : FLIGHT_PRICE_STANDARD;
   const flightAddOn = flightIncluded ? (program.flightPrice ?? defaultFlightPrice) : 0;
-  const totalPrice = effectiveBasePrice + flightAddOn;
+  const totalPrice = effectiveBasePrice + durationAddOn + flightAddOn;
 
   const dueNow = plan === "full" ? totalPrice : effectiveDeposit;
   const remainingBalance = Math.max(0, totalPrice - effectiveDeposit);
@@ -190,11 +192,11 @@ function Apply() {
   const studentDocTypes = [
     ar ? "إثبات قيد جامعي حديث" : "University Enrollment Certificate",
     ar ? "بطاقة الرقم القومي (الوجهان)" : "National ID Card (Both sides)",
-    ar ? "جواز السفر سارٍ (12+ شهراً)" : "Valid Passport (12+ months)",
-    ...(f.gender === "male" ? [ar ? "شهادة / استمارة الموقف من التجنيد" : "Military Service Certificate"] : []),
-    ar ? "صورة شخصية حديثة بخلفية بيضاء" : "Recent Passport Photo (White background)",
+    ar ? "جواز السفر (سارٍ لمدة 6 أشهر على الأقل)" : "Valid Passport (at least 6 months validity)",
+    ...(f.gender === "male" ? [ar ? "شهادة الموقف من التجنيد" : "Military Service Certificate"] : []),
+    ar ? "صورة شخصية حديثة (خلفية بيضاء)" : "Recent Personal Photo (White background)",
     criminalRecordLabel,
-    ar ? "السيرة الذاتية (CV)" : "Curriculum Vitae (CV)",
+    ar ? "السيرة الذاتية باللغة الإنجليزية (CV)" : "Curriculum Vitae (CV) in English",
   ];
 
   const graduateDocTypes = [

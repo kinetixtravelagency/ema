@@ -42,6 +42,7 @@ export type Country = {
   descriptionAr: string;
   programs: Program[];
   documents: string[];
+  documentsAr?: string[];
   eligibility: string[];
   timeline: { step: string; time: string }[];
 };
@@ -64,14 +65,47 @@ export const GRADUATE_DURATION_OPTIONS = ["9 months", "12 months", "15 months", 
 export const FLIGHT_PRICE_STANDARD = 204; // ≈ 11,016 EGP — most countries
 export const FLIGHT_PRICE_PREMIUM  = 278; // ≈ 15,012 EGP — Ireland only
 
-const docs = [
-  "CV in English (السيرة الذاتية)",
-  "Valid passport (12+ months) (جواز سفر سارٍ)",
-  "Recent passport photo (صورة شخصية حديثة)",
-  "Educational certificate / Student proof (شهادة التخرج أو إثبات قيد)",
-  "Medical certificate (شهادة صحية)",
-  "Police clearance (صحيفة الحالة الجنائية)",
+// Duration-based slight price adjustment (EUR)
+export function getDurationPriceAdjustment(duration: string | undefined, track: Track = "student"): number {
+  if (!duration) return 0;
+  const d = duration.toLowerCase();
+  
+  if (track === "student" || d.includes("3") || d.includes("4") || d.includes("5") || d.includes("6")) {
+    if (d.includes("6 month") || d.includes("6 شهر")) return 60; // ≈ +3,240 EGP for 6 months
+    if (d.includes("5 month") || d.includes("5 شهر")) return 40; // ≈ +2,160 EGP for 5 months
+    if (d.includes("4 month") || d.includes("4 شهر")) return 20; // ≈ +1,080 EGP for 4 months
+    return 0; // 3 months base
+  }
+  
+  // Graduate tracks
+  if (d.includes("24 month") || d.includes("24 شهر") || d.includes("سنتين")) return 140; // ≈ +7,560 EGP
+  if (d.includes("18 month") || d.includes("18 شهر")) return 100; // ≈ +5,400 EGP
+  if (d.includes("15 month") || d.includes("15 شهر")) return 70;  // ≈ +3,780 EGP
+  if (d.includes("12 month") || d.includes("12 شهر") || d.includes("سنة")) return 40;  // ≈ +2,160 EGP
+  return 0; // 9 months base
+}
+
+export const docsEn = [
+  "Curriculum Vitae (CV) in English",
+  "Valid Passport (at least 6 months validity)",
+  "Recent Personal Photo (White background)",
+  "Educational Certificate or University Enrollment Proof",
+  "Military Service Certificate (for male applicants)",
+  "Medical Health Examination Certificate",
+  "Criminal Record Clearance Certificate (Police check)",
 ];
+
+export const docsAr = [
+  "السيرة الذاتية باللغة الإنجليزية (CV)",
+  "جواز السفر (سارٍ لمدة 6 أشهر على الأقل)",
+  "صورة شخصية حديثة (خلفية بيضاء)",
+  "المؤهل الدراسي أو إثبات القيد الجامعي",
+  "شهادة الموقف من التجنيد (للذكور)",
+  "الشهادة الصحية / الفحص الطبي المعتمد",
+  "صحيفة الحالة الجنائية (فيش وتشبيه)",
+];
+
+const docs = docsEn;
 
 export const countries: Country[] = [
   // ─── BULGARIA ────────────────────────────────────────────────────────────────

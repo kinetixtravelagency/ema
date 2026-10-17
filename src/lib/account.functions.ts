@@ -63,6 +63,11 @@ export const updateMyProfile = createServerFn({ method: "POST" })
     faculty?: string | undefined;
     english_level?: string | undefined;
     national_id?: string | undefined;
+    current_city?: string | undefined;
+    current_address?: string | undefined;
+    hometown_city?: string | undefined;
+    hometown_address?: string | undefined;
+    military_status?: string | undefined;
   }) => data)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -91,6 +96,11 @@ export const updateMyProfile = createServerFn({ method: "POST" })
         ...(data.faculty ? { faculty: data.faculty } : {}),
         ...(data.english_level ? { english_level: data.english_level } : {}),
         ...(data.national_id ? { national_id: data.national_id } : {}),
+        ...(data.current_city ? { current_city: data.current_city } : {}),
+        ...(data.current_address ? { current_address: data.current_address } : {}),
+        ...(data.hometown_city ? { hometown_city: data.hometown_city } : {}),
+        ...(data.hometown_address ? { hometown_address: data.hometown_address } : {}),
+        ...(data.military_status ? { military_status: data.military_status } : {}),
       },
     });
     return { ok: true };
@@ -808,6 +818,7 @@ export const getAdminFull = createServerFn({ method: "GET" })
         ...a,
         programs: resolvedProg,
         user_email: authUser?.email || null,
+        user_metadata: (authUser?.user_metadata || {}) as Record<string, any>,
       };
     });
 

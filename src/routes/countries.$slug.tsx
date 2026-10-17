@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronDown, Clock, FileText, Globe, TrendingUp, Clock3, Home, ListChecks, GraduationCap, Briefcase, Plane } from "lucide-react";
 import { Nav, Footer } from "@/components/site/SiteChrome";
 import { Reveal } from "@/components/site/Reveal";
-import { getCountry, eur, type Program } from "@/lib/catalog";
+import { getCountry, eur, docsAr, docsEn, type Program } from "@/lib/catalog";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/countries/$slug")({
@@ -304,9 +304,10 @@ function CountryPage() {
           <div>
             <p className="eyebrow text-muted-foreground">{t("requiredDocs")}</p>
             <ul className="mt-6 space-y-3">
-              {c.documents.map((d) => (
-                <li key={d} className="flex gap-3">
-                  <FileText className="mt-0.5 h-5 w-5 shrink-0" strokeWidth={1.25} />{d}
+              {(ar ? docsAr : docsEn).map((d) => (
+                <li key={d} className="flex gap-3 text-sm">
+                  <FileText className="mt-0.5 h-4 w-4 shrink-0 text-beige" strokeWidth={1.5} />
+                  <span>{d}</span>
                 </li>
               ))}
             </ul>
