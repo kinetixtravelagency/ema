@@ -51,7 +51,7 @@ function buildSearchIndex(): SearchResult[] {
         type: "program",
         label: p.title,
         labelAr: p.titleAr,
-        href: `/apply?program=${p.slug}`,
+        href: `/programs/${p.slug}`,
         sub: `${c.name} · ${p.duration}`,
         countryName: c.name,
         countryNameAr: c.nameAr,

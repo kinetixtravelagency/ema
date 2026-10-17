@@ -140,7 +140,13 @@ function Countries() {
 
 function Featured() {
   const { t, lang } = useLang();
-  const all = countries.flatMap((c) => c.programs.map((p) => ({ ...p, country: c })));
+  // Leave exactly one program per country visible as requested
+  const all = countries.map((c) => {
+    const specific = c.programs.filter((p) => !p.slug.endsWith("-student") && !p.slug.endsWith("-graduate"));
+    const p = specific[0] ?? c.programs[0]!;
+    return { ...p, country: c };
+  });
+
   return (
     <section className="bg-secondary/60 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
@@ -148,13 +154,13 @@ function Featured() {
         <div className="mt-12 divide-y divide-border border-y border-border">
           {all.map((p, i) => (
             <Reveal key={p.slug} delay={i * 40}>
-              <Link to="/countries/$slug" params={{ slug: p.country.slug }} className="group grid grid-cols-[1fr_auto] items-center gap-4 py-6 md:grid-cols-[2fr_1fr_1fr_1.5fr_auto]">
+              <Link to="/programs/$slug" params={{ slug: p.slug }} className="group grid grid-cols-[1fr_auto] items-center gap-4 py-6 md:grid-cols-[2fr_1fr_1fr_1.5fr_auto]">
                 <div><p className="flex items-center gap-1.5 text-xs text-muted-foreground"><MapPin className="h-3.5 w-3.5 text-beige" strokeWidth={1.5} />{lang === "ar" ? p.country.nameAr : p.country.name}</p><p className="mt-1 font-display text-xl font-medium">{lang === "ar" ? p.titleAr : p.title}</p></div>
                 <p className="hidden text-sm text-muted-foreground md:block">{lang === "ar" ? p.categoryAr : p.category}</p>
                 <p className="hidden text-sm text-muted-foreground md:block">{p.duration}</p>
                 <div className="hidden text-end md:block">
                   <p className="text-xs text-muted-foreground">{lang === "ar" ? "المقدم" : "Deposit"}: <span className="font-display text-base font-bold text-navy dark:text-beige">{eur(p.deposit)}</span></p>
-                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {lang === "ar" ? "ج.م" : "EGP"}</p>
                   <p className="text-[11px] text-muted-foreground">{lang === "ar" ? "الإجمالي" : "Total"}: {eur(p.price)}</p>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-foreground rtl:rotate-180 rtl:group-hover:-translate-x-1" strokeWidth={1.25} />

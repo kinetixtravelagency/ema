@@ -75,21 +75,23 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
                 </span>
               ) : null}
             </div>
-            <h2 className="mt-1 text-xl font-semibold leading-snug">{title}</h2>
+            <Link to="/programs/$slug" params={{ slug: p.slug }} className="group/title block">
+              <h2 className="mt-1 text-xl font-semibold leading-snug group-hover/title:text-beige transition-colors">{title}</h2>
+            </Link>
             <p className="mt-1 text-sm text-muted-foreground">{category}</p>
           </div>
           <div className="text-end shrink-0">
             <span className="text-xs text-muted-foreground block">{ar ? "المقدم المطلوب" : "Deposit Required"}</span>
             <p className="font-display text-2xl font-bold text-navy dark:text-beige">{eur(p.deposit)}</p>
-            <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}</p>
             <span className="text-[11px] text-muted-foreground block mt-1">{ar ? "إجمالي البرنامج" : "Total"}: {eur(p.price)}</span>
           </div>
         </div>
 
         {/* Expected Salary Badge */}
         {salary && (
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-sm font-medium text-emerald-700">
-            <TrendingUp className="h-3.5 w-3.5" strokeWidth={2} />
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-secondary/80 border border-border px-3 py-1.5 text-sm font-medium text-foreground">
+            <TrendingUp className="h-3.5 w-3.5 text-beige" strokeWidth={1.5} />
             <span>{t("expectedSalary")}: {salary}</span>
           </div>
         )}
@@ -105,7 +107,7 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
             <div>
               <p className="text-xs font-medium text-foreground">{ar ? "المقدم المطلوب" : "Deposit Required"}</p>
               <p className="font-display text-xl font-bold text-navy dark:text-beige mt-0.5">{eur(p.deposit)}</p>
-              <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}</p>
             </div>
           </div>
           <div className="rounded-xl bg-background/90 border border-border/80 px-3.5 py-2.5 flex items-center justify-between">
@@ -125,6 +127,14 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
             className="inline-flex items-center gap-2 font-medium text-sm hover:text-beige transition-colors"
           >
             {t("apply")} <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
+          </Link>
+          <Link
+            to="/programs/$slug"
+            params={{ slug: p.slug }}
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-beige transition-colors"
+          >
+            <span>{ar ? "صفحة الوظيفة" : "Job Page"}</span>
+            <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.5} />
           </Link>
           <button
             onClick={() => setOpen(!open)}

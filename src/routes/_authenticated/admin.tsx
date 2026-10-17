@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -11,6 +11,8 @@ import {
   adminUpdateLevel, adminUpdateCountry,
 } from "@/lib/account.functions";
 import { adminDeletePartner, adminSetWithdrawalStatus } from "@/lib/partner.functions";
+import { getAdminChats } from "@/lib/chat.functions";
+import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { Logo } from "@/components/site/SiteChrome";
@@ -71,9 +73,60 @@ function Admin() {
   const qc = useQueryClient();
   const fetchAdmin = useServerFn(getAdminFull);
   const setComm = useServerFn(adminSetCommission);
+  const fetchChats = useServerFn(getAdminChats);
+
   const { data, isLoading, error } = useQuery({ queryKey: ["admin-full"], queryFn: fetchAdmin, retry: false });
   const [tab, setTab] = useState<Tab>("overview");
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
+  const [latestIncomingChat, setLatestIncomingChat] = useState<{ clientName: string; text: string; convId: string } | null>(null);
+  const prevUnreadCountRef = useRef(-1);
+
   const refetch = () => qc.invalidateQueries({ queryKey: ["admin-full"] });
+
+  // Poll chat messages for Admin dashboard notifications
+  useEffect(() => {
+    let mounted = true;
+    requestNotificationPermission();
+
+    const pollChats = async () => {
+      try {
+        const res = await fetchChats();
+        if (!mounted || !res) return;
+        const total = res.totalUnread || 0;
+        setUnreadChatCount(total);
+
+        if (prevUnreadCountRef.current !== -1 && total > prevUnreadCountRef.current) {
+          playChatChime("admin");
+          const unreadConvs = (res.conversations || []).filter((c: any) => (c.unreadCount || 0) > 0);
+          const topConv = unreadConvs[0];
+          if (topConv) {
+            setLatestIncomingChat({
+              clientName: topConv.clientName,
+              text: topConv.lastMessage,
+              convId: topConv.id,
+            });
+
+            sendBrowserNotification(`💬 رسالة جديدة في اللايف شات من ${topConv.clientName}`, {
+              body: topConv.lastMessage.slice(0, 90),
+              onClick: () => {
+                setTab("chat");
+              },
+            });
+          }
+        }
+        prevUnreadCountRef.current = total;
+      } catch {
+        // silent polling error
+      }
+    };
+
+    pollChats();
+    const iv = setInterval(pollChats, 4000);
+    return () => {
+      mounted = false;
+      clearInterval(iv);
+    };
+  }, []);
 
   const tabs: [Tab, string, typeof Globe][] = [
     ["overview", "Overview", LayoutDashboard],
@@ -109,17 +162,23 @@ function Admin() {
           <Link to="/dashboard" className="text-sm text-ivory/60 hover:text-beige">{t("dashboard")}</Link>
         </div>
         {/* Tabs */}
-        <nav className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-5 pb-2 scrollbar-hide">
+        <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto px-3 sm:px-5 pb-2 scrollbar-hide">
           {tabs.map(([k, l, Icon]) => (
             <button key={k} id={`admin-tab-${k}`} onClick={() => setTab(k)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${tab === k ? "bg-beige text-navy" : "text-ivory/60 hover:text-ivory"}`}>
-              <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />{l}
+              className={`relative flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${tab === k ? "bg-beige text-navy font-bold shadow-xs" : "text-ivory/60 hover:text-ivory"}`}>
+              <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
+              <span>{l}</span>
+              {k === "chat" && unreadChatCount > 0 && (
+                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white shadow-xs animate-bounce">
+                  {unreadChatCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
       </header>
 
-      <div className="mx-auto max-w-7xl px-5 py-8">
+      <div className="mx-auto max-w-7xl px-3 sm:px-5 py-5 sm:py-8">
 
         {/* ── OVERVIEW ── */}
         {tab === "overview" && (
@@ -260,6 +319,43 @@ function Admin() {
         {/* ── BROADCAST ── */}
         {tab === "broadcast" && <AdminBroadcastTab partners={d.partners || []} />}
       </div>
+
+      {/* Floating alert toast for incoming chat message */}
+      {latestIncomingChat && tab !== "chat" && (
+        <div className="fixed bottom-6 end-6 z-50 flex max-w-sm items-center gap-3 rounded-2xl border border-beige/40 bg-navy p-4 text-ivory shadow-2xl animate-in fade-in slide-in-from-bottom-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+            <MessageSquare className="h-5 w-5 animate-pulse" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-xs font-bold text-beige truncate">
+                {latestIncomingChat.clientName}
+              </span>
+              <span className="text-[10px] bg-red-600 text-white font-bold px-1.5 py-0.2 rounded-full">
+                رسالة جديدة
+              </span>
+            </div>
+            <p className="text-xs text-ivory/80 truncate mt-0.5">
+              {latestIncomingChat.text}
+            </p>
+            <button
+              onClick={() => {
+                setTab("chat");
+                setLatestIncomingChat(null);
+              }}
+              className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-beige hover:underline"
+            >
+              فتح المحادثة والرد الآن ←
+            </button>
+          </div>
+          <button
+            onClick={() => setLatestIncomingChat(null)}
+            className="text-ivory/50 hover:text-ivory p-1"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </main>
   );
 }

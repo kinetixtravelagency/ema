@@ -16,6 +16,7 @@ import { getClientChat, sendClientMessage, type ChatMessage } from "@/lib/chat.f
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
 import { useSession } from "@/lib/useSession";
 import { useLang } from "@/lib/i18n";
+import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
 import logoImg from "@/assets/pics/logo.png";
 
 const VISITOR_KEY = "kinetix_chat_visitor_id";
@@ -60,6 +61,7 @@ export function ChatWidget() {
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevUnreadRef = useRef(0);
+  const lastAdminMsgIdRef = useRef<string>("");
 
   const resolvedName = () =>
     user?.user_metadata?.["full_name"] ||
@@ -97,12 +99,16 @@ export function ChatWidget() {
   useEffect(() => {
     const handleOpen = () => {
       setIsOpen(true);
+      setUnread(0);
+      prevUnreadRef.current = 0;
+      requestNotificationPermission();
       if (visitorId || user?.id) {
         fetchChat({
           data: {
             conversationId: convId || undefined,
             visitorId: !user?.id ? visitorId : undefined,
             userId: user?.id || undefined,
+            markAsRead: true,
           },
         })
           .then((res) => {
@@ -130,6 +136,7 @@ export function ChatWidget() {
             conversationId: convId || undefined,
             visitorId: !user?.id ? visitorId : undefined,
             userId: user?.id || undefined,
+            markAsRead: isOpen,
           },
         });
 
@@ -142,17 +149,36 @@ export function ChatWidget() {
             setMessages(res.messages);
           }
 
+          const adminMsgs = (res.messages || []).filter((m) => m.sender === "admin");
+          const latestAdmin = adminMsgs[adminMsgs.length - 1];
           const newUnread = res.conversation.unreadClientCount ?? 0;
-          if (!isOpen && newUnread > prevUnreadRef.current) {
+
+          if (!isOpen) {
             setUnread(newUnread);
-            // Browser notification if supported and permission granted
-            if ("Notification" in window && Notification.permission === "granted") {
-              const lastMsg = res.messages[res.messages.length - 1];
-              new Notification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
-                body: lastMsg?.text?.slice(0, 80) ?? "",
-                icon: "/logo.png",
+            if (newUnread > 0 && newUnread > prevUnreadRef.current) {
+              playChatChime("client");
+              sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
+                body:
+                  latestAdmin?.text?.slice(0, 90) ??
+                  (ar ? "لديك رسالة جديدة من المستشار" : "You have a new message from our advisor"),
+                onClick: () => setIsOpen(true),
               });
             }
+          } else {
+            // Chat is currently open
+            if (latestAdmin && latestAdmin.id !== lastAdminMsgIdRef.current && lastAdminMsgIdRef.current !== "") {
+              playChatChime("client");
+              if (typeof document !== "undefined" && document.hidden) {
+                sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
+                  body: latestAdmin.text.slice(0, 90),
+                  onClick: () => window.focus(),
+                });
+              }
+            }
+          }
+
+          if (latestAdmin) {
+            lastAdminMsgIdRef.current = latestAdmin.id;
           }
           prevUnreadRef.current = newUnread;
         }
@@ -162,25 +188,40 @@ export function ChatWidget() {
     };
 
     poll();
-    const interval = setInterval(poll, isOpen ? 3000 : 10000);
+    const interval = setInterval(poll, isOpen ? 2500 : 8000);
     return () => clearInterval(interval);
-  }, [isOpen, convId, visitorId, user?.id]);
+  }, [isOpen, convId, visitorId, user?.id, ar]);
 
   useEffect(() => {
     if (isOpen) {
       setUnread(0);
       prevUnreadRef.current = 0;
+      requestNotificationPermission();
+
+      // Ensure server marks unread client count as 0
+      if (visitorId || user?.id) {
+        fetchChat({
+          data: {
+            conversationId: convId || undefined,
+            visitorId: !user?.id ? visitorId : undefined,
+            userId: user?.id || undefined,
+            markAsRead: true,
+          },
+        }).catch(() => {});
+      }
+
       // Scroll smoothly to bottom of chat only, without triggering window scroll
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
-
-      // Request notification permission when chat first opens
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
     }
-  }, [isOpen, messages]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages, isOpen]);
 
   const handleSend = async (customText?: string) => {
     const textToSend = (customText ?? inputText).trim();
@@ -263,43 +304,72 @@ export function ChatWidget() {
         { icon: "📞", text: "I want to speak with an advisor" },
       ];
 
+  const latestAdminMsg = messages.filter((m) => m.sender === "admin").slice(-1)[0];
+
   return (
     <>
       {/* Floating Trigger Button */}
       <div className="fixed bottom-6 end-6 z-40">
         {!isOpen && (
-          <button
-            onClick={() => setIsOpen(true)}
-            id="kinetix-live-chat-btn"
-            className="group relative flex items-center gap-3 rounded-full bg-gradient-to-r from-navy via-[#1a2d4b] to-navy px-4.5 py-3.5 text-ivory shadow-[0_10px_30px_-5px_rgba(15,23,42,0.4)] ring-1 ring-beige/60 hover:ring-beige transition-all hover:scale-105 active:scale-95"
-            aria-label="Open Live Chat"
-          >
-            <div className="relative flex items-center justify-center">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
-                <MessageSquare className="h-5 w-5 text-beige" strokeWidth={2} />
+          <div className="relative">
+            {/* Unread Message Preview Balloon */}
+            {unread > 0 && latestAdminMsg && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                }}
+                className="absolute bottom-full end-0 mb-3 w-72 max-w-[calc(100vw-2.5rem)] rounded-2xl border border-beige/40 bg-navy/95 p-3.5 text-ivory shadow-2xl backdrop-blur-md cursor-pointer transition-all hover:scale-105 animate-in fade-in slide-in-from-bottom-2 z-50"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[11px] font-bold text-beige flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3" />
+                    {ar ? "رسالة جديدة من المستشار" : "New message from advisor"}
+                  </span>
+                  <span className="flex h-2 w-2 rounded-full bg-red-500 animate-ping" />
+                </div>
+                <p className="text-xs text-ivory/90 line-clamp-2 leading-relaxed">
+                  {latestAdminMsg.text}
+                </p>
+                <span className="mt-2 block text-[10px] text-beige/80 font-medium">
+                  {ar ? "اضغط للمتابعة والرد ←" : "Click to view and reply →"}
+                </span>
               </div>
-              <span className="absolute -top-1 -end-1 flex h-3 w-3">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 border-2 border-navy" />
-              </span>
-            </div>
-
-            <div className="text-start pe-1">
-              <span className="font-bold text-xs sm:text-sm block leading-tight text-ivory">
-                {ar ? "محادثة مع المستشار" : "Live Advisory Chat"}
-              </span>
-              <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block" />
-                {ar ? "متاح الآن للرد الفوري" : "Instant Support"}
-              </span>
-            </div>
-
-            {unread > 0 && (
-              <span className="absolute -top-1.5 -start-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-lg animate-bounce">
-                {unread}
-              </span>
             )}
-          </button>
+
+            <button
+              onClick={() => setIsOpen(true)}
+              id="kinetix-live-chat-btn"
+              className="group relative flex items-center gap-3 rounded-full bg-gradient-to-r from-navy via-[#1a2d4b] to-navy px-4.5 py-3.5 text-ivory shadow-[0_10px_30px_-5px_rgba(15,23,42,0.4)] ring-1 ring-beige/60 hover:ring-beige transition-all hover:scale-105 active:scale-95"
+              aria-label="Open Live Chat"
+            >
+              <div className="relative flex items-center justify-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
+                  <MessageSquare className="h-5 w-5 text-beige" strokeWidth={2} />
+                </div>
+                <span className="absolute -top-1 -end-1 flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 border-2 border-navy" />
+                </span>
+              </div>
+
+              <div className="text-start pe-1">
+                <span className="font-bold text-xs sm:text-sm block leading-tight text-ivory">
+                  {ar ? "محادثة مع المستشار" : "Live Advisory Chat"}
+                </span>
+                <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block" />
+                  {ar ? "متاح الآن للرد الفوري" : "Instant Support"}
+                </span>
+              </div>
+
+              {unread > 0 && (
+                <span className="absolute -top-2 -start-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white shadow-xl ring-2 ring-navy animate-bounce z-10">
+                  {unread}
+                </span>
+              )}
+            </button>
+          </div>
         )}
       </div>
 

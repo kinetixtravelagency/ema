@@ -40,6 +40,7 @@ import {
   type ChatMessage,
 } from "@/lib/chat.functions";
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
+import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
 
 const PRESET_GROUPS = [
   "Important Customers",
@@ -82,6 +83,13 @@ export function AdminChatTab() {
   const [customGroupInput, setCustomGroupInput] = useState("");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const prevAdminUnreadRef = useRef<number>(-1);
+  const lastClientMsgIdRef = useRef<string>("");
+
+  // Request browser notification permission on mount
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
   // Poll conversations list
   useEffect(() => {
@@ -91,6 +99,22 @@ export function AdminChatTab() {
         const res = await fetchChats();
         if (mounted && res && Array.isArray(res.conversations)) {
           setConversations(res.conversations);
+          const total = res.totalUnread || 0;
+
+          if (prevAdminUnreadRef.current !== -1 && total > prevAdminUnreadRef.current) {
+            playChatChime("admin");
+            const newConv = res.conversations.find((c: ChatConversation) => (c.unreadCount || 0) > 0);
+            if (newConv && (typeof document !== "undefined" && document.hidden || newConv.id !== selectedId)) {
+              sendBrowserNotification(`💬 رسالة جديدة في اللايف شات من ${newConv.clientName}`, {
+                body: newConv.lastMessage.slice(0, 90),
+                onClick: () => {
+                  window.focus();
+                  setSelectedId(newConv.id);
+                },
+              });
+            }
+          }
+          prevAdminUnreadRef.current = total;
         }
       } catch (err) {
         console.error("Error fetching admin chats:", err);
@@ -102,7 +126,7 @@ export function AdminChatTab() {
       mounted = false;
       clearInterval(iv);
     };
-  }, []);
+  }, [selectedId]);
 
   // Poll messages for selected conversation
   useEffect(() => {
@@ -116,9 +140,29 @@ export function AdminChatTab() {
       try {
         const res = await fetchMessages({ data: { conversationId: selectedId } });
         if (mounted && res && Array.isArray(res.messages)) {
+          const serverMsgs = res.messages;
+          const lastMsg = serverMsgs[serverMsgs.length - 1];
+
+          if (
+            lastMsg &&
+            lastMsg.sender === "client" &&
+            lastMsg.id !== lastClientMsgIdRef.current &&
+            lastClientMsgIdRef.current !== ""
+          ) {
+            playChatChime("admin");
+            if (typeof document !== "undefined" && document.hidden) {
+              sendBrowserNotification(`💬 رد جديد من ${res.conversation?.clientName || "العميل"}`, {
+                body: lastMsg.text.slice(0, 90),
+                onClick: () => window.focus(),
+              });
+            }
+          }
+          if (lastMsg) {
+            lastClientMsgIdRef.current = lastMsg.id;
+          }
+
           // Merge with any pending messages to avoid flicker
           setMessages((prev) => {
-            const serverMsgs = res.messages;
             const tempMsgs = prev.filter((m) => m.id.startsWith("temp_"));
             const map = new Map<string, ChatMessage>();
             for (const m of serverMsgs) map.set(m.id, m);
@@ -312,7 +356,7 @@ export function AdminChatTab() {
   ];
 
   return (
-    <div className="flex flex-col md:flex-row h-[calc(100vh-140px)] min-h-[620px] max-h-[960px] w-full rounded-3xl border border-border bg-card shadow-lg overflow-hidden">
+    <div className="flex flex-col md:flex-row h-[calc(100dvh-170px)] sm:h-[calc(100vh-140px)] min-h-[460px] md:min-h-[620px] max-h-[960px] w-full rounded-3xl border border-border bg-card shadow-lg overflow-hidden">
       {/* ── Left Column: Conversations List ── */}
       <div
         className={`w-full md:w-[360px] md:shrink-0 flex flex-col border-b md:border-b-0 md:border-e border-border bg-secondary/15 h-full ${
@@ -320,7 +364,7 @@ export function AdminChatTab() {
         }`}
       >
         {/* Search & Filters Header */}
-        <div className="p-4 border-b border-border space-y-3 bg-card shrink-0">
+        <div className="p-3 sm:p-4 border-b border-border space-y-2.5 sm:space-y-3 bg-card shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="font-display font-semibold text-base flex items-center gap-2">
               <MessageSquare className="h-4 w-4 text-beige" />
@@ -342,10 +386,10 @@ export function AdminChatTab() {
           </div>
 
           {/* Quick status tabs */}
-          <div className="flex flex-wrap gap-1.5 text-xs">
+          <div className="flex items-center gap-1.5 text-xs overflow-x-auto pb-1 scrollbar-hide">
             <button
               onClick={() => setFilter("all")}
-              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors ${
+              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors shrink-0 ${
                 filter === "all" ? "bg-navy text-ivory" : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -353,7 +397,7 @@ export function AdminChatTab() {
             </button>
             <button
               onClick={() => setFilter("active")}
-              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors ${
+              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors shrink-0 ${
                 filter === "active" ? "bg-navy text-ivory" : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -361,7 +405,7 @@ export function AdminChatTab() {
             </button>
             <button
               onClick={() => setFilter("payments")}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1 font-bold transition-all ${
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 font-bold transition-all ${
                 filter === "payments"
                   ? "bg-amber-500 text-white shadow-sm"
                   : "bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/30 hover:bg-amber-500/20"
@@ -377,7 +421,7 @@ export function AdminChatTab() {
             </button>
             <button
               onClick={() => setFilter("resolved")}
-              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors ${
+              className={`rounded-full px-3 py-1 font-medium capitalize transition-colors shrink-0 ${
                 filter === "resolved" ? "bg-navy text-ivory" : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -391,7 +435,7 @@ export function AdminChatTab() {
             <select
               value={selectedGroupFilter}
               onChange={(e) => setSelectedGroupFilter(e.target.value)}
-              className="flex-1 rounded-xl border border-input bg-background px-2.5 py-1 text-[11px] outline-none text-muted-foreground focus:border-beige"
+              className="flex-1 min-w-0 rounded-xl border border-input bg-background px-2 py-1 text-[11px] outline-none text-muted-foreground focus:border-beige truncate"
             >
               <option value="all">📁 All Groups</option>
               {existingGroups.map((g) => (
@@ -405,9 +449,9 @@ export function AdminChatTab() {
             <select
               value={selectedFlagFilter}
               onChange={(e) => setSelectedFlagFilter(e.target.value)}
-              className="rounded-xl border border-input bg-background px-2.5 py-1 text-[11px] outline-none text-muted-foreground focus:border-beige"
+              className="rounded-xl border border-input bg-background px-2 py-1 text-[11px] outline-none text-muted-foreground focus:border-beige shrink-0"
             >
-              <option value="all">🚩 All Flags</option>
+              <option value="all">🚩 Flags</option>
               <option value="urgent">🔴 Urgent</option>
               <option value="important">🟣 Important</option>
               <option value="follow_up">🟡 Follow-up</option>
@@ -427,7 +471,7 @@ export function AdminChatTab() {
               <button
                 key={c.id}
                 onClick={() => setSelectedId(c.id)}
-                className={`w-full p-3.5 text-start transition-colors flex items-start gap-3 ${
+                className={`w-full p-3 sm:p-3.5 text-start transition-colors flex items-start gap-3 ${
                   isSelected
                     ? "bg-beige/15 dark:bg-beige/25 border-s-4 border-beige"
                     : "hover:bg-secondary/40"
@@ -468,7 +512,7 @@ export function AdminChatTab() {
                       )}
 
                       {c.groupName && (
-                        <span className="text-[10px] rounded-full px-2 py-0.2 bg-secondary text-muted-foreground border border-border">
+                        <span className="text-[10px] rounded-full px-2 py-0.2 bg-secondary text-muted-foreground border border-border truncate max-w-[120px]">
                           📁 {c.groupName}
                         </span>
                       )}
@@ -482,7 +526,8 @@ export function AdminChatTab() {
                     </div>
 
                     {c.unreadCount > 0 && (
-                      <span className="rounded-full bg-red-600 px-2 py-0.2 text-[10px] font-bold text-white">
+                      <span className="flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm animate-pulse">
+                        <span className="h-1.5 w-1.5 rounded-full bg-white inline-block animate-ping" />
                         {c.unreadCount} new
                       </span>
                     )}
@@ -509,45 +554,45 @@ export function AdminChatTab() {
         {activeConv ? (
           <>
             {/* Conversation Header */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card p-3 sm:p-4 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-border bg-card p-3 sm:p-4 shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 {/* Mobile Back Button */}
                 <button
                   onClick={() => setSelectedId(null)}
-                  className="md:hidden flex items-center gap-1 rounded-xl bg-secondary px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary/80 shrink-0"
+                  className="md:hidden flex items-center gap-1 rounded-xl bg-navy text-ivory px-2.5 py-1.5 text-xs font-semibold hover:bg-navy/80 shrink-0"
                 >
-                  <ArrowLeft className="h-4 w-4" />
-                  <span>المحادثات</span>
+                  <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+                  <span>رجوع</span>
                 </button>
 
                 <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-semibold text-sm ${
+                  className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-2xl font-semibold text-xs sm:text-sm ${
                     isPaymentConv(activeConv) ? "bg-amber-600 text-white" : "bg-navy text-ivory"
                   }`}
                 >
-                  {isPaymentConv(activeConv) ? <CreditCard className="h-5 w-5" /> : activeConv.clientName.slice(0, 2).toUpperCase()}
+                  {isPaymentConv(activeConv) ? <CreditCard className="h-4 w-4" /> : activeConv.clientName.slice(0, 2).toUpperCase()}
                 </div>
 
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold text-sm text-foreground truncate">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <h3 className="font-semibold text-xs sm:text-sm text-foreground truncate">
                       {activeConv.clientName}
                     </h3>
 
                     {activeConv.groupName && (
-                      <span className="text-[10px] rounded-full px-2 py-0.5 bg-secondary border border-border text-muted-foreground truncate">
+                      <span className="text-[9px] sm:text-[10px] rounded-full px-1.5 py-0.2 bg-secondary border border-border text-muted-foreground truncate max-w-[100px]">
                         📁 {activeConv.groupName}
                       </span>
                     )}
 
                     {FLAGS.find((f) => f.id === activeConv.flag) && (
-                      <span className={`text-[10px] rounded-full px-2 py-0.5 border font-bold ${FLAGS.find((f) => f.id === activeConv.flag)!.badgeCls}`}>
+                      <span className={`text-[9px] sm:text-[10px] rounded-full px-1.5 py-0.2 border font-bold ${FLAGS.find((f) => f.id === activeConv.flag)!.badgeCls}`}>
                         {FLAGS.find((f) => f.id === activeConv.flag)!.label}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground mt-0.5">
                     {activeConv.clientPhone && (
                       <span className="flex items-center gap-1 font-mono">
                         <Phone className="h-3 w-3 text-beige" />
@@ -555,7 +600,7 @@ export function AdminChatTab() {
                       </span>
                     )}
                     {activeConv.clientEmail && (
-                      <span className="flex items-center gap-1 truncate">
+                      <span className="hidden sm:flex items-center gap-1 truncate max-w-[150px]">
                         <Mail className="h-3 w-3 text-beige" />
                         {activeConv.clientEmail}
                       </span>
@@ -564,12 +609,12 @@ export function AdminChatTab() {
                 </div>
               </div>
 
-              {/* Action Buttons Toolbar */}
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Action Buttons Toolbar — horizontally scrollable on mobile */}
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-0.5 sm:pb-0 scrollbar-hide shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-border/50">
                 {/* Flag Picker Button */}
                 <button
                   onClick={() => setShowFlagPicker(true)}
-                  className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1.5 text-xs font-semibold hover:border-beige transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] sm:text-xs font-semibold hover:border-beige transition-colors shrink-0"
                 >
                   <Flag className="h-3.5 w-3.5 text-amber-500" />
                   <span>Flag</span>
@@ -578,7 +623,7 @@ export function AdminChatTab() {
                 {/* Group Picker Button */}
                 <button
                   onClick={() => setShowGroupPicker(true)}
-                  className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-3 py-1.5 text-xs font-semibold hover:border-beige transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-2.5 py-1 text-[11px] sm:text-xs font-semibold hover:border-beige transition-colors shrink-0"
                 >
                   <Folder className="h-3.5 w-3.5 text-blue-500" />
                   <span>Group</span>
@@ -590,7 +635,7 @@ export function AdminChatTab() {
                     href={`https://wa.me/${activeConv.clientPhone.replace(/[^0-9]/g, "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-500/20 transition-colors"
+                    className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition-colors shrink-0"
                   >
                     WhatsApp
                     <ExternalLink className="h-3 w-3" />
@@ -600,18 +645,18 @@ export function AdminChatTab() {
                 {/* Mark Resolved */}
                 <button
                   onClick={handleToggleStatus}
-                  className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+                  className="rounded-full border border-border px-2.5 py-1 text-[11px] sm:text-xs font-medium text-muted-foreground hover:border-foreground hover:text-foreground transition-colors shrink-0"
                 >
-                  {activeConv.status === "active" ? "Mark Resolved" : "Reopen"}
+                  {activeConv.status === "active" ? "Resolve" : "Reopen"}
                 </button>
 
                 {/* Delete Conversation */}
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                  className="p-1.5 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors shrink-0"
                   title="Delete Conversation"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </button>
               </div>
             </div>
@@ -658,23 +703,23 @@ export function AdminChatTab() {
             </div>
 
             {/* Quick Templates Bar */}
-            <div className="border-t border-border bg-card p-2.5 overflow-x-auto flex items-center gap-2 scrollbar-none shrink-0">
-              <span className="text-[11px] font-semibold text-muted-foreground whitespace-nowrap ps-2">
+            <div className="border-t border-border bg-card p-2 sm:p-2.5 overflow-x-auto flex items-center gap-1.5 sm:gap-2 scrollbar-hide shrink-0">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground whitespace-nowrap ps-1.5">
                 Quick:
               </span>
               {cannedTemplates.map((t, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSend(t)}
-                  className="rounded-full bg-secondary hover:bg-beige hover:text-navy px-3 py-1 text-[11px] whitespace-nowrap text-foreground transition-all"
+                  className="rounded-full bg-secondary hover:bg-beige hover:text-navy px-2.5 sm:px-3 py-1 text-[10px] sm:text-[11px] whitespace-nowrap text-foreground transition-all shrink-0"
                 >
-                  {t.slice(0, 32)}…
+                  {t.slice(0, 24)}…
                 </button>
               ))}
             </div>
 
             {/* Reply Input Box */}
-            <div className="p-3 border-t border-border bg-card flex items-center gap-2 shrink-0">
+            <div className="p-2.5 sm:p-3 border-t border-border bg-card flex items-center gap-2 shrink-0">
               <textarea
                 rows={1}
                 value={replyText}
@@ -685,8 +730,8 @@ export function AdminChatTab() {
                     handleSend();
                   }
                 }}
-                placeholder="Type your response to client… (Press Enter to send)"
-                className="flex-1 rounded-2xl border border-input bg-background px-4 py-2 text-xs outline-none focus:border-beige resize-none leading-relaxed"
+                placeholder="Type response… (Enter to send)"
+                className="flex-1 rounded-2xl border border-input bg-background px-3 sm:px-4 py-2 text-xs outline-none focus:border-beige resize-none leading-relaxed"
               />
               <button
                 disabled={!replyText.trim() || busy}

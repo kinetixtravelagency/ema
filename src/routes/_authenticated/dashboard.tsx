@@ -143,43 +143,53 @@ function Dashboard() {
     <div className="flex min-h-screen flex-col bg-background">
       <Nav solid />
       <div className="border-b border-border bg-secondary/40">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-ivory text-xs font-bold">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2.5 px-4 sm:px-5 py-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-ivory text-xs font-bold">
               {fullName ? fullName.slice(0, 1).toUpperCase() : "K"}
             </div>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-xs sm:text-sm font-semibold text-foreground truncate">
               {fullName ? `${t("welcome")}, ${fullName}` : t("dashboard")}
             </p>
           </div>
-          <div className="flex items-center gap-3 text-sm">
-            {isAdmin && <Link to="/admin" className="rounded-full bg-navy px-3.5 py-1.5 text-xs text-ivory hover:opacity-90">{t("adminDashboard")}</Link>}
+          <div className="flex items-center gap-2 text-xs flex-wrap">
+            {isAdmin && (
+              <Link to="/admin" className="rounded-full bg-navy px-3 py-1 text-xs text-ivory hover:opacity-90 shrink-0">
+                {t("adminDashboard")}
+              </Link>
+            )}
             {partner && (
-              <Link to="/partner" className="rounded-full bg-beige/20 text-navy dark:text-beige px-3 py-1 text-xs font-semibold hover:bg-beige/30 transition-colors">
+              <Link to="/partner" className="rounded-full bg-beige/20 text-navy dark:text-beige px-3 py-1 text-xs font-semibold hover:bg-beige/30 transition-colors shrink-0">
                 {tr("Partner Portal", "بوابة الشركاء")}
               </Link>
             )}
-            <button onClick={signOut} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"><LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />{t("signOut")}</button>
+            <button
+              onClick={signOut}
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground shrink-0 ps-1"
+            >
+              <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />
+              <span>{t("signOut")}</span>
+            </button>
           </div>
         </div>
       </div>
 
       <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-5 py-8 space-y-6">
-          {/* Dashboard Tab Navigation Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
-            <div className="flex items-center gap-2">
+        <div className="mx-auto max-w-6xl px-4 sm:px-5 py-6 sm:py-8 space-y-6">
+          {/* Dashboard Tab Navigation Bar — responsive with smooth horizontal scroll */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide -mx-1 px-1 sm:mx-0 sm:px-0">
               <button
                 type="button"
                 onClick={() => setActiveTab("applications")}
-                className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-all ${
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                   activeTab === "applications"
                     ? "bg-navy text-ivory shadow-sm dark:bg-beige dark:text-navy"
                     : "bg-secondary/70 text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Layers className="h-3.5 w-3.5" />
-                {tr("My Applications & Stages", "طلباتي ومراحل التقديم")}
+                <span>{tr("My Applications", "طلباتي ومراحل التقديم")}</span>
                 <span className="rounded-full bg-white/20 px-1.5 py-0.2 text-[10px] font-bold">
                   {account.applications.length}
                 </span>
@@ -188,36 +198,36 @@ function Dashboard() {
               <button
                 type="button"
                 onClick={() => setActiveTab("profile")}
-                className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-all ${
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                   activeTab === "profile"
                     ? "bg-navy text-ivory shadow-sm dark:bg-beige dark:text-navy"
                     : "bg-secondary/70 text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <User className="h-3.5 w-3.5" />
-                {tr("Complete Client Profile", "الملف الشخصي الشامل")}
+                <span>{tr("Client Profile", "الملف الشخصي الشامل")}</span>
               </button>
 
               {partner && (
                 <button
                   type="button"
                   onClick={() => setActiveTab("partner")}
-                  className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-all ${
+                  className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                     activeTab === "partner"
                       ? "bg-navy text-ivory shadow-sm dark:bg-beige dark:text-navy"
                       : "bg-secondary/70 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <Award className="h-3.5 w-3.5" />
-                  {tr("Partner Portal", "بوابة الشريك")}
+                  <span>{tr("Partner Portal", "بوابة الشريك")}</span>
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end shrink-0">
               <Link
                 to="/apply"
-                className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-semibold text-ivory shadow-sm hover:opacity-90"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-bold text-ivory shadow-sm hover:opacity-90"
               >
                 + {t("applyNow")}
               </Link>
@@ -278,37 +288,36 @@ function Dashboard() {
                     return (
                       <div key={a.id} className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
                         {/* ── Application Card Header ── */}
-                        <div className="flex flex-wrap items-start justify-between gap-4 p-5 pb-4 border-b border-border/60 bg-secondary/20">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 sm:p-5 border-b border-border/60 bg-secondary/20">
                           {/* Left: image + text */}
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-3.5 min-w-0">
                             {/* Country image avatar */}
                             {c?.image ? (
-                              <div className="relative h-14 w-14 shrink-0 rounded-2xl overflow-hidden ring-2 ring-border shadow-sm">
+                              <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-2xl overflow-hidden ring-2 ring-border shadow-sm">
                                 <img
                                   src={c.image}
                                   alt={countryTitle ?? ""}
                                   className="h-full w-full object-cover"
                                 />
-                                {/* flag badge */}
-                                <span className="absolute bottom-0.5 right-0.5 text-base leading-none drop-shadow">{c?.flag}</span>
+                                <span className="absolute bottom-0.5 right-0.5 text-sm sm:text-base leading-none drop-shadow">{c?.flag}</span>
                               </div>
                             ) : (
-                              <div className="h-14 w-14 shrink-0 rounded-2xl bg-secondary flex items-center justify-center text-2xl ring-2 ring-border">
+                              <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-2xl bg-secondary flex items-center justify-center text-xl sm:text-2xl ring-2 ring-border">
                                 🌍
                               </div>
                             )}
 
-                            <div>
-                              {/* Program title — prominent */}
-                              <h3 className="font-display text-lg font-bold text-foreground leading-tight">
+                            <div className="min-w-0 flex-1">
+                              {/* Program title */}
+                              <h3 className="font-display text-base sm:text-lg font-bold text-foreground leading-tight truncate">
                                 {progTitle || (ar ? "برنامج عمل" : "Work Programme")}
                               </h3>
                               {/* Country name as subtitle */}
-                              <p className="mt-0.5 text-sm font-semibold text-muted-foreground">
+                              <p className="mt-0.5 text-xs sm:text-sm font-semibold text-muted-foreground">
                                 {c?.flag} {countryTitle}
                               </p>
                               {/* Meta row */}
-                              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+                              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] sm:text-xs text-muted-foreground">
                                 <span className="inline-flex items-center gap-1">
                                   <Calendar className="h-3 w-3" />
                                   {formattedDate}
@@ -331,28 +340,28 @@ function Dashboard() {
                           </div>
 
                           {/* Right: status badge + cancel */}
-                          <div className="flex flex-wrap items-center gap-2 self-start pt-1">
+                          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/40">
                             {a.deposit_paid ? (
-                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 px-3.5 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800/40">
+                              <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800/40">
                                 <CheckCircle2 className="h-3.5 w-3.5" />
                                 {ar ? "الديبوزت مدفوع" : "Deposit Paid"}
                               </span>
                             ) : (
                               <>
-                                <div className="flex flex-col items-end gap-1.5">
-                                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/50 px-3.5 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 ring-1 ring-amber-300 dark:ring-amber-700/40">
+                                <div className="flex flex-col items-start sm:items-end gap-0.5">
+                                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/50 px-3 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 ring-1 ring-amber-300 dark:ring-amber-700/40">
                                     <Clock className="h-3.5 w-3.5" />
                                     {ar ? "في انتظار الديبوزت" : "Awaiting Deposit"}
                                   </span>
-                                  <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 text-right">
+                                  <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">
                                     {eur(due ?? 0)}{" "}
-                                    <span className="font-normal opacity-70">({ar ? "المبلغ المطلوب" : "required"})</span>
+                                    <span className="font-normal opacity-70">({ar ? "المطلوب" : "required"})</span>
                                   </span>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => handleCancelApp(a.id)}
-                                  className="inline-flex items-center gap-1 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors"
+                                  className="inline-flex items-center gap-1 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors"
                                   title={ar ? "إلغاء الطلب وحذفه" : "Cancel Application"}
                                 >
                                   <Trash2 className="h-3 w-3" />
@@ -448,7 +457,7 @@ function Dashboard() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-xs font-semibold text-muted-foreground block mb-1">
                             {tr("Phone / WhatsApp *", "رقم الهاتف / واتساب *")}
@@ -475,7 +484,7 @@ function Dashboard() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-xs font-semibold text-muted-foreground block mb-1">
                             {tr("Governorate / City", "المحافظة / المدينة")}
@@ -504,7 +513,7 @@ function Dashboard() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
                           <label className="text-xs font-semibold text-muted-foreground block mb-1">
                             {tr("Birth Date", "تاريخ الميلاد")}
@@ -601,14 +610,14 @@ function Dashboard() {
                 </div>
 
                 {/* Save Profile Button */}
-                <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-border bg-card p-5">
-                  <span className="text-xs text-muted-foreground">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-3xl border border-border bg-card p-5">
+                  <span className="text-xs text-muted-foreground text-center sm:text-start">
                     {tr("Your information is strictly encrypted and protected according to Kinetix privacy policy.", "بياناتك مشفرة ومحمية وفق سياسة خصوصية وأمان كينتيكس المعتمدة.")}
                   </span>
                   <button
                     type="submit"
                     disabled={savingProfile}
-                    className="inline-flex items-center gap-2 rounded-full bg-navy px-8 py-3 text-sm font-bold text-ivory shadow-md hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-navy px-8 py-3 text-sm font-bold text-ivory shadow-md hover:opacity-90 disabled:opacity-50 transition-all active:scale-95 shrink-0"
                   >
                     {savingProfile ? (
                       <>

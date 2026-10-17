@@ -157,7 +157,12 @@ async function saveStore(store: ChatStore): Promise<void> {
 
 export const getClientChat = createServerFn({ method: "POST" })
   .inputValidator(
-    (d: { conversationId?: string | undefined; visitorId?: string | undefined; userId?: string | undefined }) => d
+    (d: {
+      conversationId?: string | undefined;
+      visitorId?: string | undefined;
+      userId?: string | undefined;
+      markAsRead?: boolean | undefined;
+    }) => d
   )
   .handler(async ({ data }) => {
     const store = await getStore();
@@ -180,18 +185,27 @@ export const getClientChat = createServerFn({ method: "POST" })
       return { conversation: null, messages: [] };
     }
 
-    // Mark admin messages as read by client
     const msgs = store.messages[conv.id] ?? [];
-    let updated = false;
-    for (const m of msgs) {
-      if (m.sender === "admin" && !m.isRead) {
-        m.isRead = true;
-        updated = true;
+
+    if (data.markAsRead) {
+      // Mark admin messages as read by client only when explicitly requested (e.g. chat window is open)
+      let updated = false;
+      for (const m of msgs) {
+        if (m.sender === "admin" && !m.isRead) {
+          m.isRead = true;
+          updated = true;
+        }
       }
-    }
-    if (updated) {
-      conv.unreadClientCount = 0;
-      await saveStore(store);
+      if (updated || (conv.unreadClientCount || 0) > 0) {
+        conv.unreadClientCount = 0;
+        await saveStore(store);
+      }
+    } else {
+      // Accurately calculate unread admin messages without prematurely marking them read
+      const unreadCount = msgs.filter((m) => m.sender === "admin" && !m.isRead).length;
+      if (conv.unreadClientCount !== unreadCount) {
+        conv.unreadClientCount = unreadCount;
+      }
     }
 
     return {
@@ -352,6 +366,12 @@ export const getAdminChats = createServerFn({ method: "GET" })
         conv.hasPaymentRequest = true;
         // Never hide active deposit requests from the admin even if marked deleted in past testing
         conv.isDeleted = false;
+      }
+
+      // Keep unreadCount strictly in sync with unread client messages
+      const clientUnread = msgs.filter((m) => m.sender === "client" && !m.isRead).length;
+      if (conv.unreadCount !== clientUnread) {
+        conv.unreadCount = clientUnread;
       }
     }
 

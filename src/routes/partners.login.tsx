@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Logo, Nav, Footer } from "@/components/site/SiteChrome";
 import { useLang } from "@/lib/i18n";
 import { useSession } from "@/lib/useSession";
-import { ArrowRight, Lock } from "lucide-react";
+import { ArrowRight, Lock, Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/partners/login")({
   head: () => ({
@@ -26,6 +26,7 @@ function PartnerLogin() {
   const { user, loading } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -105,16 +106,31 @@ function PartnerLogin() {
               onChange={(e) => setEmail(e.target.value)}
               id="partner-email"
             />
-            <input
-              className={input}
-              type="password"
-              required
-              minLength={6}
-              placeholder={tr("Password", "كلمة السر")}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              id="partner-password"
-            />
+            <div className="relative">
+              <input
+                className={`${input} pe-11`}
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={6}
+                placeholder={tr("Password", "كلمة السر")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                id="partner-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 end-0 flex items-center pe-3 text-ivory/50 hover:text-ivory transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" strokeWidth={1.5} />
+                ) : (
+                  <Eye className="h-4 w-4" strokeWidth={1.5} />
+                )}
+              </button>
+            </div>
 
             {msg && (
               <p className="rounded-xl bg-navy px-4 py-3 text-sm text-beige/90">

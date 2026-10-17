@@ -25,6 +25,7 @@ import { Route as CountriesSlugRouteImport } from './routes/countries.$slug'
 import { Route as PartnersIndexRouteImport } from './routes/partners.index'
 import { Route as PartnersJoinRouteImport } from './routes/partners.join'
 import { Route as PartnersLoginRouteImport } from './routes/partners.login'
+import { Route as ProgramsSlugRouteImport } from './routes/programs.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -105,6 +106,11 @@ const PartnersLoginRoute = PartnersLoginRouteImport.update({
   path: '/partners/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsSlugRoute = ProgramsSlugRouteImport.update({
+  id: '/programs/$slug',
+  path: '/programs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/countries/$slug': typeof CountriesSlugRoute
   '/partners/join': typeof PartnersJoinRoute
   '/partners/login': typeof PartnersLoginRoute
+  '/programs/$slug': typeof ProgramsSlugRoute
   '/countries/': typeof CountriesIndexRoute
   '/partners/': typeof PartnersIndexRoute
 }
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/countries/$slug': typeof CountriesSlugRoute
   '/partners/join': typeof PartnersJoinRoute
   '/partners/login': typeof PartnersLoginRoute
+  '/programs/$slug': typeof ProgramsSlugRoute
   '/countries': typeof CountriesIndexRoute
   '/partners': typeof PartnersIndexRoute
 }
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/countries/$slug': typeof CountriesSlugRoute
   '/partners/join': typeof PartnersJoinRoute
   '/partners/login': typeof PartnersLoginRoute
+  '/programs/$slug': typeof ProgramsSlugRoute
   '/countries/': typeof CountriesIndexRoute
   '/partners/': typeof PartnersIndexRoute
 }
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/countries/$slug'
     | '/partners/join'
     | '/partners/login'
+    | '/programs/$slug'
     | '/countries/'
     | '/partners/'
   fileRoutesByTo: FileRoutesByTo
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/countries/$slug'
     | '/partners/join'
     | '/partners/login'
+    | '/programs/$slug'
     | '/countries'
     | '/partners'
   id:
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/countries/$slug'
     | '/partners/join'
     | '/partners/login'
+    | '/programs/$slug'
     | '/countries/'
     | '/partners/'
   fileRoutesById: FileRoutesById
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   CountriesSlugRoute: typeof CountriesSlugRoute
   PartnersJoinRoute: typeof PartnersJoinRoute
   PartnersLoginRoute: typeof PartnersLoginRoute
+  ProgramsSlugRoute: typeof ProgramsSlugRoute
   CountriesIndexRoute: typeof CountriesIndexRoute
   PartnersIndexRoute: typeof PartnersIndexRoute
 }
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnersLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs/$slug': {
+      id: '/programs/$slug'
+      path: '/programs/$slug'
+      fullPath: '/programs/$slug'
+      preLoaderRoute: typeof ProgramsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -374,6 +394,7 @@ const rootRouteChildren: RootRouteChildren = {
   CountriesSlugRoute: CountriesSlugRoute,
   PartnersJoinRoute: PartnersJoinRoute,
   PartnersLoginRoute: PartnersLoginRoute,
+  ProgramsSlugRoute: ProgramsSlugRoute,
   CountriesIndexRoute: CountriesIndexRoute,
   PartnersIndexRoute: PartnersIndexRoute,
 }
