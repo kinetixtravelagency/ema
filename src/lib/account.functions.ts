@@ -221,14 +221,14 @@ export const adminCreateProgram = createServerFn({ method: "POST" })
     slug: string;
     track: "student" | "graduate";
     title_en: string;
-    title_ar: string;
-    category_en: string;
-    category_ar: string;
-    duration: string;
+    title_ar?: string;
+    category_en?: string;
+    category_ar?: string;
+    duration?: string;
     price: number;
     deposit: number;
     flight_price?: number;
-    max_installments: number;
+    max_installments?: number;
     expected_salary?: string;
     expected_salary_ar?: string;
     working_hours?: string;
@@ -236,6 +236,16 @@ export const adminCreateProgram = createServerFn({ method: "POST" })
     accommodation_ar?: string;
     requirements?: string[];
     requirements_ar?: string[];
+    duties?: string[];
+    duties_ar?: string[];
+    meals?: string;
+    meals_ar?: string;
+    health_insurance?: string;
+    health_insurance_ar?: string;
+    age_requirement?: string;
+    education_requirement?: string;
+    english_level?: string;
+    experience_required?: string;
     published?: boolean;
   }) => {
     if (!d.country_id) throw new Error("Country is required");
@@ -247,8 +257,10 @@ export const adminCreateProgram = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { saveProgramOverride } = await import("./program_overrides.server");
+
     const slug = data.slug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-");
-    const { data: item, error } = await supabaseAdmin.from("programs").insert({
+    const dbPayload: any = {
       country_id: data.country_id,
       slug,
       track: data.track || "student",
@@ -259,19 +271,18 @@ export const adminCreateProgram = createServerFn({ method: "POST" })
       duration: data.duration?.trim() || (data.track === "student" ? "3–6 months" : "9–24 months"),
       price: Math.max(0, Math.round(Number(data.price) || 0)),
       deposit: Math.max(0, Math.round(Number(data.deposit) || 0)),
-      flight_price: Math.max(0, Math.round(Number(data.flight_price) || 0)),
       max_installments: Math.max(1, Math.min(12, Math.round(Number(data.max_installments) || 6))),
-      expected_salary: data.expected_salary ?? "",
-      expected_salary_ar: data.expected_salary_ar ?? "",
-      working_hours: data.working_hours ?? "",
-      accommodation: data.accommodation ?? "",
-      accommodation_ar: data.accommodation_ar ?? "",
-      requirements: data.requirements ?? [],
-      requirements_ar: data.requirements_ar ?? [],
       published: data.published ?? true,
-    } as any).select("id").single();
+    };
 
+    const { data: item, error } = await supabaseAdmin.from("programs").insert(dbPayload).select("id").single();
     if (error) throw new Error(error.message);
+
+    saveProgramOverride(slug, {
+      ...data,
+      slug,
+    });
+
     return { ok: true, id: item.id };
   });
 
@@ -298,6 +309,16 @@ export const adminUpdateProgram = createServerFn({ method: "POST" })
     accommodation_ar?: string;
     requirements?: string[];
     requirements_ar?: string[];
+    duties?: string[];
+    duties_ar?: string[];
+    meals?: string;
+    meals_ar?: string;
+    health_insurance?: string;
+    health_insurance_ar?: string;
+    age_requirement?: string;
+    education_requirement?: string;
+    english_level?: string;
+    experience_required?: string;
     published?: boolean;
   }) => {
     if (!d.id) throw new Error("Program ID is required");
@@ -307,6 +328,8 @@ export const adminUpdateProgram = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { saveProgramOverride } = await import("./program_overrides.server");
+
     const patch: any = { updated_at: new Date().toISOString() };
     if (data.country_id) patch.country_id = data.country_id;
     if (data.slug) patch.slug = data.slug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-");
@@ -318,19 +341,22 @@ export const adminUpdateProgram = createServerFn({ method: "POST" })
     if (data.duration !== undefined) patch.duration = data.duration.trim();
     if (data.price !== undefined) patch.price = Math.max(0, Math.round(Number(data.price) || 0));
     if (data.deposit !== undefined) patch.deposit = Math.max(0, Math.round(Number(data.deposit) || 0));
-    if (data.flight_price !== undefined) patch.flight_price = Math.max(0, Math.round(Number(data.flight_price) || 0));
     if (data.max_installments !== undefined) patch.max_installments = Math.max(1, Math.min(12, Math.round(Number(data.max_installments) || 6)));
-    if (data.expected_salary !== undefined) patch.expected_salary = data.expected_salary;
-    if (data.expected_salary_ar !== undefined) patch.expected_salary_ar = data.expected_salary_ar;
-    if (data.working_hours !== undefined) patch.working_hours = data.working_hours;
-    if (data.accommodation !== undefined) patch.accommodation = data.accommodation;
-    if (data.accommodation_ar !== undefined) patch.accommodation_ar = data.accommodation_ar;
-    if (data.requirements !== undefined) patch.requirements = data.requirements;
-    if (data.requirements_ar !== undefined) patch.requirements_ar = data.requirements_ar;
     if (data.published !== undefined) patch.published = data.published;
 
     const { error } = await supabaseAdmin.from("programs").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
+
+    const targetSlug = data.slug?.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+    if (targetSlug) {
+      saveProgramOverride(targetSlug, data);
+    } else {
+      const { data: current } = await supabaseAdmin.from("programs").select("slug").eq("id", data.id).maybeSingle();
+      if (current?.slug) {
+        saveProgramOverride(current.slug, data);
+      }
+    }
+
     return { ok: true };
   });
 
@@ -797,13 +823,39 @@ export const getAdminFull = createServerFn({ method: "GET" })
       console.error("Auto-fix legacy program deposits error:", e);
     }
 
+    const { getProgramOverrides } = await import("./program_overrides.server");
+    const allOverrides = getProgramOverrides();
+
     progList = (progList as any[]).map((p: any) => {
       const cat = p.slug ? getProgram(p.slug)?.program : undefined;
-      return cat ? {
+      const ov = (p.slug && allOverrides[p.slug]) || {};
+      return {
         ...p,
-        deposit: cat.deposit,
-        price: cat.price || p.price,
-      } : p;
+        ...cat,
+        ...p,
+        ...ov,
+        expected_salary: ov.expected_salary || cat?.expectedSalary || p.expected_salary || "",
+        expected_salary_ar: ov.expected_salary_ar || cat?.expectedSalaryAr || p.expected_salary_ar || "",
+        working_hours: ov.working_hours || cat?.workingHours || p.working_hours || "8 hrs/day · 5–6 days/week",
+        accommodation: ov.accommodation || cat?.accommodation || p.accommodation || "Provided free by employer",
+        accommodation_ar: ov.accommodation_ar || cat?.accommodationAr || p.accommodation_ar || "سكن موظفين مؤثث بالكامل مجاناً",
+        flight_price: ov.flight_price !== undefined ? ov.flight_price : (cat?.flightPrice ?? 204),
+        requirements: (Array.isArray(ov.requirements) && ov.requirements.length > 0) ? ov.requirements : (cat?.requirements ?? []),
+        requirements_ar: (Array.isArray(ov.requirements_ar) && ov.requirements_ar.length > 0) ? ov.requirements_ar : (cat?.requirementsAr ?? []),
+        duties: (Array.isArray(ov.duties) && ov.duties.length > 0) ? ov.duties : (cat?.duties ?? []),
+        duties_ar: (Array.isArray(ov.duties_ar) && ov.duties_ar.length > 0) ? ov.duties_ar : (cat?.dutiesAr ?? []),
+        meals: ov.meals || cat?.meals || "1 to 2 Free Meals Per Shift",
+        meals_ar: ov.meals_ar || cat?.mealsAr || "وجبة إلى وجبتين مجاناً أثناء نوبة العمل",
+        health_insurance: ov.health_insurance || cat?.healthInsurance || "Comprehensive EU Public Healthcare Coverage included",
+        health_insurance_ar: ov.health_insurance_ar || cat?.healthInsuranceAr || "تأمين طبي حكومي أوروبي شامل طوال مدة العقد",
+        age_requirement: ov.age_requirement || cat?.ageRequirement || (p.track === "student" ? "18–30 years" : "20–45 years"),
+        education_requirement: ov.education_requirement || cat?.educationRequirement || (p.track === "student" ? "Active university student enrollment" : "High school diploma, technical certificate or university degree"),
+        english_level: ov.english_level || cat?.englishLevel || "A2 Basic Conversational",
+        experience_required: ov.experience_required || cat?.experienceRequired || "No prior experience required — training provided on-site",
+        deposit: ov.deposit !== undefined ? ov.deposit : (p.deposit || cat?.deposit || 196),
+        price: ov.price !== undefined ? ov.price : (p.price || cat?.price || 640),
+        max_installments: ov.max_installments || p.max_installments || cat?.installments || 6,
+      };
     });
 
     const enrichedApps = (apps.data ?? []).map((a: any) => {

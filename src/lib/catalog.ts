@@ -28,6 +28,16 @@ export type Program = {
   accommodationAr?: string;
   requirements?: string[];
   requirementsAr?: string[];
+  duties?: string[];
+  dutiesAr?: string[];
+  meals?: string;
+  mealsAr?: string;
+  healthInsurance?: string;
+  healthInsuranceAr?: string;
+  ageRequirement?: string;
+  educationRequirement?: string;
+  englishLevel?: string;
+  experienceRequired?: string;
 };
 
 export type Country = {

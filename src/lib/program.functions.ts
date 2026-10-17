@@ -36,31 +36,48 @@ export const getPublicProgramDetails = createServerFn({ method: "POST" })
       return null;
     }
 
-    // Merge: Database values directly override catalog values in real-time!
+    // 3. Fetch any admin overrides saved in program_overrides.server
+    let ov: any = {};
+    try {
+      const { getProgramOverrides } = await import("./program_overrides.server");
+      ov = getProgramOverrides()[slug] || {};
+    } catch {}
+
+    // Merge: Admin Overrides > Database values > Catalog fallbacks
     const mergedProgram: Program = {
       slug,
-      track: dbProg?.track || baseProgram?.track || "student",
-      title: dbProg?.title_en || baseProgram?.title || slug,
-      titleAr: dbProg?.title_ar || baseProgram?.titleAr || dbProg?.title_en || baseProgram?.title || slug,
-      category: dbProg?.category_en || baseProgram?.category || "General",
-      categoryAr: dbProg?.category_ar || baseProgram?.categoryAr || "عام",
-      duration: dbProg?.duration || baseProgram?.duration || "3–6 months",
-      durationOptions: baseProgram?.durationOptions || [dbProg?.duration || "3–6 months"],
-      price: dbProg?.price !== undefined && dbProg?.price !== null ? Number(dbProg.price) : (baseProgram?.price ?? 640),
-      deposit: dbProg?.deposit !== undefined && dbProg?.deposit !== null ? Number(dbProg.deposit) : (baseProgram?.deposit ?? 196),
-      installments: dbProg?.max_installments || baseProgram?.installments || 6,
-      flightPrice: dbProg?.flight_price !== undefined && dbProg?.flight_price !== null ? Number(dbProg.flight_price) : (baseProgram?.flightPrice ?? 204),
-      expectedSalary: dbProg?.expected_salary || baseProgram?.expectedSalary,
-      expectedSalaryAr: dbProg?.expected_salary_ar || baseProgram?.expectedSalaryAr || dbProg?.expected_salary,
-      workingHours: dbProg?.working_hours || baseProgram?.workingHours,
-      accommodation: dbProg?.accommodation || baseProgram?.accommodation,
-      accommodationAr: dbProg?.accommodation_ar || baseProgram?.accommodationAr || dbProg?.accommodation,
-      requirements: (Array.isArray(dbProg?.requirements) && dbProg.requirements.length > 0)
-        ? dbProg.requirements
-        : baseProgram?.requirements,
-      requirementsAr: (Array.isArray(dbProg?.requirements_ar) && dbProg.requirements_ar.length > 0)
-        ? dbProg.requirements_ar
-        : baseProgram?.requirementsAr,
+      track: ov.track || dbProg?.track || baseProgram?.track || "student",
+      title: ov.title_en || dbProg?.title_en || baseProgram?.title || slug,
+      titleAr: ov.title_ar || dbProg?.title_ar || baseProgram?.titleAr || dbProg?.title_en || baseProgram?.title || slug,
+      category: ov.category_en || dbProg?.category_en || baseProgram?.category || "General",
+      categoryAr: ov.category_ar || dbProg?.category_ar || baseProgram?.categoryAr || "عام",
+      duration: ov.duration || dbProg?.duration || baseProgram?.duration || "3–6 months",
+      durationOptions: baseProgram?.durationOptions || [ov.duration || dbProg?.duration || "3–6 months"],
+      price: ov.price !== undefined && ov.price !== null ? Number(ov.price) : (dbProg?.price !== undefined && dbProg?.price !== null ? Number(dbProg.price) : (baseProgram?.price ?? 640)),
+      deposit: ov.deposit !== undefined && ov.deposit !== null ? Number(ov.deposit) : (dbProg?.deposit !== undefined && dbProg?.deposit !== null ? Number(dbProg.deposit) : (baseProgram?.deposit ?? 196)),
+      installments: ov.max_installments || dbProg?.max_installments || baseProgram?.installments || 6,
+      flightPrice: ov.flight_price !== undefined ? Number(ov.flight_price) : (dbProg?.flight_price !== undefined && dbProg?.flight_price !== null ? Number(dbProg.flight_price) : (baseProgram?.flightPrice ?? 204)),
+      expectedSalary: ov.expected_salary || dbProg?.expected_salary || baseProgram?.expectedSalary,
+      expectedSalaryAr: ov.expected_salary_ar || dbProg?.expected_salary_ar || baseProgram?.expectedSalaryAr || dbProg?.expected_salary,
+      workingHours: ov.working_hours || dbProg?.working_hours || baseProgram?.workingHours,
+      accommodation: ov.accommodation || dbProg?.accommodation || baseProgram?.accommodation,
+      accommodationAr: ov.accommodation_ar || dbProg?.accommodation_ar || baseProgram?.accommodationAr || dbProg?.accommodation,
+      requirements: (Array.isArray(ov.requirements) && ov.requirements.length > 0)
+        ? ov.requirements
+        : ((Array.isArray(dbProg?.requirements) && dbProg.requirements.length > 0) ? dbProg.requirements : baseProgram?.requirements),
+      requirementsAr: (Array.isArray(ov.requirements_ar) && ov.requirements_ar.length > 0)
+        ? ov.requirements_ar
+        : ((Array.isArray(dbProg?.requirements_ar) && dbProg.requirements_ar.length > 0) ? dbProg.requirements_ar : baseProgram?.requirementsAr),
+      duties: (Array.isArray(ov.duties) && ov.duties.length > 0) ? ov.duties : baseProgram?.duties,
+      dutiesAr: (Array.isArray(ov.duties_ar) && ov.duties_ar.length > 0) ? ov.dutiesAr : baseProgram?.dutiesAr,
+      meals: ov.meals || baseProgram?.meals,
+      mealsAr: ov.meals_ar || baseProgram?.mealsAr,
+      healthInsurance: ov.health_insurance || baseProgram?.healthInsurance,
+      healthInsuranceAr: ov.health_insurance_ar || baseProgram?.healthInsuranceAr,
+      ageRequirement: ov.age_requirement || baseProgram?.ageRequirement,
+      educationRequirement: ov.education_requirement || baseProgram?.educationRequirement,
+      englishLevel: ov.english_level || baseProgram?.englishLevel,
+      experienceRequired: ov.experience_required || baseProgram?.experienceRequired,
     };
 
     const mergedCountry: Country = {

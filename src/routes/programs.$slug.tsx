@@ -114,8 +114,11 @@ export function ProgramDetailPage() {
   // Other programs in the same country
   const otherPrograms = c.programs.filter((x) => x.slug !== p.slug && !x.slug.endsWith("-student") && !x.slug.endsWith("-graduate"));
 
-  // Common Duties tailored by category
+  // Common Duties tailored by category or custom program specifications
   const getJobDuties = () => {
+    if (ar && Array.isArray(p.dutiesAr) && p.dutiesAr.length > 0) return p.dutiesAr;
+    if (!ar && Array.isArray(p.duties) && p.duties.length > 0) return p.duties;
+    if (Array.isArray(p.duties) && p.duties.length > 0) return p.duties;
     const cat = (p.category ?? "").toLowerCase();
     if (cat.includes("hosp") || cat.includes("hotel") || cat.includes("resort") || cat.includes("ضيافة") || cat.includes("فنادق")) {
       return ar
@@ -583,7 +586,7 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {ar ? "وجبة إلى وجبتين مجاناً أثناء نوبة العمل" : "1 to 2 Free Meals Per Shift"}
+                  {(ar ? (p.mealsAr || p.meals) : (p.meals || p.mealsAr)) ?? (ar ? "وجبة إلى وجبتين مجاناً أثناء نوبة العمل" : "1 to 2 Free Meals Per Shift")}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {ar ? "وجبات طازجة ومتوازنة تُقدَّم بكافتيريا المنشأة أثناء ساعات العمل الرسمية." : "Nutritious balanced meals provided directly in employer dining facility."}
@@ -644,7 +647,7 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {ar ? "تأمين طبي حكومي أوروبي شامل طوال مدة العقد" : "Comprehensive EU Public Healthcare Coverage"}
+                  {(ar ? (p.healthInsuranceAr || p.healthInsurance) : (p.healthInsurance || p.healthInsuranceAr)) ?? (ar ? "تأمين طبي حكومي أوروبي شامل طوال مدة العقد" : "Comprehensive EU Public Healthcare Coverage")}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {ar ? "تغطية كاملة للطوارئ والعلاج والفحوصات في المستشفيات الحكومية دون تكاليف إضافية." : "Full emergency, consultation, and hospital treatment covered under statutory system."}
@@ -771,7 +774,7 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {p.track === "student" ? (ar ? "من 18 حتى 30 سنة" : "18 to 30 Years") : (ar ? "من 20 حتى 45 سنة" : "20 to 45 Years")}
+                  {p.ageRequirement ? p.ageRequirement : (p.track === "student" ? (ar ? "من 18 حتى 30 سنة" : "18 to 30 Years") : (ar ? "من 20 حتى 45 سنة" : "20 to 45 Years"))}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {ar ? "السن القانوني المسموح به لاستخراج فيزا العمل وتصريح الإقامة الرسمية." : "Official statutory age bracket for employment visa and residency permit."}
@@ -785,9 +788,9 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {p.track === "student"
+                  {p.educationRequirement ? p.educationRequirement : (p.track === "student"
                     ? (ar ? "طالب جامعي مقيد حالياً (إثبات قيد ساري)" : "Current University Student")
-                    : (ar ? "مؤهل متوسط أو عالي معتمد (شهادة تخرج أو دبلوم)" : "Diploma or Higher Degree")}
+                    : (ar ? "مؤهل متوسط أو عالي معتمد (شهادة تخرج أو دبلوم)" : "Diploma or Higher Degree"))}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {p.track === "student"
@@ -803,7 +806,7 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {ar ? "مستوى أساسي إلى متوسط (A2 - B1)" : "Basic to Intermediate (A2 - B1)"}
+                  {p.englishLevel ? p.englishLevel : (ar ? "مستوى أساسي إلى متوسط (A2 - B1)" : "Basic to Intermediate (A2 - B1)")}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {ar ? "القدرة على التفاهم البسيط في بيئة العمل، ولا تشترط شهادات آيلتس أو توفل دولية معقدة." : "Conversational workplace English; no IELTS or TOEFL certificates required."}
@@ -817,7 +820,7 @@ export function ProgramDetailPage() {
               </span>
               <div className="sm:w-2/3">
                 <span className="text-sm md:text-base font-bold text-foreground">
-                  {ar ? "لا تشترط خبرة سابقة معقدة" : "No Prior Experience Required"}
+                  {p.experienceRequired ? p.experienceRequired : (ar ? "لا تشترط خبرة سابقة معقدة" : "No Prior Experience Required")}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
                   {ar ? "يتم توفير تدريب ميداني عملي وإرشادي في موقع العمل للتعرف على كافة المهام." : "Practical on-site training and guidance provided upon starting work."}
