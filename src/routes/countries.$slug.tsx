@@ -47,8 +47,8 @@ type SortOption = "default" | "price_asc" | "price_desc" | "salary";
 /* ─── Compact Info Pill ─────────────────────────────────── */
 function InfoPill({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/60 px-2.5 py-1 text-xs font-medium text-foreground/80">
-      <Icon className="h-3 w-3 text-beige shrink-0" strokeWidth={1.75} />
+    <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground">
+      <Icon className="h-3 w-3 text-muted-foreground/60 shrink-0" strokeWidth={1.5} />
       <span className="truncate max-w-[160px]">{label}</span>
     </span>
   );
@@ -80,65 +80,62 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
   const monthly    = Math.ceil((p.price - p.deposit) / p.installments);
 
   return (
-    <div className="group rounded-3xl border border-border bg-card overflow-hidden transition-all duration-300 hover:border-beige/40 hover:shadow-xl hover:shadow-black/5 flex flex-col">
+    <div className="group relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:border-beige/50 hover:shadow-lg hover:shadow-black/[0.04] flex flex-col">
 
-      {/* ── Top Color Bar ── */}
-      <div className={`h-1.5 w-full ${
-        isStudent
-          ? "bg-gradient-to-r from-blue-500 to-indigo-500"
-          : "bg-gradient-to-r from-amber-400 to-orange-400"
-      }`} />
+      <div className="p-6 flex flex-col flex-1 gap-5">
 
-      <div className="p-6 flex flex-col flex-1 gap-4">
+        {/* ── Row 1: Category eyebrow + meta tags ── */}
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="eyebrow text-muted-foreground">{category}</p>
+            <Link to="/programs/$slug" params={{ slug: p.slug }} className="group/title block mt-1.5">
+              <h2 className="text-xl font-semibold leading-snug text-foreground group-hover/title:text-beige transition-colors">
+                {title}
+              </h2>
+            </Link>
+          </div>
 
-        {/* ── Row 1: Track badge + Duration + Flight ── */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${
-            isStudent
-              ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-              : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-          }`}>
+          {/* Track pill — clean, neutral */}
+          <span className="shrink-0 mt-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
             {isStudent
-              ? <><GraduationCap className="h-3 w-3" strokeWidth={2} />{ar ? "طلاب جامعيون" : "Students"}</>
-              : <><Briefcase className="h-3 w-3" strokeWidth={2} />{ar ? "خريجون" : "Graduates"}</>
+              ? <><GraduationCap className="h-3 w-3" strokeWidth={1.5} />{ar ? "طلاب" : "Students"}</>
+              : <><Briefcase className="h-3 w-3" strokeWidth={1.5} />{ar ? "خريجون" : "Graduates"}</>
             }
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-secondary/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-            <Clock className="h-3 w-3" strokeWidth={1.75} />
+        </div>
+
+        {/* ── Row 2: Duration + Flight (neutral) ── */}
+        <div className="flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
             {p.duration}
           </span>
           {p.flightPrice && p.flightPrice > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-secondary/40 px-2.5 py-1 text-[11px] text-muted-foreground">
-              <Plane className="h-3 w-3" strokeWidth={1.75} />
-              {ar ? "شامل خيار الطيران" : "Flight option"}
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="text-muted-foreground/40">·</span>
+              <Plane className="h-3.5 w-3.5" strokeWidth={1.5} />
+              {ar ? "خيار الطيران متاح" : "Flight option available"}
             </span>
           )}
         </div>
 
-        {/* ── Row 2: Title + Category ── */}
-        <div>
-          <Link to="/programs/$slug" params={{ slug: p.slug }} className="group/title block">
-            <h2 className="text-lg sm:text-xl font-bold leading-snug text-foreground group-hover/title:text-beige transition-colors line-clamp-2">
-              {title}
-            </h2>
-          </Link>
-          <p className="mt-1 text-sm text-muted-foreground font-medium">{category}</p>
-        </div>
+        {/* ── Divider ── */}
+        <div className="h-px w-full bg-border" />
 
-        {/* ── Row 3: Salary Highlight ── */}
+        {/* ── Row 3: Salary — beige accent, no background fill ── */}
         {salary && (
-          <div className="flex items-center gap-2.5 rounded-2xl bg-beige/10 dark:bg-navy/20 border border-beige/40 dark:border-beige/60 px-4 py-2.5">
-            <TrendingUp className="h-4 w-4 text-beige dark:text-beige/80 shrink-0" strokeWidth={2} />
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-navy/80 dark:text-beige/80 font-bold uppercase tracking-wider">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                 {t("expectedSalary")}
               </p>
-              <p className="text-sm font-bold text-navy dark:text-beige/70">{salary}</p>
+              <p className="mt-0.5 text-base font-bold text-navy dark:text-beige">{salary}</p>
             </div>
+            <TrendingUp className="h-5 w-5 text-beige/60" strokeWidth={1.25} />
           </div>
         )}
 
-        {/* ── Row 4: Quick Info Pills (hours / housing / meals / insurance / language / age) ── */}
+        {/* ── Row 4: Benefits as plain text list (no colored icons) ── */}
         <div className="flex flex-wrap gap-1.5">
           {p.workingHours && <InfoPill icon={Clock3} label={p.workingHours} />}
           {accom           && <InfoPill icon={Home}       label={ar ? "سكن مُوفَّر" : "Housing included"} />}
@@ -148,139 +145,123 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
           {p.ageRequirement && <InfoPill icon={Users}     label={p.ageRequirement} />}
         </div>
 
-        {/* ── Row 5: Pricing 3-column grid ── */}
-        <div className="rounded-2xl border border-border bg-secondary/40 p-4">
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-xl bg-background/90 border border-border/60 p-2.5">
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide mb-0.5">
-                {ar ? "الإجمالي" : "Total"}
-              </p>
-              <p className="font-display text-base font-bold text-foreground">{eur(p.price)}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                ≈ {Math.round(p.price * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}
-              </p>
-            </div>
-            <div className="rounded-xl bg-navy/8 dark:bg-navy/20 border border-navy/20 p-2.5">
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide mb-0.5">
-                {ar ? "المقدم" : "Deposit"}
-              </p>
-              <p className="font-display text-base font-bold text-navy dark:text-beige">{eur(p.deposit)}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                ≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}
-              </p>
-            </div>
-            <div className="rounded-xl bg-background/90 border border-border/60 p-2.5">
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide mb-0.5">
-                {ar ? "القسط" : "Monthly"}
-              </p>
-              <p className="font-display text-base font-bold text-foreground">{eur(monthly)}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                ×{p.installments} {ar ? "شهر" : "months"}
-              </p>
-            </div>
+        {/* ── Row 5: Pricing strip — 3 columns, same card bg ── */}
+        <div className="grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-secondary/30 overflow-hidden">
+          <div className="px-4 py-3 text-center">
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+              {ar ? "الإجمالي" : "Total"}
+            </p>
+            <p className="mt-1 font-display text-base font-bold text-foreground">{eur(p.price)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              ≈ {Math.round(p.price * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}
+            </p>
+          </div>
+          <div className="px-4 py-3 text-center">
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+              {ar ? "المقدم" : "Deposit"}
+            </p>
+            <p className="mt-1 font-display text-base font-bold text-navy dark:text-beige">{eur(p.deposit)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              ≈ {Math.round(p.deposit * 54).toLocaleString()} {ar ? "ج.م" : "EGP"}
+            </p>
+          </div>
+          <div className="px-4 py-3 text-center">
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
+              {ar ? "القسط" : "Monthly"}
+            </p>
+            <p className="mt-1 font-display text-base font-bold text-foreground">{eur(monthly)}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              ×{p.installments} {ar ? "شهر" : "months"}
+            </p>
           </div>
         </div>
 
         {/* ── Row 6: Action Buttons ── */}
-        <div className="flex items-center gap-2 mt-auto">
+        <div className="flex items-center gap-2">
           <Link
             to="/apply"
             search={{ program: p.slug }}
-            className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-navy text-ivory text-sm font-semibold py-2.5 hover:opacity-90 transition-opacity"
+            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-navy text-ivory text-sm font-semibold py-2.5 hover:opacity-90 transition-opacity"
           >
             {t("apply")} <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={2} />
           </Link>
           <Link
             to="/programs/$slug"
             params={{ slug: p.slug }}
-            className="flex items-center justify-center gap-1.5 rounded-2xl border border-border px-4 py-2.5 text-sm text-muted-foreground hover:border-beige hover:text-foreground transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 rounded-xl border border-border px-4 py-2.5 text-sm text-muted-foreground hover:border-beige hover:text-foreground transition-all"
           >
-            <span>{ar ? "التفاصيل" : "Details"}</span>
+            {ar ? "التفاصيل" : "Details"}
             <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.75} />
           </Link>
           <button
             onClick={() => setOpen(!open)}
-            className={`flex h-10 w-10 items-center justify-center rounded-2xl border transition-all ${
+            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all ${
               open
-                ? "border-beige bg-beige/10 text-navy dark:text-beige"
+                ? "border-beige/60 text-beige"
                 : "border-border text-muted-foreground hover:border-beige"
             }`}
           >
-            {open ? <ChevronUp className="h-4 w-4" strokeWidth={2} /> : <ChevronDown className="h-4 w-4" strokeWidth={2} />}
+            {open ? <ChevronUp className="h-4 w-4" strokeWidth={1.75} /> : <ChevronDown className="h-4 w-4" strokeWidth={1.75} />}
           </button>
         </div>
       </div>
 
-      {/* ── Accordion Expanded Details ── */}
+      {/* ── Accordion: expanded details ── */}
       <div
         className="overflow-hidden transition-all duration-500 ease-in-out"
         style={{ maxHeight: open ? "750px" : "0px", opacity: open ? 1 : 0 }}
       >
-        <div className="border-t border-border/60 bg-secondary/25 px-6 py-5 space-y-4">
+        <div className="border-t border-border bg-secondary/20 px-6 py-5 space-y-5">
 
           {p.workingHours && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
-                <Clock3 className="h-4 w-4 text-blue-600 dark:text-blue-400" strokeWidth={1.75} />
-              </div>
+              <Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t("workingHoursLabel")}</p>
-                <p className="mt-0.5 text-sm font-medium">{p.workingHours}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t("workingHoursLabel")}</p>
+                <p className="mt-0.5 text-sm text-foreground">{p.workingHours}</p>
               </div>
             </div>
           )}
 
           {accom && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-beige/20 dark:bg-navy/20">
-                <Home className="h-4 w-4 text-beige dark:text-beige/80" strokeWidth={1.75} />
-              </div>
+              <Home className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t("accommodationLabel")}</p>
-                <p className="mt-0.5 text-sm font-medium">{accom}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t("accommodationLabel")}</p>
+                <p className="mt-0.5 text-sm text-foreground">{accom}</p>
               </div>
             </div>
           )}
 
           {mealsLabel && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950">
-                <Coffee className="h-4 w-4 text-amber-600 dark:text-amber-400" strokeWidth={1.75} />
-              </div>
+              <Coffee className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  {ar ? "الوجبات والمطعم" : "Meals & Dining"}
-                </p>
-                <p className="mt-0.5 text-sm font-medium">{mealsLabel}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{ar ? "الوجبات" : "Meals & Dining"}</p>
+                <p className="mt-0.5 text-sm text-foreground">{mealsLabel}</p>
               </div>
             </div>
           )}
 
           {p.healthInsurance && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-950">
-                <ShieldCheck className="h-4 w-4 text-rose-600 dark:text-rose-400" strokeWidth={1.75} />
-              </div>
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                  {ar ? "التأمين الطبي" : "Health Insurance"}
-                </p>
-                <p className="mt-0.5 text-sm font-medium">{p.healthInsurance}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{ar ? "التأمين الطبي" : "Health Insurance"}</p>
+                <p className="mt-0.5 text-sm text-foreground">{p.healthInsurance}</p>
               </div>
             </div>
           )}
 
           {req && req.length > 0 && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-950">
-                <ListChecks className="h-4 w-4 text-purple-600 dark:text-purple-400" strokeWidth={1.75} />
-              </div>
+              <ListChecks className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div className="flex-1">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{t("requirementsLabel")}</p>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t("requirementsLabel")}</p>
                 <ul className="mt-2 space-y-1.5">
                   {req.map((r) => (
-                    <li key={r} className="flex items-start gap-2 text-sm">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-beige" strokeWidth={2.5} />
+                    <li key={r} className="flex items-start gap-2 text-sm text-foreground">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-beige" strokeWidth={2} />
                       {r}
                     </li>
                   ))}
@@ -291,17 +272,15 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
 
           {p.duties && p.duties.length > 0 && (
             <div className="flex gap-3 items-start">
-              <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-950">
-                <Zap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" strokeWidth={1.75} />
-              </div>
+              <Zap className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.5} />
               <div className="flex-1">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {ar ? "المهام الرئيسية" : "Key Responsibilities"}
                 </p>
-                <ul className="mt-2 space-y-1">
+                <ul className="mt-2 space-y-1.5">
                   {(ar ? (p.dutiesAr ?? p.duties) : p.duties).slice(0, 3).map((d) => (
                     <li key={d} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-beige" />
+                      <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-beige/60" />
                       {d}
                     </li>
                   ))}
@@ -313,7 +292,7 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
           <Link
             to="/apply"
             search={{ program: p.slug }}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-navy py-3 text-sm font-semibold text-ivory transition-opacity hover:opacity-90"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-navy py-3 text-sm font-semibold text-ivory transition-opacity hover:opacity-90"
           >
             {t("apply")} <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={2} />
           </Link>
