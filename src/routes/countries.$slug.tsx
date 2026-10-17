@@ -403,22 +403,23 @@ function CountryPage() {
           {/* Hero stats */}
           <div className="mt-8 flex flex-wrap gap-3">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 text-sm font-medium">
-              <BadgeCheck className="h-4 w-4 text-beige" strokeWidth={1.75} />
+              <BadgeCheck className="h-4 w-4 text-beige" strokeWidth={1.5} />
               {programsList.length} {ar ? "برنامج متاح" : "Programs Available"}
             </div>
             {programsList.filter((p) => p.track === "student").length > 0 && (
-              <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 border border-blue-400/30 px-4 py-2 text-sm font-medium">
-                <GraduationCap className="h-4 w-4 text-blue-300" strokeWidth={1.75} />
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 text-sm font-medium">
+                <GraduationCap className="h-4 w-4 text-ivory/70" strokeWidth={1.5} />
                 {programsList.filter((p) => p.track === "student").length} {ar ? "برامج طلاب" : "Student programs"}
               </div>
             )}
             {programsList.filter((p) => p.track === "graduate").length > 0 && (
-              <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/20 border border-amber-400/30 px-4 py-2 text-sm font-medium">
-                <Briefcase className="h-4 w-4 text-amber-300" strokeWidth={1.75} />
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 text-sm font-medium">
+                <Briefcase className="h-4 w-4 text-ivory/70" strokeWidth={1.5} />
                 {programsList.filter((p) => p.track === "graduate").length} {ar ? "برامج خريجين" : "Graduate programs"}
               </div>
             )}
           </div>
+
         </div>
       </section>
 

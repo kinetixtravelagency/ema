@@ -804,12 +804,12 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
         <button onClick={() => setFilter("payments")}
           className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all shadow-xs ${
             filter === "payments"
-              ? "bg-amber-500 text-white border-amber-600"
-              : "border-amber-400/60 bg-amber-500/10 text-amber-900 dark:text-amber-300 hover:bg-amber-500/20"
+              ? "border-navy bg-navy text-ivory dark:border-beige dark:bg-beige dark:text-navy"
+              : "border-border bg-card hover:border-beige text-foreground"
           }`}>
           <CreditCard className="h-3.5 w-3.5" />
           <span>{tr("Payment Requests", "طلبات السداد")}</span>
-          <span className="font-mono text-[11px]">({paymentsCount})</span>
+          <span className="font-mono text-[11px] opacity-70">({paymentsCount})</span>
         </button>
 
         {stageFilter !== "all" && (
@@ -847,9 +847,9 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
           return (
             <div key={a.id} className={`rounded-3xl border bg-card overflow-hidden transition-all shadow-xs hover:shadow-md ${
               eff.status === "rejected"
-                ? "border-red-300 dark:border-red-900/50 bg-red-50/10"
+                ? "border-border/80"
                 : hasPayment
-                ? "border-amber-400/80 ring-1 ring-amber-400/30"
+                ? "border-beige/60"
                 : "border-border"
             }`}>
 
@@ -861,14 +861,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     className="flex items-start sm:items-center gap-3.5 min-w-0 cursor-pointer flex-1"
                     onClick={() => setExp(expanded ? null : a.id)}
                   >
-                    <div className={`shrink-0 flex h-12 w-12 items-center justify-center rounded-2xl shadow-xs ${
-                      eff.status === "rejected"
-                        ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-400"
-                        : eff.deposit
-                        ? "bg-beige/20 text-navy/80 dark:bg-navy/20 dark:text-beige/70"
-                        : "bg-secondary text-muted-foreground"
-                    }`}>
-                      {eff.status === "rejected" ? <XCircle className="h-6 w-6" /> : <StageIcon className="h-6 w-6" />}
+                    <div className="shrink-0 flex h-12 w-12 items-center justify-center rounded-2xl shadow-xs bg-secondary text-muted-foreground">
+                      <StageIcon className="h-6 w-6" />
                     </div>
 
                     <div className="min-w-0 flex-1">
@@ -912,8 +906,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
                         {/* Payment alert badge */}
                         {hasPayment && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-500/50 px-2.5 py-0.5 text-[11px] font-bold text-amber-900 dark:text-amber-200 animate-pulse">
-                            <CreditCard className="h-3 w-3" /> {tr("Payment Request 💬", "طلب سداد جديد 💬")}
+                          <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 dark:bg-beige/10 border border-navy/25 dark:border-beige/25 px-2.5 py-0.5 text-[11px] font-bold text-navy dark:text-beige">
+                            <CreditCard className="h-3 w-3" /> {tr("Payment Request", "طلب سداد")}
                           </span>
                         )}
 
@@ -964,7 +958,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                       <>
                         <a
                           href={`tel:${a.phone.replace(/[^0-9+]/g, "")}`}
-                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 px-3 py-1.5 text-xs font-bold hover:bg-blue-100 transition-colors shadow-2xs"
+                          className="inline-flex items-center justify-center gap-1 rounded-xl border border-border bg-card text-foreground px-3 py-1.5 text-xs font-bold hover:border-beige transition-colors shadow-2xs"
                           title={tr("Direct Phone Call", "اتصال هاتفي مباشر")}
                         >
                           <Phone className="h-3.5 w-3.5" />
@@ -1323,7 +1317,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                     </button>
                                     <a
                                       href={`tel:${a.phone.replace(/[^0-9+]/g,"")}`}
-                                      className="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 px-2.5 py-0.5 text-[11px] font-bold hover:opacity-90"
+                                      className="inline-flex items-center gap-1 rounded-full border border-border bg-card text-foreground px-2.5 py-0.5 text-[11px] font-bold hover:border-beige transition-colors"
                                     >
                                       <Phone className="h-3 w-3" /> Call
                                     </a>
@@ -1519,8 +1513,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     {curTab === "notes" && (
                       <div className="space-y-4">
                         {hasPayment && eff.notes && (
-                          <div className="rounded-2xl border border-amber-400/60 bg-amber-500/10 p-4">
-                            <p className="flex items-center gap-1.5 text-xs font-bold text-amber-800 mb-2">
+                          <div className="rounded-2xl border border-beige/40 dark:border-beige/20 bg-beige/8 dark:bg-navy/20 p-4">
+                            <p className="flex items-center gap-1.5 text-xs font-bold text-navy dark:text-beige mb-2">
                               <CreditCard className="h-4 w-4" /> {tr("Payment Request from Chat", "طلب سداد قادم عبر الشات")}
                             </p>
                             <p className="text-xs font-mono whitespace-pre-wrap leading-relaxed">{eff.notes}</p>
@@ -1606,7 +1600,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                 <select
                   value={rejectionSelect}
                   onChange={e => setRejectionSelect(e.target.value)}
-                  className="w-full rounded-xl border border-input bg-background p-3 text-xs font-medium outline-none focus:border-red-500"
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs font-medium outline-none focus:border-navy dark:focus:border-beige"
                 >
                   {PREDEFINED_REJECTION_REASONS.map((r, i) => {
                     const label = ar ? r.ar : r.en;
@@ -1632,11 +1626,11 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     "Write any additional details you wish to inform candidate (e.g. Please contact us to re-apply for another destination)...",
                     "اكتب هنا أي تفاصيل إضافية تود إبلاغ العميل بها (مثل: يرجى التواصل لإعادة التقديم على دولة أخرى)..."
                   )}
-                  className="w-full rounded-xl border border-input bg-background p-3 text-xs outline-none focus:border-red-500 resize-none"
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs outline-none focus:border-navy dark:focus:border-beige resize-none"
                 />
               </div>
 
-              <div className="rounded-xl border border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 p-3 text-[11.5px] text-amber-900 dark:text-amber-200">
+              <div className="rounded-xl border border-border bg-secondary/40 p-3 text-[11.5px] text-muted-foreground">
                 ⚠️ {tr(
                   "Once confirmed, status changes to 'Rejected' and candidate will be able to review this reason and consult support via chat.",
                   "بمجرد تأكيد الرفض، سيتحول الطلب إلى حالة 'مرفوض' ويظهر السبب للعميل على لوحة تحكمه مع إمكانية استشارته لفريق العمل عبر الشات."
@@ -2184,7 +2178,7 @@ function ProgramsTab({ programs, countries, onChange }: { programs: any[]; count
         <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between text-muted-foreground mb-1">
             <span className="text-xs font-semibold">Draft Programs</span>
-            <Clock className="h-4 w-4 text-amber-500" />
+            <Clock className="h-4 w-4 text-muted-foreground" />
           </div>
           <p className="font-display text-2xl font-bold text-muted-foreground">{draftsCount}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -2509,11 +2503,7 @@ function ProgramCard({
 
           <div className="flex items-center gap-1.5">
             <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                p.track === "student"
-                  ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                  : "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300"
-              }`}
+              className={`rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-[11px] font-semibold text-muted-foreground`}
             >
               {p.track === "student" ? "Student" : "Graduate"}
             </span>
