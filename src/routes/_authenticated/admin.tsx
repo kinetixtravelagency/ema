@@ -118,7 +118,7 @@ function Admin() {
 
     const pollChats = async () => {
       try {
-        const res = await fetchChats();
+        const res = await fetchChats({ data: { showArchived: false } });
         if (!mounted || !res) return;
         const total = res.totalUnread || 0;
         setUnreadChatCount(total);

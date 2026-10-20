@@ -382,7 +382,7 @@ export const sendClientMessage = createServerFn({ method: "POST" })
 // ─────────────────────────────────────────────────────────────
 
 export const getAdminChats = createServerFn({ method: "POST" })
-  .inputValidator((d: { showArchived?: boolean | undefined }) => d)
+  .inputValidator((d?: { showArchived?: boolean | undefined } | undefined) => d || {})
   .handler(async ({ data }) => {
     const store = await getStore();
     const showArchived = data?.showArchived ?? false;
