@@ -823,7 +823,8 @@ export const getAdminFull = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
-    const s = context.supabase;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const s = supabaseAdmin;
     const [apps, partners, countries, programs, levels, leads, commissions] = await Promise.all([
       s.from("applications").select("*, profiles(full_name, phone), programs(slug, track, title_en, price, deposit, countries(name_en, slug)), application_documents(*)").order("created_at", { ascending: false }),
       s.from("partners").select("*, profiles(full_name, phone)").order("created_at", { ascending: false }),
@@ -833,7 +834,6 @@ export const getAdminFull = createServerFn({ method: "GET" })
       s.from("leads").select("partner_id, status, created_at, full_name, phone, country_interest, track"),
       s.from("commissions").select("*, partners(promo_code, profiles(full_name))").order("created_at", { ascending: false }),
     ]);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { getWithdrawalsStore } = await import("./withdrawals.server");
     const withdrawalsStore = await getWithdrawalsStore();
 
@@ -913,7 +913,9 @@ export const getAdminFull = createServerFn({ method: "GET" })
 
       return {
         ...p,
+        name: resolvedName,
         email,
+        phone: resolvedPhone,          // top-level for easy access
         profiles: {
           full_name: resolvedName,
           phone: resolvedPhone,
@@ -991,6 +993,14 @@ export const getAdminFull = createServerFn({ method: "GET" })
       };
     });
 
+    // Build fast lookup maps for referring partners
+    const partnerByPromo = new Map<string, any>();
+    const partnerById = new Map<string, any>();
+    for (const ep of enrichedPartners) {
+      if (ep.promo_code) partnerByPromo.set(ep.promo_code.trim().toUpperCase(), ep);
+      if (ep.id) partnerById.set(ep.id, ep);
+    }
+
     const enrichedApps = (apps.data ?? []).map((a: any) => {
       const catProg = a.programs?.slug ? getProgram(a.programs.slug)?.program : undefined;
       const resolvedProg = catProg ? {
@@ -999,11 +1009,20 @@ export const getAdminFull = createServerFn({ method: "GET" })
         price: catProg.price || a.programs.price,
       } : a.programs;
       const authUser = authUserMap.get(a.user_id);
+      const matchedPartner = (a.partner_id && partnerById.get(a.partner_id)) || (a.promo_code && partnerByPromo.get(a.promo_code.trim().toUpperCase())) || null;
+
       return {
         ...a,
         programs: resolvedProg,
         user_email: authUser?.email || null,
         user_metadata: (authUser?.user_metadata || {}) as Record<string, any>,
+        referring_partner: matchedPartner ? {
+          id: matchedPartner.id,
+          name: matchedPartner.name || matchedPartner.profiles?.full_name || null,
+          phone: matchedPartner.phone || matchedPartner.profiles?.phone || null,
+          email: matchedPartner.email || null,
+          promo_code: matchedPartner.promo_code || null,
+        } : null,
       };
     });
 

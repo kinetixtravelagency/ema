@@ -142,11 +142,14 @@ export function ChatWidget() {
       prevUnreadRef.current = 0;
       requestNotificationPermission();
       if (visitorId || user?.id) {
+        const clientSavedPhone = typeof window !== "undefined" ? (localStorage.getItem(CLIENT_PHONE_KEY) || localStorage.getItem(LEGACY_CLIENT_PHONE_KEY)) : null;
         fetchChat({
           data: {
             conversationId: convId || undefined,
             visitorId: !user?.id ? visitorId : undefined,
             userId: user?.id || undefined,
+            email: user?.email || undefined,
+            phone: user?.user_metadata?.phone || clientSavedPhone || undefined,
             markAsRead: true,
           },
         })
@@ -162,7 +165,7 @@ export function ChatWidget() {
     };
     window.addEventListener("open-ema-chat", handleOpen);
     return () => window.removeEventListener("open-ema-chat", handleOpen);
-  }, [visitorId, user?.id, convId]);
+  }, [visitorId, user?.id, convId, user?.email]);
 
   // Poll for messages
   useEffect(() => {
@@ -170,11 +173,14 @@ export function ChatWidget() {
 
     const poll = async () => {
       try {
+        const clientSavedPhone = typeof window !== "undefined" ? (localStorage.getItem(CLIENT_PHONE_KEY) || localStorage.getItem(LEGACY_CLIENT_PHONE_KEY)) : null;
         const res = await fetchChat({
           data: {
             conversationId: convId || undefined,
             visitorId: !user?.id ? visitorId : undefined,
             userId: user?.id || undefined,
+            email: user?.email || undefined,
+            phone: user?.user_metadata?.phone || clientSavedPhone || undefined,
             markAsRead: isOpen,
           },
         });

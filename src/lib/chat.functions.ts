@@ -161,6 +161,8 @@ export const getClientChat = createServerFn({ method: "POST" })
       conversationId?: string | undefined;
       visitorId?: string | undefined;
       userId?: string | undefined;
+      email?: string | undefined;
+      phone?: string | undefined;
       markAsRead?: boolean | undefined;
     }) => d
   )
@@ -168,17 +170,38 @@ export const getClientChat = createServerFn({ method: "POST" })
     const store = await getStore();
     let conv: ChatConversation | undefined;
 
-    // Prioritize userId if provided
+    // 1. Prioritize userId if provided
     if (data.userId) {
       conv = Object.values(store.conversations).find((c) => c.userId === data.userId);
     }
 
+    // 2. Or explicit conversationId
     if (!conv && data.conversationId && store.conversations[data.conversationId]) {
       conv = store.conversations[data.conversationId];
       if (conv && data.userId && !conv.userId) conv.userId = data.userId;
     } else if (!conv && data.visitorId) {
+      // 3. Or visitorId
       conv = Object.values(store.conversations).find((c) => c.visitorId === data.visitorId);
       if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+    }
+
+    // 4. Fallback: match by email or phone so rebrand/cookie reset doesn't lose conversation
+    if (!conv && data.email) {
+      const em = data.email.trim().toLowerCase();
+      conv = Object.values(store.conversations).find((c) => c.clientEmail && c.clientEmail.trim().toLowerCase() === em);
+      if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+    }
+
+    if (!conv && data.phone) {
+      const clean = data.phone.replace(/[^0-9]/g, "");
+      if (clean.length >= 8) {
+        conv = Object.values(store.conversations).find((c) => {
+          if (!c.clientPhone) return false;
+          const cp = c.clientPhone.replace(/[^0-9]/g, "");
+          return cp.includes(clean) || clean.includes(cp);
+        });
+        if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+      }
     }
 
     if (!conv) {
@@ -242,6 +265,26 @@ export async function postClientMessageInternal(data: {
     // 3. Or look by visitorId
     conv = Object.values(store.conversations).find((c) => c.visitorId === data.visitorId);
     if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+  }
+
+  // 4. Fallback: match by email if provided
+  if (!conv && data.clientEmail) {
+    const em = data.clientEmail.trim().toLowerCase();
+    conv = Object.values(store.conversations).find((c) => c.clientEmail && c.clientEmail.trim().toLowerCase() === em);
+    if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+  }
+
+  // 5. Fallback: match by phone if provided
+  if (!conv && data.clientPhone) {
+    const clean = data.clientPhone.replace(/[^0-9]/g, "");
+    if (clean.length >= 8) {
+      conv = Object.values(store.conversations).find((c) => {
+        if (!c.clientPhone) return false;
+        const cp = c.clientPhone.replace(/[^0-9]/g, "");
+        return cp.includes(clean) || clean.includes(cp);
+      });
+      if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+    }
   }
 
   const now = new Date().toISOString();

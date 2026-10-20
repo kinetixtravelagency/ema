@@ -932,9 +932,11 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
           const expanded   = exp === a.id;
           const hasPayment = isPaymentApp(a);
           const due        = a.payment_plan === "full" ? a.programs?.price : a.programs?.deposit;
-          const isBusy     = updatingId === a.id;
-          const partner    = a.profiles?.full_name || a.profiles?.display_name || null;
-          const curTab     = getTab(a.id);
+          const isBusy         = updatingId === a.id;
+          const partner        = a.referring_partner?.name || (a.promo_code ? `${tr("Partner", "بارتنر")} (${a.promo_code})` : null);
+          const partnerPhone   = a.referring_partner?.phone || null;
+          const partnerEmail   = a.referring_partner?.email || null;
+          const curTab         = getTab(a.id);
           const StageIcon  = STAGE_ICONS[eff.stage] ?? ClipboardList;
 
           const { meta, rejectionReason } = parseAppNotes(eff.notes, a.user_metadata);
@@ -1008,6 +1010,15 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                         {hasPayment && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 dark:bg-beige/10 border border-navy/25 dark:border-beige/25 px-2.5 py-0.5 text-[11px] font-bold text-navy dark:text-beige">
                             <CreditCard className="h-3 w-3" /> {tr("Payment Request", "طلب سداد")}
+                          </span>
+                        )}
+
+                        {/* Referring Partner Badge */}
+                        {(a.promo_code || a.referring_partner) && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/50 px-2.5 py-0.5 text-[11px] font-bold text-purple-700 dark:text-purple-300">
+                            <Tag className="h-3 w-3" />
+                            <span>{a.referring_partner?.name ? `${a.referring_partner.name} (${a.promo_code || "Code"})` : (a.promo_code || tr("Partner", "بارتنر"))}</span>
+                            {partnerPhone && <span className="opacity-75 font-mono text-[10px]" dir="ltr">· {partnerPhone}</span>}
                           </span>
                         )}
 
@@ -1559,7 +1570,19 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             </div>
                             <div className="flex justify-between items-center gap-2 border-b border-border/40 pb-2">
                               <span className="text-muted-foreground font-medium">{tr("Referring Partner", "الشريك المحيل")}</span>
-                              <span className="font-semibold">{partner ? `${partner} (${a.promo_code || "Code"})` : (a.promo_code || tr("Direct Apply", "تقديم مباشر"))}</span>
+                              <div className="text-end">
+                                <span className="font-semibold block">{a.referring_partner?.name ? `${a.referring_partner.name} (${a.promo_code || "Code"})` : (a.promo_code || tr("Direct Apply", "تقديم مباشر"))}</span>
+                                {partnerPhone && (
+                                  <a href={`https://wa.me/${partnerPhone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer" className="text-[11px] text-navy dark:text-beige hover:underline font-mono inline-flex items-center gap-1 mt-0.5" dir="ltr">
+                                    <Phone className="h-3 w-3" /> {partnerPhone}
+                                  </a>
+                                )}
+                                {partnerEmail && (
+                                  <span className="text-[11px] text-muted-foreground block">
+                                    ✉️ {partnerEmail}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             <div className="flex justify-between items-center gap-2">
                               <span className="text-muted-foreground font-medium">{tr("Promo Discount", "نسبة الخصم المطبقة")}</span>
@@ -5086,7 +5109,7 @@ function PartnersTab({
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-display text-base font-semibold text-foreground">
-                    {p.profiles?.full_name || "Partner"}
+                    {p.profiles?.full_name || p.name || "Partner"}
                   </span>
                   <span className={`${pill} ${statusColor(p.status)}`}>{p.status}</span>
                   <span className="rounded-full bg-navy/10 px-2.5 py-0.5 font-mono text-xs font-bold text-navy dark:bg-navy-soft dark:text-ivory">
@@ -5111,10 +5134,10 @@ function PartnersTab({
                     <span className="text-muted-foreground/60 italic">No email</span>
                   )}
 
-                  {p.profiles?.phone && (
+                  {(p.profiles?.phone || p.phone) && (
                     <span className="inline-flex items-center gap-1.5 text-foreground">
                       <Phone className="h-3.5 w-3.5 text-beige" />
-                      {p.profiles.phone}
+                      {p.profiles?.phone || p.phone}
                     </span>
                   )}
 
@@ -5163,7 +5186,7 @@ function PartnersTab({
                     <div className="text-xs space-y-2">
                       <div>
                         <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Full Name</span>
-                        <span className="font-bold text-foreground text-sm">{p.profiles?.full_name || "—"}</span>
+                        <span className="font-bold text-foreground text-sm">{p.profiles?.full_name || p.name || "—"}</span>
                       </div>
                       <div>
                         <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Email Address</span>
@@ -5185,11 +5208,11 @@ function PartnersTab({
                       </div>
                       <div>
                         <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Phone / WhatsApp</span>
-                        {p.profiles?.phone ? (
+                        {(p.profiles?.phone || p.phone) ? (
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{p.profiles.phone}</span>
+                            <span className="font-medium">{p.profiles?.phone || p.phone}</span>
                             <a
-                              href={`https://wa.me/${p.profiles.phone.replace(/[^0-9]/g, "")}`}
+                              href={`https://wa.me/${(p.profiles?.phone || p.phone).replace(/[^0-9]/g, "")}`}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-1 rounded-full bg-beige/20 px-2 py-0.5 text-[10px] font-semibold text-navy hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70">

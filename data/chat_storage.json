@@ -6,16 +6,17 @@
       "visitorId": null,
       "clientName": "admin",
       "clientEmail": "kinetix.travel.agency@gmail.com",
-      "clientPhone": "24242342342342342342",
+      "clientPhone": "+202132312312",
       "status": "active",
-      "lastMessage": "اه",
-      "lastMessageAt": "2026-10-17T12:31:28.633Z",
-      "unreadCount": 4,
+      "lastMessage": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Seasonal Hospitality & Hotel Services · Bulgaria · Bulgaria\n• المسار: مسار الطلاب 🎓\n• تذكرة الطيران: مشمولة ضمن البرنامج ✈️\n• إجمالي تكلفة البرنامج: €814 (~43,956 ج.م)\n• المبلغ المطلوب سداده الآن: €196 (~10,584 ج.م)\n• المتبقي بالتقسيط: €618 (~33,372 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: Vodafone Cash\n• الاسم: سلسلس لسيلس\n• الهاتف: +202432423423\n• كود الطلب: #b4ff1e63\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+      "lastMessageAt": "2026-10-17T13:51:47.003Z",
+      "unreadCount": 0,
       "unreadClientCount": 0,
       "createdAt": "2026-10-07T20:15:58.848Z",
-      "updatedAt": "2026-10-17T12:31:28.633Z",
+      "updatedAt": "2026-10-17T16:40:50.794Z",
       "isDeleted": false,
-      "hasPaymentRequest": true
+      "hasPaymentRequest": true,
+      "flag": "important"
     },
     "conv_21m4awet0_1791441897429": {
       "id": "conv_21m4awet0_1791441897429",
@@ -40,15 +41,16 @@
       "visitorId": null,
       "clientName": "youssef Mohamed",
       "clientEmail": "yoseif.mohamed@gmail.com",
-      "clientPhone": "+201032944753",
+      "clientPhone": "+202312312312",
       "status": "active",
-      "lastMessage": "hello",
-      "lastMessageAt": "2026-10-09T12:35:35.107Z",
+      "lastMessage": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: WE Pay\n• الاسم: سيسي سيس\n• الهاتف: +202312312312\n• كود الطلب: #41ed86c7\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+      "lastMessageAt": "2026-10-09T19:29:23.966Z",
       "unreadCount": 0,
       "unreadClientCount": 0,
       "createdAt": "2026-10-09T12:35:05.871Z",
-      "updatedAt": "2026-10-09T15:58:24.388Z",
-      "isDeleted": true
+      "updatedAt": "2026-10-09T19:29:23.966Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true
     },
     "conv_78sufobdl_1791555314078": {
       "id": "conv_78sufobdl_1791555314078",
@@ -65,6 +67,536 @@
       "createdAt": "2026-10-09T14:15:14.078Z",
       "updatedAt": "2026-10-09T15:34:23.211Z",
       "flag": "important"
+    },
+    "conv_f2hlvjzf8_1791576967259": {
+      "id": "conv_f2hlvjzf8_1791576967259",
+      "userId": "e797224c-1396-47b4-8da4-48530294c7c2",
+      "visitorId": null,
+      "clientName": "youssef",
+      "clientEmail": "yousswf@gmail.com",
+      "clientPhone": "+204545345353",
+      "status": "active",
+      "lastMessage": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: Etisalat Cash\n• الاسم: sfds fdsfs\n• الهاتف: +204545345353\n• كود الطلب: #0c2566c5\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+      "lastMessageAt": "2026-10-09T20:17:42.678Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-09T20:16:07.259Z",
+      "updatedAt": "2026-10-09T20:17:42.678Z",
+      "hasPaymentRequest": true,
+      "isDeleted": false
+    },
+    "conv_b06w1yhnh_1791578723215": {
+      "id": "conv_b06w1yhnh_1791578723215",
+      "userId": "7cb8c2a1-0b99-4e9c-ae2f-570738f5d44b",
+      "visitorId": null,
+      "clientName": "Omar Mahmoud ali tawfik Hamed",
+      "clientEmail": "omar.tawfik138@gmail.com",
+      "clientPhone": "+201002139085",
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-10T08:05:59.797Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-09T20:45:23.215Z",
+      "updatedAt": "2026-10-10T08:05:59.797Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_541nykn3l_1791625399856": {
+      "id": "conv_541nykn3l_1791625399856",
+      "userId": null,
+      "visitorId": "v_qte3tzpd_1791578508190",
+      "clientName": "Ahmed Mohamed",
+      "clientEmail": null,
+      "clientPhone": "01037339089",
+      "status": "active",
+      "lastMessage": "هل يوجد شي آخر بامكاننا مساعدتك به؟",
+      "lastMessageAt": "2026-10-10T09:57:04.996Z",
+      "unreadCount": 0,
+      "unreadClientCount": 4,
+      "createdAt": "2026-10-10T09:43:19.856Z",
+      "updatedAt": "2026-10-10T09:57:04.996Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_f5rvgrxyk_1791643446372": {
+      "id": "conv_f5rvgrxyk_1791643446372",
+      "userId": "25794571-c3c8-42b1-ba79-f3e5a3cd5ea0",
+      "visitorId": null,
+      "clientName": "ناهد محمد البرعى",
+      "clientEmail": "nahedmohamed1311@gmail.com",
+      "clientPhone": "+201020169382",
+      "status": "active",
+      "lastMessage": "هل حضرتك خريجة؟ وما تخصصك؟",
+      "lastMessageAt": "2026-10-10T16:06:43.657Z",
+      "unreadCount": 0,
+      "unreadClientCount": 3,
+      "createdAt": "2026-10-10T14:44:06.372Z",
+      "updatedAt": "2026-10-10T16:06:43.657Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_r2dl6ifts_1791645513256": {
+      "id": "conv_r2dl6ifts_1791645513256",
+      "userId": "7acf721a-88ea-42d5-92ce-07c4a1f5b74f",
+      "visitorId": null,
+      "clientName": "Mohamed hamed ahmed",
+      "clientEmail": "mshr13675@gmail.com",
+      "clientPhone": "+201119211216",
+      "status": "active",
+      "lastMessage": "رجاء اختيار المسار طلاب او خريجين لمساعدتك",
+      "lastMessageAt": "2026-10-10T16:07:11.368Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-10T15:18:33.256Z",
+      "updatedAt": "2026-10-10T16:07:11.368Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_fgr2vpgs2_1791659431597": {
+      "id": "conv_fgr2vpgs2_1791659431597",
+      "userId": "49e00fbe-c05f-4402-936a-04fb41083da7",
+      "visitorId": null,
+      "clientName": "Farah Essam Marzouk",
+      "clientEmail": "farahessama17z@gmail.com",
+      "clientPhone": "+201116938732",
+      "status": "active",
+      "lastMessage": "هل يمكنك ذكر استفسارك عن المجال الطبي بالتحديد لمساعدتك؟",
+      "lastMessageAt": "2026-10-10T22:35:20.615Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-10T19:10:31.597Z",
+      "updatedAt": "2026-10-10T22:35:20.615Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_isc5z93q0_1791660236401": {
+      "id": "conv_isc5z93q0_1791660236401",
+      "userId": null,
+      "visitorId": "v_nfzabxru_1791660185794",
+      "clientName": "عبدالباسط احمد السيد",
+      "clientEmail": null,
+      "clientPhone": "01014476334",
+      "status": "active",
+      "lastMessage": "هل تود العمل كشريك مبيعات؟",
+      "lastMessageAt": "2026-10-10T22:34:05.540Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-10T19:23:56.401Z",
+      "updatedAt": "2026-10-10T22:34:05.540Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_3mvga2xue_1791660889551": {
+      "id": "conv_3mvga2xue_1791660889551",
+      "userId": null,
+      "visitorId": "v_036kv335_1791660675449",
+      "clientName": "Dina",
+      "clientEmail": null,
+      "clientPhone": "01033910651",
+      "status": "active",
+      "lastMessage": "بعد ملأ استمارة التقديم ورفع المستندات المطلوبة يتم طلب دفع مقدم من خلال بوابة متابعة الابلكيشن الخاصة بالعميل",
+      "lastMessageAt": "2026-10-10T22:33:04.865Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-10T19:34:49.551Z",
+      "updatedAt": "2026-10-10T22:33:04.865Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true
+    },
+    "conv_bw5b11tso_1791662269210": {
+      "id": "conv_bw5b11tso_1791662269210",
+      "userId": "32e403a4-a657-4dc2-ab92-53aaaf5def93",
+      "visitorId": null,
+      "clientName": "Seif Mohamed",
+      "clientEmail": "seifmhelal2004@gmail.com",
+      "clientPhone": "+201040514533",
+      "status": "active",
+      "lastMessage": "https://maps.app.goo.gl/6ZgcX4vVEvne4nR39?g_st=ac",
+      "lastMessageAt": "2026-10-10T22:36:36.407Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-10T19:57:49.210Z",
+      "updatedAt": "2026-10-10T22:36:36.407Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_sbo39cmze_1791664697977": {
+      "id": "conv_sbo39cmze_1791664697977",
+      "userId": null,
+      "visitorId": "v_woulm744_1791664651744",
+      "clientName": "عبدالرحمن سعد",
+      "clientEmail": null,
+      "clientPhone": "01558989909",
+      "status": "active",
+      "lastMessage": "هل تود العمل كشريك مبيعات؟",
+      "lastMessageAt": "2026-10-10T22:35:46.284Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-10T20:38:17.977Z",
+      "updatedAt": "2026-10-10T22:35:46.284Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_oliea6hel_1791683314938": {
+      "id": "conv_oliea6hel_1791683314938",
+      "userId": "631c9e9b-e7e0-4e85-b0cd-b84ad63bd737",
+      "visitorId": null,
+      "clientName": "OSAMA REZK",
+      "clientEmail": "osama135234@gmail.com",
+      "clientPhone": null,
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-11T05:34:02.222Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-11T01:48:34.938Z",
+      "updatedAt": "2026-10-11T05:34:02.222Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_5isxc8uuf_1791742821235": {
+      "id": "conv_5isxc8uuf_1791742821235",
+      "userId": "e96b9326-e64c-4fd9-80e3-f77e1d8c1913",
+      "visitorId": null,
+      "clientName": "فاطمة علاء محمد",
+      "clientEmail": "fatmaalaa17y@gmail.com",
+      "clientPhone": "+201140299341",
+      "status": "active",
+      "lastMessage": "هل قامت بالتسجيل في برنامج سفر معين واكملت الخطوات المطلوبة لتحقيق العمولة الخاصة بالشريك؟",
+      "lastMessageAt": "2026-10-11T19:21:35.092Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-11T18:20:21.235Z",
+      "updatedAt": "2026-10-11T19:21:35.092Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_3xsbi8sep_1791743753356": {
+      "id": "conv_3xsbi8sep_1791743753356",
+      "userId": "8b805e61-93ab-42bf-8a03-cf9ddce3442a",
+      "visitorId": null,
+      "clientName": "سما  محمد.سيد",
+      "clientEmail": "somasoma18y@gmail.com",
+      "clientPhone": "+201201501319",
+      "status": "active",
+      "lastMessage": "نأسف لكي لا يمكنا اتمام عملية دفع المقدم لعدم رفع المستندات المطلوبة",
+      "lastMessageAt": "2026-10-11T19:22:37.348Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-11T18:35:53.356Z",
+      "updatedAt": "2026-10-17T12:59:28.549Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true,
+      "flag": "important"
+    },
+    "conv_e2mmxxiy7_1791747917248": {
+      "id": "conv_e2mmxxiy7_1791747917248",
+      "userId": "51cc35ee-f9a2-42c5-9a88-3416db269e74",
+      "visitorId": null,
+      "clientName": "Youssef Mohamed",
+      "clientEmail": "yoseif.muhamed@gmail.com",
+      "clientPhone": "+201032944753",
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-17T13:03:08.086Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-11T19:45:17.248Z",
+      "updatedAt": "2026-10-17T13:03:08.086Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true,
+      "flag": "important"
+    },
+    "conv_jltizbe9y_1791753017962": {
+      "id": "conv_jltizbe9y_1791753017962",
+      "userId": null,
+      "visitorId": "v_cliixezv_1791752458607",
+      "clientName": "محمد حافظ",
+      "clientEmail": null,
+      "clientPhone": "01002154134",
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-12T05:13:40.729Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-11T21:10:17.962Z",
+      "updatedAt": "2026-10-12T05:13:40.729Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_2w5p0gce7_1791795711728": {
+      "id": "conv_2w5p0gce7_1791795711728",
+      "userId": "ac7ceeab-920b-4002-81a0-7d2ac4c47efd",
+      "visitorId": null,
+      "clientName": "Jomana Sherif",
+      "clientEmail": "jomanasherif55@gmail.com",
+      "clientPhone": "+201096378076",
+      "status": "active",
+      "lastMessage": "هل حضرتك خريجة او طالبة بكلية الطب؟",
+      "lastMessageAt": "2026-10-12T11:55:50.229Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-12T09:01:51.728Z",
+      "updatedAt": "2026-10-12T11:55:50.229Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_y6t8mhnxr_1791848200099": {
+      "id": "conv_y6t8mhnxr_1791848200099",
+      "userId": null,
+      "visitorId": "v_ge29ztay_1791848076567",
+      "clientName": "امجد",
+      "clientEmail": null,
+      "clientPhone": "01023934217",
+      "status": "active",
+      "lastMessage": "33 شارع العاشر من رمضان - الواحات الداخلة - الوادي الجديد",
+      "lastMessageAt": "2026-10-13T13:28:30.052Z",
+      "unreadCount": 0,
+      "unreadClientCount": 3,
+      "createdAt": "2026-10-12T23:36:40.099Z",
+      "updatedAt": "2026-10-13T13:28:30.052Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_taual7fpd_1791969016761": {
+      "id": "conv_taual7fpd_1791969016761",
+      "userId": "772dce41-141e-41ee-baac-383675066110",
+      "visitorId": null,
+      "clientName": "Zainab Ibrahim",
+      "clientEmail": "zainabbibrahimm@gmail.com",
+      "clientPhone": "+201207767481",
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-14T12:00:57.908Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-14T09:10:16.761Z",
+      "updatedAt": "2026-10-14T12:00:57.908Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_qowwayctu_1792058328658": {
+      "id": "conv_qowwayctu_1792058328658",
+      "userId": null,
+      "visitorId": "v_pbqymxso_1792058121104",
+      "clientName": "مؤمن",
+      "clientEmail": null,
+      "clientPhone": "01211341149",
+      "status": "active",
+      "lastMessage": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+      "lastMessageAt": "2026-10-16T18:25:13.849Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-15T09:58:48.658Z",
+      "updatedAt": "2026-10-16T18:25:13.849Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_0rvho2bnn_1792066767102": {
+      "id": "conv_0rvho2bnn_1792066767102",
+      "userId": "29897a01-e217-4973-828e-7bd8534104d9",
+      "visitorId": null,
+      "clientName": "Ibrahim Mohamed Abdelrafea",
+      "clientEmail": "ibramo17799@gmail.com",
+      "clientPhone": null,
+      "status": "active",
+      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-16T18:25:22.183Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-15T12:19:27.102Z",
+      "updatedAt": "2026-10-16T18:25:22.183Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_4uz521vok_1792077573993": {
+      "id": "conv_4uz521vok_1792077573993",
+      "userId": null,
+      "visitorId": "v_ysbly7mr_1792077338872",
+      "clientName": "my name is hamdan mohamed",
+      "clientEmail": null,
+      "clientPhone": "+201021106997",
+      "status": "active",
+      "lastMessage": "Doctors, Nurses & Engineering jobs in Europe",
+      "lastMessageAt": "2026-10-15T15:19:33.992Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-15T15:19:33.992Z",
+      "updatedAt": "2026-10-15T15:19:33.992Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_i5az7cqjf_1792137695270": {
+      "id": "conv_i5az7cqjf_1792137695270",
+      "userId": "8e0e2297-2bd1-4e11-ae7a-f846c5d3c361",
+      "visitorId": null,
+      "clientName": "Mazen khaled Ali Mazen",
+      "clientEmail": "mazenpo2yhhjjj@gmail.com",
+      "clientPhone": "+201280745518",
+      "status": "active",
+      "lastMessage": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+      "lastMessageAt": "2026-10-16T18:25:33.674Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-16T08:01:35.270Z",
+      "updatedAt": "2026-10-16T18:25:33.674Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_xfmpjmbwr_1792161175666": {
+      "id": "conv_xfmpjmbwr_1792161175666",
+      "userId": null,
+      "visitorId": "v_qpgsnirm_1792161071748",
+      "clientName": "Ahmed Samy",
+      "clientEmail": null,
+      "clientPhone": "01060293387",
+      "status": "active",
+      "lastMessage": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+      "lastMessageAt": "2026-10-16T18:25:51.556Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-16T14:32:55.665Z",
+      "updatedAt": "2026-10-16T18:25:51.556Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_nide9ocsi_1792175981891": {
+      "id": "conv_nide9ocsi_1792175981891",
+      "userId": null,
+      "visitorId": "v_cob4qc67_1792175696573",
+      "clientName": "احمد شحاته",
+      "clientEmail": null,
+      "clientPhone": "01017505135",
+      "status": "active",
+      "lastMessage": "عادة يستغرق من اربع اسابيع الي ستة اسابيع",
+      "lastMessageAt": "2026-10-17T12:30:22.861Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-16T18:39:41.891Z",
+      "updatedAt": "2026-10-17T12:30:22.861Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_lu4fdioet_1792235388348": {
+      "id": "conv_lu4fdioet_1792235388348",
+      "userId": null,
+      "visitorId": "v_lc4zzkfc_1792235331128",
+      "clientName": "‏عبد الرحمن صابر ازريعي",
+      "clientEmail": null,
+      "clientPhone": "01070092101",
+      "status": "active",
+      "lastMessage": "هل يمكنك مساعدتنا بتخصصك والمسار الذي تريده",
+      "lastMessageAt": "2026-10-17T12:30:54.009Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-17T11:09:48.348Z",
+      "updatedAt": "2026-10-17T12:30:54.009Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_7uet0vasb_1792266181497": {
+      "id": "conv_7uet0vasb_1792266181497",
+      "userId": "089ba8c7-0923-47c4-9b2f-25b5ac9f4d14",
+      "visitorId": null,
+      "clientName": "Hesham mohamed",
+      "clientEmail": "xxxv710@gmail.com",
+      "clientPhone": "01030929196",
+      "status": "active",
+      "lastMessage": "Kinetix.travel.agency@gmail.com",
+      "lastMessageAt": "2026-10-18T20:39:42.368Z",
+      "unreadCount": 0,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-17T19:43:01.497Z",
+      "updatedAt": "2026-10-18T20:39:42.368Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true,
+      "flag": "important"
+    },
+    "conv_mcz27o25w_1792310377584": {
+      "id": "conv_mcz27o25w_1792310377584",
+      "userId": null,
+      "visitorId": "v_jtrw9v0m_1792310028225",
+      "clientName": "أحمد حسن.يوسف البحراوى",
+      "clientEmail": null,
+      "clientPhone": "01011291627",
+      "status": "active",
+      "lastMessage": "رجاء تحديد اادولة والبرنامج المستهدفين لمساعدتك في تحديد الوقت والتكلفة",
+      "lastMessageAt": "2026-10-18T15:03:02.610Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
+      "createdAt": "2026-10-18T07:59:37.584Z",
+      "updatedAt": "2026-10-18T15:03:02.610Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_h95r5pv5r_1792338297787": {
+      "id": "conv_h95r5pv5r_1792338297787",
+      "userId": null,
+      "visitorId": "v_j093cjy9_1792337248226",
+      "clientName": "ايهاب فؤاد",
+      "clientEmail": null,
+      "clientPhone": "01144003263",
+      "status": "active",
+      "lastMessage": "أهلًا بيك في Kinetix، وخلينا نوضحلك كل تفاصيل الشغل بطريقة بسيطة.\n\nأولًا: طبيعة الشغل – Sales / Referral Partner\n\nالشغل مع Kinetix عبارة عن Affiliate Marketing، يعني بتسوّق لفرص الشركة بطريقتك الخاصة، وكل شخص بيسجل عن طريقك وبيكمل إجراءات السفر بيكون ليك عليه عمولة حسب نظام العمولات المعتمد.\n\nالشغل Remote بالكامل، ومن غير مواعيد عمل ثابتة، ومفيش تارجت يومي للمكالمات أو Cold Calls. إنت مش مطلوب منك تتصل بأشخاص عشوائيين أو تفضل تقنع ناس مش مهتمة بالسفر. الفكرة إنك توصل للأشخاص المهتمين فعلًا بالفرص المتاحة وتعرّفهم عليها.\n\nتقدر تجيب عملاء إزاي؟\nالموضوع كله بيعتمد على طريقتك الخاصة. ممكن تبدأ بمعارفك وأصحابك، أو تنشر عن الفرص في الجروبات اللي إنت موجود فيها، أو تستخدم السوشيال ميديا وتعمل محتوى عن السفر والعمل بالخارج، أو ترشح الشركة لأي شخص بيدور على فرصة مناسبة ليه. مفيش طريقة واحدة لازم تمشي عليها، المهم توصل لأشخاص مهتمين فعلًا.\n\nفي البداية ممكن الموضوع يحتاج مجهود عشان تجيب أول عميل، لكن مع الوقت الموضوع ممكن يبقى أسهل؛ لأن الشخص اللي بيسافر عن طريقك ممكن يرشحك لأصحابه ومعارفه، ولما حد يسأله عن تجربته أو يعرف إزاي بدأ، يقدر يوصله بيك. وده بيساعدك تبني شبكة من العملاء عن طريق الترشيحات.\n\nإمتى بتستحق العمولة؟\nأهم نقطة في الشغل إن مجرد إنك تجيب شخص مهتم أو تخليه يسجل مش معناه إن العمولة اتحسبتلك. لازم العميل:\n\n1. يسجل عن طريق كود الإحالة الخاص بيك.\n2. يرفع كل المستندات المطلوبة وتكون سليمة ومطابقة للشروط.\n3. يكمل خطوة دفع الـ Deposit المطلوبة.\n\nبعد ما الشروط دي تكتمل ويتم تأكيدها، العمولة بتتحسبلك وبتظهر في الـ Balance بتاعك على حسابك.\n\nنظام العمولة ومتابعة العملاء\nالعمولة بتبدأ من 9,350 جنيه مصري لكل عميل مكتمل، وبتزيد حسب مستوى العمولات وعدد العملاء المكتملين وفقًا للنظام المعتمد.\n\nكمان بيكون ليك كود خاص بيك، والعملاء يقدروا يستخدموه للاستفادة من الخصم المتاح ليهم حسب نظام الشركة. ومع زيادة العملاء اللي بتجيبهم، ممكن يزيد مستوى الخصم والعمولة حسب الشرائح المعتمدة.\n\nومن خلال الـ Dashboard على موقع Kinetix، تقدر تتابع العملاء اللي سجلوا عن طريقك، وتشوف تقدم كل عميل في الإجراءات، وتتابع رصيد عمولاتك. ولما يكون عندك رصيد مستحق، تقدر تعمل طلب سحب من خلال طرق الدفع المحلية المتاحة في مصر.\n\nببساطة، دورك إنك توصل الفرصة للشخص المناسب، وتساعده يعرف تفاصيلها ويوصل للتسجيل من خلالك. إنت بتشتغل بطريقتك، من غير مواعيد ثابتة أو Cold Calls، وعمولتك مرتبطة بالعملاء اللي بيكملوا الإجراءات المطلوبة فعلًا.\n\nثانيًا: Kinetix بتعمل إيه؟\n\nKinetix شركة متخصصة في السفر والسياحة، وبتساعد الطلبة والخريجين في الوصول لفرص السفر والعمل بالخارج، حسب مؤهلاتهم وشروط كل فرصة.\n\nالشركة عندها مسارين أساسيين:\n\n- مسار الطلاب: فرص مناسبة للطلاب حسب طبيعة البرنامج وشروطه، ومنها فرص العمل الطلابي الموسمي حسب الدولة.\n- مسار الخريجين: فرص عمل بالخارج بتختلف حسب الدولة، والمؤهل، والخبرة، ومتطلبات كل فرصة.\n\nKinetix بتوضح للعميل تفاصيل الفرصة المتاحة، والمستندات المطلوبة، والتكاليف، ونظام الدفع قبل بدء الإجراءات.\n\nنظام الدفع\nالمقدم بيكون في حدود 10,000 إلى 12,000 جنيه مصري، حسب الفرصة والخطة المتاحة، وباقي المبلغ بيكون وفق نظام التقسيط والشروط المتفق عليها لكل فرصة. وفي الخطط اللي بتسمح بكده، بيكون سداد الأقساط بعد بدء العمل وفقًا للاتفاق المحدد.\n\nطبيعة العمل، والراتب، ومدة العقد، وشروط السفر بتختلف من فرصة للتانية، وبتتحدد بناءً على تفاصيل البرنامج والعقد والمتطلبات المعمول بيها.\n\nهدفنا إنك تكون فاهم طبيعة شغلك كويس، وتقدر توصل المعلومات الصحيحة للناس المهتمة، وتبني شبكة عملاء خاصة بيك مع الوقت.\n\nWelcome to Kinetix! Here's a simple breakdown of how everything works.\n\nFirst: The Job – Sales / Referral Partner\n\nWorking with Kinetix is based on affiliate marketing. You promote the company's available opportunities in your own way, and you earn a commission for every referred client who completes the required steps, according to the approved commission structure.\n\nThe job is 100% remote, with no fixed working hours. There are no daily cold-calling requirements or a need to contact random people who aren't interested in traveling. Your role is to reach people who are genuinely interested in international work opportunities and introduce them to the available options.\n\nHow can you bring in clients?\nYou can start with friends and people you know, share opportunities in groups you're already part of, use social media, create content about working abroad, or refer anyone looking for a suitable opportunity.\n\nThere's no single method you have to follow. Everyone works in their own way, using the approach that suits them best.\n\nGetting your first client may take some effort, but it can become easier over time. Someone who travels through your referral may recommend you to friends and family. When people ask about their experience or how they got started, they can connect them with you. This helps you build a network through referrals.\n\nWhen do you earn your commission?\nSimply bringing in an interested person or getting them to register isn't enough. For a commission to qualify, the client must:\n\n1. Register using your personal referral code.\n2. Upload all required documents, making sure they're valid and meet the requirements.\n3. Complete the required deposit payment.\n\nOnce all these steps have been completed and verified, your commission is credited to your account balance.\n\nCommission and Client Tracking\n\nThe commission starts at EGP 9,350 per completed client and can increase based on the approved commission tiers and the number of completed clients.\n\nYou'll also receive your own referral code, which clients can use to access the applicable discount under the company's system. As you bring in more clients, your commission tier and available client discount may increase according to the approved structure.\n\nThrough your Kinetix website dashboard, you can track the clients who registered through your code, follow their progress, and monitor your commission balance. Once you have an eligible balance, you can submit a withdrawal request using the available local payment methods in Egypt.\n\nIn simple terms, your role is to connect the right people with the right opportunities and help them understand how to register through your referral. You work in your own way, without fixed hours or cold-calling requirements, and earn commissions when referred clients complete the required steps.\n\nSecond: What Does Kinetix Do?\n\nKinetix is a travel and tourism company that helps students and graduates access international travel and work opportunities, depending on their qualifications and the requirements of each opportunity.\n\nThe company currently offers two main tracks:\n\n- Student Track: Opportunities suitable for students based on each program's requirements, including seasonal student work opportunities where available.\n- Graduate Track: International work opportunities that vary according to the destination, qualifications, experience, and specific job requirements.\n\nKinetix explains the available opportunity, required documents, costs, and payment arrangements before the client begins the process.\n\nPayment System\n\nThe upfront deposit generally ranges from EGP 10,000 to EGP 12,000, depending on the available opportunity and plan. The remaining amount is paid according to the applicable installment plan and agreed terms. For plans that allow it, installments may begin after the client starts working, as specified in the agreement.\n\nJob type, salary, contract duration, and travel requirements vary from one opportunity to another and depend on the specific program, contract, and applicable requirements.\n\nOur goal is to help you understand your role clearly, communicate accurate information to interested people, and build your own referral network over time.",
+      "lastMessageAt": "2026-10-18T16:49:43.785Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
+      "createdAt": "2026-10-18T15:44:57.787Z",
+      "updatedAt": "2026-10-18T16:49:43.785Z",
+      "isDeleted": false,
+      "hasPaymentRequest": true
+    },
+    "conv_dbwmhexax_1792395104878": {
+      "id": "conv_dbwmhexax_1792395104878",
+      "userId": "621c5b2d-69f5-4a98-b857-3319e49889dd",
+      "visitorId": null,
+      "clientName": "سيد محمد عبد السلام",
+      "clientEmail": "sayydsaloom7@gmail.com",
+      "clientPhone": "7869637064",
+      "status": "active",
+      "lastMessage": "بكام عقد عمل",
+      "lastMessageAt": "2026-10-19T07:32:06.482Z",
+      "unreadCount": 2,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-19T07:31:44.878Z",
+      "updatedAt": "2026-10-19T07:32:06.482Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_58blohbmf_1792414535674": {
+      "id": "conv_58blohbmf_1792414535674",
+      "userId": "d8d7cc44-e360-449f-b706-c223b37d4f6e",
+      "visitorId": null,
+      "clientName": "عبدالرحمن محمد حسين القاضي",
+      "clientEmail": "alqadymhndsbdalrhmn@gmail.com",
+      "clientPhone": "01011523252",
+      "status": "active",
+      "lastMessage": "محتاج حضرتك ترشحلي افضل الدول اللي اقدر اسافر عليها طبقا للملف بتاعي",
+      "lastMessageAt": "2026-10-19T12:56:36.452Z",
+      "unreadCount": 2,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-19T12:55:35.674Z",
+      "updatedAt": "2026-10-19T12:56:36.452Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
+    },
+    "conv_s378k2bmq_1792427090622": {
+      "id": "conv_s378k2bmq_1792427090622",
+      "userId": null,
+      "visitorId": "v_kzef3gqs_1792426698309",
+      "clientName": "عمرو مصطفى",
+      "clientEmail": null,
+      "clientPhone": "01210638565",
+      "status": "active",
+      "lastMessage": "ممكن استفسر عن موضوع معين",
+      "lastMessageAt": "2026-10-19T16:25:36.893Z",
+      "unreadCount": 3,
+      "unreadClientCount": 0,
+      "createdAt": "2026-10-19T16:24:50.622Z",
+      "updatedAt": "2026-10-19T16:25:36.893Z",
+      "isDeleted": false,
+      "hasPaymentRequest": false
     }
   },
   "messages": {
@@ -160,6 +692,78 @@
         "createdAt": "2026-10-09T18:33:45.011Z"
       },
       {
+        "id": "msg_fs08bnuef_1791576763606",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "client",
+        "senderName": "admin",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: سيشسي شسيشسي\n• الهاتف: +202132312312\n• كود الطلب: #2dd6ed08\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-09T20:12:43.606Z"
+      },
+      {
+        "id": "msg_8rp5lqyvq_1791576808605",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "client",
+        "senderName": "admin",
+        "text": "ا",
+        "isRead": true,
+        "createdAt": "2026-10-09T20:13:28.605Z"
+      },
+      {
+        "id": "msg_ol6fb3zdj_1791746986804",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "client",
+        "senderName": "admin",
+        "text": "Hiiiii",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:29:46.804Z"
+      },
+      {
+        "id": "msg_vcyx4yjob_1791746999809",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "🩺 نوفر برامج توظيف معتمدة للأطباء والممرضين ومساعدي الأطباء والمهندسين في أيرلندا وإيطاليا مع تسهيلات وتقسيط.",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:29:59.809Z"
+      },
+      {
+        "id": "msg_mpaqe7cxz_1791747013204",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "client",
+        "senderName": "admin",
+        "text": "Hello",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:30:13.204Z"
+      },
+      {
+        "id": "msg_1hzu52ntm_1791747024010",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "Hhvv",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:30:24.010Z"
+      },
+      {
+        "id": "msg_9f3861bry_1791747033032",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:30:33.032Z"
+      },
+      {
+        "id": "msg_xqmhzdt27_1791747034178",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:30:34.178Z"
+      },
+      {
         "id": "msg_2o9euh2lz_1792240288633",
         "conversationId": "conv_yv8dco035_1791404158848",
         "sender": "client",
@@ -167,6 +771,15 @@
         "text": "اه",
         "isRead": false,
         "createdAt": "2026-10-17T12:31:28.633Z"
+      },
+      {
+        "id": "msg_dlintqf1w_1792245107003",
+        "conversationId": "conv_yv8dco035_1791404158848",
+        "sender": "client",
+        "senderName": "admin",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Seasonal Hospitality & Hotel Services · Bulgaria · Bulgaria\n• المسار: مسار الطلاب 🎓\n• تذكرة الطيران: مشمولة ضمن البرنامج ✈️\n• إجمالي تكلفة البرنامج: €814 (~43,956 ج.م)\n• المبلغ المطلوب سداده الآن: €196 (~10,584 ج.م)\n• المتبقي بالتقسيط: €618 (~33,372 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: Vodafone Cash\n• الاسم: سلسلس لسيلس\n• الهاتف: +202432423423\n• كود الطلب: #b4ff1e63\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-17T13:51:47.003Z"
       }
     ],
     "conv_21m4awet0_1791441897429": [
@@ -207,6 +820,15 @@
         "text": "hello",
         "isRead": true,
         "createdAt": "2026-10-09T12:35:35.107Z"
+      },
+      {
+        "id": "msg_c08coh26x_1791574163966",
+        "conversationId": "conv_kvjiyyx2g_1791549305871",
+        "sender": "client",
+        "senderName": "youssef Mohamed",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: WE Pay\n• الاسم: سيسي سيس\n• الهاتف: +202312312312\n• كود الطلب: #41ed86c7\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-09T19:29:23.966Z"
       }
     ],
     "conv_78sufobdl_1791555314078": [
@@ -263,6 +885,1121 @@
         "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
         "isRead": true,
         "createdAt": "2026-10-09T14:43:31.394Z"
+      }
+    ],
+    "conv_f2hlvjzf8_1791576967259": [
+      {
+        "id": "msg_8412q4z9t_1791576967259",
+        "conversationId": "conv_f2hlvjzf8_1791576967259",
+        "sender": "client",
+        "senderName": "youssef",
+        "text": "I want to speak with an advisor",
+        "isRead": true,
+        "createdAt": "2026-10-09T20:16:07.259Z"
+      },
+      {
+        "id": "msg_eas2ji5rk_1791577062678",
+        "conversationId": "conv_f2hlvjzf8_1791576967259",
+        "sender": "client",
+        "senderName": "youssef",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: Etisalat Cash\n• الاسم: sfds fdsfs\n• الهاتف: +204545345353\n• كود الطلب: #0c2566c5\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-09T20:17:42.678Z"
+      }
+    ],
+    "conv_b06w1yhnh_1791578723215": [
+      {
+        "id": "msg_qghqjmlkk_1791578723215",
+        "conversationId": "conv_b06w1yhnh_1791578723215",
+        "sender": "client",
+        "senderName": "Omar Mahmoud ali tawfik Hamed",
+        "text": "Hello",
+        "isRead": true,
+        "createdAt": "2026-10-09T20:45:23.215Z"
+      },
+      {
+        "id": "msg_zeamk2mvk_1791619559797",
+        "conversationId": "conv_b06w1yhnh_1791578723215",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T08:05:59.797Z"
+      }
+    ],
+    "conv_541nykn3l_1791625399856": [
+      {
+        "id": "msg_fbv6gt1b6_1791625399856",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "client",
+        "senderName": "Ahmed Mohamed",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:43:19.856Z"
+      },
+      {
+        "id": "msg_eyztd1byz_1791625479572",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:44:39.571Z"
+      },
+      {
+        "id": "msg_n7xmw611q_1791625497993",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "client",
+        "senderName": "Ahmed Mohamed",
+        "text": "عايز رقم حد من الاداره",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:44:57.993Z"
+      },
+      {
+        "id": "msg_z8mg0t2vv_1791625564944",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "بخصوص اي جانب لمعرفة توجيهك للشخص المناسب؟",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:46:04.944Z"
+      },
+      {
+        "id": "msg_v4hg4hxqz_1791625587324",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "client",
+        "senderName": "Ahmed Mohamed",
+        "text": "اي اثباتات السفر والورق ودفع",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:46:27.324Z"
+      },
+      {
+        "id": "msg_lc8r56f8h_1791625642288",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "اخبرنا المستندات والاثباتات المطلوبة وسوف نقوم بتوفيرها لك في اسرع وقت",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:47:22.288Z"
+      },
+      {
+        "id": "msg_60ttm9dvn_1791625738911",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "client",
+        "senderName": "Ahmed Mohamed",
+        "text": "يفاندم بقولك كلمتين الشركه دي لي مكان ولي عقد مسجل من وزاره العمل",
+        "isRead": true,
+        "createdAt": "2026-10-10T09:48:58.911Z"
+      },
+      {
+        "id": "msg_0nqwkw4jp_1791625910885",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "يوجد مكتبين الاول في بلغاريا , صوفيا والثاني في لوكسبمورج , لوكسمبورج",
+        "isRead": false,
+        "createdAt": "2026-10-10T09:51:50.885Z"
+      },
+      {
+        "id": "msg_21r71auvf_1791625928342",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "رجاء توضيح المستندات التي تريدها لمساعدتك بها",
+        "isRead": false,
+        "createdAt": "2026-10-10T09:52:08.342Z"
+      },
+      {
+        "id": "msg_nnn5sq3wq_1791625955309",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "وزارة العمل لا يتضمن فيها وكالات الوساطة للسفر للتسجيل فيها",
+        "isRead": false,
+        "createdAt": "2026-10-10T09:52:35.309Z"
+      },
+      {
+        "id": "msg_9v33j3e6o_1791626224996",
+        "conversationId": "conv_541nykn3l_1791625399856",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل يوجد شي آخر بامكاننا مساعدتك به؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T09:57:04.996Z"
+      }
+    ],
+    "conv_f5rvgrxyk_1791643446372": [
+      {
+        "id": "msg_u55d0ti17_1791643446372",
+        "conversationId": "conv_f5rvgrxyk_1791643446372",
+        "sender": "client",
+        "senderName": "ناهد محمد البرعى",
+        "text": "فرص الأطباء والمهندسين والتمريض ومساعد طبيب",
+        "isRead": true,
+        "createdAt": "2026-10-10T14:44:06.372Z"
+      },
+      {
+        "id": "msg_nxkde1rcv_1791648368842",
+        "conversationId": "conv_f5rvgrxyk_1791643446372",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T16:06:08.842Z"
+      },
+      {
+        "id": "msg_m9s5gcm3b_1791648371637",
+        "conversationId": "conv_f5rvgrxyk_1791643446372",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T16:06:11.636Z"
+      },
+      {
+        "id": "msg_e025v8e0i_1791648403657",
+        "conversationId": "conv_f5rvgrxyk_1791643446372",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل حضرتك خريجة؟ وما تخصصك؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T16:06:43.657Z"
+      }
+    ],
+    "conv_r2dl6ifts_1791645513256": [
+      {
+        "id": "msg_4h7rlhi6e_1791645513256",
+        "conversationId": "conv_r2dl6ifts_1791645513256",
+        "sender": "client",
+        "senderName": "Mohamed hamed ahmed",
+        "text": "تفاصيل نظام الدفع والتقسيط",
+        "isRead": true,
+        "createdAt": "2026-10-10T15:18:33.256Z"
+      },
+      {
+        "id": "msg_czya1unvq_1791648410561",
+        "conversationId": "conv_r2dl6ifts_1791645513256",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T16:06:50.561Z"
+      },
+      {
+        "id": "msg_wcagp1db7_1791648431368",
+        "conversationId": "conv_r2dl6ifts_1791645513256",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "رجاء اختيار المسار طلاب او خريجين لمساعدتك",
+        "isRead": false,
+        "createdAt": "2026-10-10T16:07:11.368Z"
+      }
+    ],
+    "conv_fgr2vpgs2_1791659431597": [
+      {
+        "id": "msg_djz901frn_1791659431597",
+        "conversationId": "conv_fgr2vpgs2_1791659431597",
+        "sender": "client",
+        "senderName": "Farah Essam Marzouk",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:10:31.597Z"
+      },
+      {
+        "id": "msg_yf0wwvk88_1791659438999",
+        "conversationId": "conv_fgr2vpgs2_1791659431597",
+        "sender": "client",
+        "senderName": "Farah Essam Marzouk",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:10:38.998Z"
+      },
+      {
+        "id": "msg_81j1gpdsg_1791671657765",
+        "conversationId": "conv_fgr2vpgs2_1791659431597",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-10T22:34:17.765Z"
+      },
+      {
+        "id": "msg_b4zcr499k_1791671720615",
+        "conversationId": "conv_fgr2vpgs2_1791659431597",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل يمكنك ذكر استفسارك عن المجال الطبي بالتحديد لمساعدتك؟",
+        "isRead": true,
+        "createdAt": "2026-10-10T22:35:20.615Z"
+      }
+    ],
+    "conv_isc5z93q0_1791660236401": [
+      {
+        "id": "msg_uweeb1z7q_1791660236401",
+        "conversationId": "conv_isc5z93q0_1791660236401",
+        "sender": "client",
+        "senderName": "عبدالباسط احمد السيد",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:23:56.401Z"
+      },
+      {
+        "id": "msg_v5455x2j9_1791660289487",
+        "conversationId": "conv_isc5z93q0_1791660236401",
+        "sender": "client",
+        "senderName": "عبدالباسط احمد السيد",
+        "text": "ابدا الشغل ازاي",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:24:49.487Z"
+      },
+      {
+        "id": "msg_l2thslafo_1791660359637",
+        "conversationId": "conv_isc5z93q0_1791660236401",
+        "sender": "client",
+        "senderName": "عبدالباسط احمد السيد",
+        "text": "الو",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:25:59.637Z"
+      },
+      {
+        "id": "msg_6mq9wgkci_1791671605024",
+        "conversationId": "conv_isc5z93q0_1791660236401",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:33:25.024Z"
+      },
+      {
+        "id": "msg_ccn32g2pv_1791671645540",
+        "conversationId": "conv_isc5z93q0_1791660236401",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل تود العمل كشريك مبيعات؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:34:05.540Z"
+      }
+    ],
+    "conv_3mvga2xue_1791660889551": [
+      {
+        "id": "msg_41qujj793_1791660889551",
+        "conversationId": "conv_3mvga2xue_1791660889551",
+        "sender": "client",
+        "senderName": "Dina",
+        "text": "I want to speak with an advisor",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:34:49.551Z"
+      },
+      {
+        "id": "msg_hpzzvmujw_1791660915582",
+        "conversationId": "conv_3mvga2xue_1791660889551",
+        "sender": "client",
+        "senderName": "Dina",
+        "text": "?",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:35:15.582Z"
+      },
+      {
+        "id": "msg_6ccgvcs43_1791660979235",
+        "conversationId": "conv_3mvga2xue_1791660889551",
+        "sender": "client",
+        "senderName": "Dina",
+        "text": "هبعت الفلوس ازاى",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:36:19.235Z"
+      },
+      {
+        "id": "msg_w8rlaf7gz_1791671442668",
+        "conversationId": "conv_3mvga2xue_1791660889551",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-10T22:30:42.668Z"
+      },
+      {
+        "id": "msg_ps9o87775_1791671584865",
+        "conversationId": "conv_3mvga2xue_1791660889551",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "بعد ملأ استمارة التقديم ورفع المستندات المطلوبة يتم طلب دفع مقدم من خلال بوابة متابعة الابلكيشن الخاصة بالعميل",
+        "isRead": true,
+        "createdAt": "2026-10-10T22:33:04.865Z"
+      }
+    ],
+    "conv_bw5b11tso_1791662269210": [
+      {
+        "id": "msg_4ye3hgdmo_1791662269210",
+        "conversationId": "conv_bw5b11tso_1791662269210",
+        "sender": "client",
+        "senderName": "Seif Mohamed",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:57:49.210Z"
+      },
+      {
+        "id": "msg_ire20z356_1791662286219",
+        "conversationId": "conv_bw5b11tso_1791662269210",
+        "sender": "client",
+        "senderName": "Seif Mohamed",
+        "text": "هل يوجد مقر رسمي",
+        "isRead": true,
+        "createdAt": "2026-10-10T19:58:06.219Z"
+      },
+      {
+        "id": "msg_uyutpzbri_1791671793642",
+        "conversationId": "conv_bw5b11tso_1791662269210",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "يمكنك زيارتنا علي العنوان الاتي",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:36:33.642Z"
+      },
+      {
+        "id": "msg_y7ku7uz8j_1791671796407",
+        "conversationId": "conv_bw5b11tso_1791662269210",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "https://maps.app.goo.gl/6ZgcX4vVEvne4nR39?g_st=ac",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:36:36.407Z"
+      }
+    ],
+    "conv_sbo39cmze_1791664697977": [
+      {
+        "id": "msg_3samvy8te_1791664697977",
+        "conversationId": "conv_sbo39cmze_1791664697977",
+        "sender": "client",
+        "senderName": "عبدالرحمن سعد",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-10T20:38:17.977Z"
+      },
+      {
+        "id": "msg_1r687hv6m_1791664720779",
+        "conversationId": "conv_sbo39cmze_1791664697977",
+        "sender": "client",
+        "senderName": "عبدالرحمن سعد",
+        "text": "اريد ان اعمل معكم",
+        "isRead": true,
+        "createdAt": "2026-10-10T20:38:40.779Z"
+      },
+      {
+        "id": "msg_lq7zkwnez_1791671734587",
+        "conversationId": "conv_sbo39cmze_1791664697977",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:35:34.587Z"
+      },
+      {
+        "id": "msg_rgje6y7h3_1791671746284",
+        "conversationId": "conv_sbo39cmze_1791664697977",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل تود العمل كشريك مبيعات؟",
+        "isRead": false,
+        "createdAt": "2026-10-10T22:35:46.284Z"
+      }
+    ],
+    "conv_oliea6hel_1791683314938": [
+      {
+        "id": "msg_mrgcr90tw_1791683314938",
+        "conversationId": "conv_oliea6hel_1791683314938",
+        "sender": "client",
+        "senderName": "OSAMA REZK",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-11T01:48:34.938Z"
+      },
+      {
+        "id": "msg_jyqfhv9hh_1791683467954",
+        "conversationId": "conv_oliea6hel_1791683314938",
+        "sender": "client",
+        "senderName": "OSAMA REZK",
+        "text": "سلام عليكم",
+        "isRead": true,
+        "createdAt": "2026-10-11T01:51:07.954Z"
+      },
+      {
+        "id": "msg_pggdsgldr_1791696842222",
+        "conversationId": "conv_oliea6hel_1791683314938",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-11T05:34:02.222Z"
+      }
+    ],
+    "conv_5isxc8uuf_1791742821235": [
+      {
+        "id": "msg_l51zhg7aj_1791742821235",
+        "conversationId": "conv_5isxc8uuf_1791742821235",
+        "sender": "client",
+        "senderName": "فاطمة علاء محمد",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-11T18:20:21.235Z"
+      },
+      {
+        "id": "msg_c2cgh39f1_1791742849561",
+        "conversationId": "conv_5isxc8uuf_1791742821235",
+        "sender": "client",
+        "senderName": "فاطمة علاء محمد",
+        "text": "انا طالبة سجلت عن طريق لينك وعايزة اعمل عملاء واخد ربح ف اعمل اي",
+        "isRead": true,
+        "createdAt": "2026-10-11T18:20:49.561Z"
+      },
+      {
+        "id": "msg_j23p349he_1791746432981",
+        "conversationId": "conv_5isxc8uuf_1791742821235",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-11T19:20:32.981Z"
+      },
+      {
+        "id": "msg_1ic3p9gnl_1791746495092",
+        "conversationId": "conv_5isxc8uuf_1791742821235",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل قامت بالتسجيل في برنامج سفر معين واكملت الخطوات المطلوبة لتحقيق العمولة الخاصة بالشريك؟",
+        "isRead": false,
+        "createdAt": "2026-10-11T19:21:35.092Z"
+      }
+    ],
+    "conv_3xsbi8sep_1791743753356": [
+      {
+        "id": "msg_dc6ibrmwz_1791743753356",
+        "conversationId": "conv_3xsbi8sep_1791743753356",
+        "sender": "client",
+        "senderName": "سما  محمد.سيد",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: عمل موسمي في الضيافة والفنادق (طلاب) · بلغاريا · بلغاريا\n• المسار: مسار الطلاب 🎓\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €610 (~32,940 ج.م)\n• المبلغ المطلوب سداده الآن: €196 (~10,584 ج.م)\n• المتبقي بالتقسيط: €414 (~22,356 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: سما  محمد.سيد\n• الهاتف: +201201501319\n• كود الطلب: #b3fb2bb0\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-11T18:35:53.356Z"
+      },
+      {
+        "id": "msg_yk88gtyna_1791743776572",
+        "conversationId": "conv_3xsbi8sep_1791743753356",
+        "sender": "client",
+        "senderName": "سما  محمد.سيد",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: برنامج سفر\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €640 (~34,560 ج.م)\n• المبلغ المطلوب سداده الآن: €196 (~10,584 ج.م)\n• المتبقي بالتقسيط: €444 (~23,976 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: سما محمد.سيد\n• الهاتف: +201201501319\n• كود الطلب: #b3fb2bb0\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-11T18:36:16.572Z"
+      },
+      {
+        "id": "msg_d24ti4rlt_1791746557348",
+        "conversationId": "conv_3xsbi8sep_1791743753356",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "نأسف لكي لا يمكنا اتمام عملية دفع المقدم لعدم رفع المستندات المطلوبة",
+        "isRead": false,
+        "createdAt": "2026-10-11T19:22:37.348Z"
+      }
+    ],
+    "conv_e2mmxxiy7_1791747917248": [
+      {
+        "id": "msg_h993b9m6w_1791747917248",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "client",
+        "senderName": "Youssef Mohamed",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: Youssef Mohamed\n• الهاتف: +201032944753\n• كود الطلب: #76734214\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-11T19:45:17.248Z"
+      },
+      {
+        "id": "msg_gh22t2bve_1792241610040",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "client",
+        "senderName": "Youssef Mohamed",
+        "text": "اهلا",
+        "isRead": true,
+        "createdAt": "2026-10-17T12:53:30.040Z"
+      },
+      {
+        "id": "msg_7sg7tpz6j_1792241628145",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "اه",
+        "isRead": true,
+        "createdAt": "2026-10-17T12:53:48.145Z"
+      },
+      {
+        "id": "msg_2jmdl6wl4_1792241653617",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "client",
+        "senderName": "Youssef Mohamed",
+        "text": "Hi",
+        "isRead": true,
+        "createdAt": "2026-10-17T12:54:13.617Z"
+      },
+      {
+        "id": "msg_fmmgagunx_1792241757184",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "Hi",
+        "isRead": true,
+        "createdAt": "2026-10-17T12:55:57.184Z"
+      },
+      {
+        "id": "msg_cfa5v4g80_1792242188086",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-17T13:03:08.086Z"
+      }
+    ],
+    "conv_jltizbe9y_1791753017962": [
+      {
+        "id": "msg_ur51mu60n_1791753017962",
+        "conversationId": "conv_jltizbe9y_1791753017962",
+        "sender": "client",
+        "senderName": "محمد حافظ",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-11T21:10:17.962Z"
+      },
+      {
+        "id": "msg_uwbdbr0u2_1791782020729",
+        "conversationId": "conv_jltizbe9y_1791753017962",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-12T05:13:40.729Z"
+      }
+    ],
+    "conv_2w5p0gce7_1791795711728": [
+      {
+        "id": "msg_wcaoxw2ci_1791795711728",
+        "conversationId": "conv_2w5p0gce7_1791795711728",
+        "sender": "client",
+        "senderName": "Jomana Sherif",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-12T09:01:51.728Z"
+      },
+      {
+        "id": "msg_9bc7mmju5_1791806119778",
+        "conversationId": "conv_2w5p0gce7_1791795711728",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-12T11:55:19.778Z"
+      },
+      {
+        "id": "msg_rzmuzphp0_1791806150229",
+        "conversationId": "conv_2w5p0gce7_1791795711728",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل حضرتك خريجة او طالبة بكلية الطب؟",
+        "isRead": true,
+        "createdAt": "2026-10-12T11:55:50.229Z"
+      }
+    ],
+    "conv_y6t8mhnxr_1791848200099": [
+      {
+        "id": "msg_l64bv2sio_1791848200099",
+        "conversationId": "conv_y6t8mhnxr_1791848200099",
+        "sender": "client",
+        "senderName": "امجد",
+        "text": "استفسار عن وظائف بلغاريا وأوروبا",
+        "isRead": true,
+        "createdAt": "2026-10-12T23:36:40.099Z"
+      },
+      {
+        "id": "msg_7ocg7gt39_1791848213120",
+        "conversationId": "conv_y6t8mhnxr_1791848200099",
+        "sender": "client",
+        "senderName": "امجد",
+        "text": "هل لكم مكتب قائم",
+        "isRead": true,
+        "createdAt": "2026-10-12T23:36:53.120Z"
+      },
+      {
+        "id": "msg_08tsuwpz9_1791898044325",
+        "conversationId": "conv_y6t8mhnxr_1791848200099",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-13T13:27:24.325Z"
+      },
+      {
+        "id": "msg_364bth5xc_1791898076551",
+        "conversationId": "conv_y6t8mhnxr_1791848200099",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "مكتبنا بالعنوان الآتي",
+        "isRead": false,
+        "createdAt": "2026-10-13T13:27:56.551Z"
+      },
+      {
+        "id": "msg_7vckjqkae_1791898110052",
+        "conversationId": "conv_y6t8mhnxr_1791848200099",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "33 شارع العاشر من رمضان - الواحات الداخلة - الوادي الجديد",
+        "isRead": false,
+        "createdAt": "2026-10-13T13:28:30.052Z"
+      }
+    ],
+    "conv_taual7fpd_1791969016761": [
+      {
+        "id": "msg_5py6sprdg_1791969016761",
+        "conversationId": "conv_taual7fpd_1791969016761",
+        "sender": "client",
+        "senderName": "Zainab Ibrahim",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-14T09:10:16.761Z"
+      },
+      {
+        "id": "msg_nfo9p27y3_1791969032318",
+        "conversationId": "conv_taual7fpd_1791969016761",
+        "sender": "client",
+        "senderName": "Zainab Ibrahim",
+        "text": "Hii",
+        "isRead": true,
+        "createdAt": "2026-10-14T09:10:32.318Z"
+      },
+      {
+        "id": "msg_of96i9fuy_1791979257908",
+        "conversationId": "conv_taual7fpd_1791969016761",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-14T12:00:57.908Z"
+      }
+    ],
+    "conv_qowwayctu_1792058328658": [
+      {
+        "id": "msg_d05dtbne8_1792058328658",
+        "conversationId": "conv_qowwayctu_1792058328658",
+        "sender": "client",
+        "senderName": "مؤمن",
+        "text": "I want to speak with an advisor",
+        "isRead": true,
+        "createdAt": "2026-10-15T09:58:48.658Z"
+      },
+      {
+        "id": "msg_zcjc4hlp8_1792058356007",
+        "conversationId": "conv_qowwayctu_1792058328658",
+        "sender": "client",
+        "senderName": "مؤمن",
+        "text": "السلام عليكم",
+        "isRead": true,
+        "createdAt": "2026-10-15T09:59:16.006Z"
+      },
+      {
+        "id": "msg_9rsr0e2z6_1792058391727",
+        "conversationId": "conv_qowwayctu_1792058328658",
+        "sender": "client",
+        "senderName": "مؤمن",
+        "text": "كنت عاوز استفسر بخصوص تكاليف السفر",
+        "isRead": true,
+        "createdAt": "2026-10-15T09:59:51.727Z"
+      },
+      {
+        "id": "msg_mueepnpr0_1792175094517",
+        "conversationId": "conv_qowwayctu_1792058328658",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-16T18:24:54.517Z"
+      },
+      {
+        "id": "msg_zcj20xn36_1792175113849",
+        "conversationId": "conv_qowwayctu_1792058328658",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+        "isRead": false,
+        "createdAt": "2026-10-16T18:25:13.849Z"
+      }
+    ],
+    "conv_0rvho2bnn_1792066767102": [
+      {
+        "id": "msg_8c5ebqq0c_1792066767102",
+        "conversationId": "conv_0rvho2bnn_1792066767102",
+        "sender": "client",
+        "senderName": "Ibrahim Mohamed Abdelrafea",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-15T12:19:27.102Z"
+      },
+      {
+        "id": "msg_7qisxjerv_1792066820500",
+        "conversationId": "conv_0rvho2bnn_1792066767102",
+        "sender": "client",
+        "senderName": "Ibrahim Mohamed Abdelrafea",
+        "text": "السلام عليكم",
+        "isRead": true,
+        "createdAt": "2026-10-15T12:20:20.500Z"
+      },
+      {
+        "id": "msg_m6o974kee_1792175122183",
+        "conversationId": "conv_0rvho2bnn_1792066767102",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-16T18:25:22.183Z"
+      }
+    ],
+    "conv_4uz521vok_1792077573993": [
+      {
+        "id": "msg_ya1sr4q3u_1792077573993",
+        "conversationId": "conv_4uz521vok_1792077573993",
+        "sender": "client",
+        "senderName": "my name is hamdan mohamed",
+        "text": "Doctors, Nurses & Engineering jobs in Europe",
+        "isRead": true,
+        "createdAt": "2026-10-15T15:19:33.992Z"
+      }
+    ],
+    "conv_i5az7cqjf_1792137695270": [
+      {
+        "id": "msg_9i2ho5mr7_1792137695270",
+        "conversationId": "conv_i5az7cqjf_1792137695270",
+        "sender": "client",
+        "senderName": "Mazen khaled Ali Mazen",
+        "text": "تفاصيل نظام الدفع والتقسيط",
+        "isRead": true,
+        "createdAt": "2026-10-16T08:01:35.270Z"
+      },
+      {
+        "id": "msg_7ublqpslp_1792175133674",
+        "conversationId": "conv_i5az7cqjf_1792137695270",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+        "isRead": true,
+        "createdAt": "2026-10-16T18:25:33.674Z"
+      }
+    ],
+    "conv_xfmpjmbwr_1792161175666": [
+      {
+        "id": "msg_z2b2nuhto_1792161175666",
+        "conversationId": "conv_xfmpjmbwr_1792161175666",
+        "sender": "client",
+        "senderName": "Ahmed Samy",
+        "text": "عاوز اعرف طريقة عقود العمل معاكم",
+        "isRead": true,
+        "createdAt": "2026-10-16T14:32:55.665Z"
+      },
+      {
+        "id": "msg_ewb439n1i_1792175144781",
+        "conversationId": "conv_xfmpjmbwr_1792161175666",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-16T18:25:44.781Z"
+      },
+      {
+        "id": "msg_oi0hg9d3z_1792175151556",
+        "conversationId": "conv_xfmpjmbwr_1792161175666",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلًا بيك في Kinetix.\n\nلو نفسك تسافر وتبدأ فرصة شغل بره مصر، خلينا نوضحلك البرامج المتاحة، والتكاليف، والمرتبات المتوقعة، وخطوات التقديم من البداية لحد السفر.\n\nأولًا: الدول والبرامج المتاحة\n\nعندنا فرص في 7 دول، والبرنامج المناسب بيتحدد حسب مؤهلك وشروط الوظيفة.\n\n1. بلغاريا — Bulgaria\n\n- الطلاب: الزراعة الموسمية، الفنادق والمنتجعات.\n- الخريجين: المصانع، المخازن واللوجستيات.\n- أمثلة للراتب الشهري: من 500 إلى 950 يورو للفرص الموسمية، ومن 800 إلى 1,600 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 580 إلى 720 يورو.\n\n2. إيطاليا — Italy\n\n- الطلاب: الزراعة الموسمية والمنتجعات السياحية.\n- الخريجين: المطاعم، الطهي، البناء والمهن الفنية.\n- أمثلة للراتب الشهري: من 900 إلى 1,400 يورو للفرص الموسمية، ومن 1,300 إلى 2,200 يورو لبعض وظائف الخريجين.\n- أمثلة لتكلفة البرامج: من 640 إلى 720 يورو.\n\n3. أرمينيا — Armenia\n\n- الخريجين: الفنادق، التصنيع، المخازن والدعم الفني.\n- أمثلة للراتب الشهري: من 500 إلى 1,400 يورو حسب الوظيفة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n4. روسيا — Russia\n\n- الخريجين: المصانع، الإنتاج، المخازن والضيافة.\n- أمثلة للراتب الشهري: من 600 إلى 1,100 يورو.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n5. لوكسمبورج — Luxembourg\n\n- الخريجين: اللوجستيات، تكنولوجيا المعلومات، والوظائف المالية المتخصصة.\n- أمثلة للراتب الشهري: من 2,200 إلى 6,000 يورو للوظائف المتخصصة حسب الخبرة.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n6. سلوفينيا — Slovenia\n\n- الخريجين: الهندسة وبعض التخصصات الصحية والمهنية.\n- أمثلة للراتب الشهري: من 1,300 إلى 2,500 يورو حسب التخصص.\n- مثال لتكلفة البرنامج: حوالي 720 يورو.\n\n7. أيرلندا — Ireland\n\n- الخريجين: بعض الوظائف الطبية والتمريضية والتخصصات المهنية.\n- أمثلة للراتب الشهري: من 2,500 إلى 7,500 يورو لبعض الوظائف الطبية والصحية، حسب التخصص والخبرة.\n- مثال لتكلفة البرنامج: حوالي 640 يورو.\n\nالأرقام دي أمثلة استرشادية وليست ضمانًا لتوافر الوظيفة أو الحصول على الراتب المذكور. التكلفة والراتب وشروط كل فرصة لازم تتأكد من العرض والعقد قبل الحجز.\n\nثانيًا: عندنا مسارين للسفر\n\nمسار الطلاب\nعقود عمل موسمية مدتها من 3 إلى 6 شهور، في مجالات زي الزراعة والفنادق والمنتجعات، حسب الفرص المتاحة وشروط الدولة.\n\nمسار الخريجين\nعقود عمل أطول، من سنة إلى سنة ونص وقد تصل إلى سنتين، حسب الوظيفة وصاحب العمل وتصريح العمل، في مجالات زي الصناعة واللوجستيات والضيافة والتخصصات المهنية.\n\nثالثًا: نظام الدفع\n\nمش مطلوب منك تدفع إجمالي تكلفة البرنامج مرة واحدة.\n\n- الديبوزت: من 10,000 إلى 12,000 جنيه حسب البرنامج.\n- باقي التكلفة: بيتقسط على مدة من شهر إلى 6 شهور وفقًا للخطة المتفق عليها.\n- السداد من الراتب: وفقًا لنظام البرنامج والعقد، ممكن يتم سداد الأقساط من راتبك بعد بدء العمل بالخارج إذا كان ده منصوصًا عليه في الاتفاق.\n\nقبل الحجز، هتكون عارف إجمالي التكلفة، والمقدم، ومواعيد الأقساط، والالتزامات المالية الخاصة ببرنامجك.\n\nرابعًا: هل لازم يكون الإنجليزي B1؟\n\nمش شرط في كل البرامج. فيه فرص بتحتاج أساسيات اللغة والتواصل اليومي فقط، وفيه وظائف متخصصة بتحتاج مستوى أعلى أو لغة البلد نفسها حسب طبيعة العمل.\n\nخامسًا: خطوات التقديم\n\n1. تختار الدولة والبرنامج المناسب وتقدم من الموقع.\n2. ترفع مستنداتك، وفريقنا يراجعها.\n3. بعد تأكيد الديبوزت، بنرتب زيارة مندوب لاستكمال الأوراق وتوقيع اتفاق مكتوب يوضح حقوق والتزامات الطرفين.\n4. بتحضر اجتماع مع مستشار مصري يشرحلك البلد والبرنامج وتفاصيله.\n5. بتحضر اجتماعًا تحضيريًا مع شخص من البلد المستهدفة، حسب البرنامج.\n6. بتستكمل إجراءات السفارة، وتراجع عقد العمل وشروطه قبل التوقيع النهائي.\n7. بعد الموافقات المطلوبة، بننسق معاك ترتيبات السفر والاستقبال عند الوصول.\n\nسادسًا: سياسة استرداد الديبوزت\n\nحسب السياسة المقترحة للبرنامج، يتم استرداد كامل الديبوزت للطلاب في حالة رفض التأشيرة، وللخريجين في حالة الرفض الأول، بينما لا يُسترد في حالة الرفض الثاني للخريجين.\n\nالتفاصيل النهائية وشروط الاسترداد لازم تكون مكتوبة بوضوح في الاتفاق قبل الدفع.\n\nابدأ خطوتك الأولى مع Kinetix\n\nالموقع:\nhttps://kinetix-theta-flame.vercel.app/\n\nعلشان نرشحلك أنسب فرصة، ابعتلنا:\n\n- سنك كام؟\n- طالب ولا خريج؟\n- مؤهلك أو تخصصك إيه؟\n- حابب تسافر أنهي دولة، ولا تحب نختارلك الأنسب حسب حالتك؟\n\nوبناءً على إجاباتك، نقدر نحددلك المسار المناسب والتكلفة وشروط البرنامج المتاح ليك.",
+        "isRead": false,
+        "createdAt": "2026-10-16T18:25:51.556Z"
+      }
+    ],
+    "conv_nide9ocsi_1792175981891": [
+      {
+        "id": "msg_vws54oon0_1792175981891",
+        "conversationId": "conv_nide9ocsi_1792175981891",
+        "sender": "client",
+        "senderName": "احمد شحاته",
+        "text": "كم الوقت اللازم للسفر بعد التقديم؟",
+        "isRead": true,
+        "createdAt": "2026-10-16T18:39:41.891Z"
+      },
+      {
+        "id": "msg_njjc3tex6_1792240222861",
+        "conversationId": "conv_nide9ocsi_1792175981891",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "عادة يستغرق من اربع اسابيع الي ستة اسابيع",
+        "isRead": false,
+        "createdAt": "2026-10-17T12:30:22.861Z"
+      }
+    ],
+    "conv_lu4fdioet_1792235388348": [
+      {
+        "id": "msg_a9zvurbl0_1792235388348",
+        "conversationId": "conv_lu4fdioet_1792235388348",
+        "sender": "client",
+        "senderName": "‏عبد الرحمن صابر ازريعي",
+        "text": "I want to speak with an advisor",
+        "isRead": true,
+        "createdAt": "2026-10-17T11:09:48.348Z"
+      },
+      {
+        "id": "msg_5h0kdhk3t_1792235440222",
+        "conversationId": "conv_lu4fdioet_1792235388348",
+        "sender": "client",
+        "senderName": "‏عبد الرحمن صابر ازريعي",
+        "text": "‏أنا حابب سافر على شغل",
+        "isRead": true,
+        "createdAt": "2026-10-17T11:10:40.222Z"
+      },
+      {
+        "id": "msg_gz5suae85_1792240235020",
+        "conversationId": "conv_lu4fdioet_1792235388348",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-17T12:30:35.020Z"
+      },
+      {
+        "id": "msg_44ncjy1z8_1792240254009",
+        "conversationId": "conv_lu4fdioet_1792235388348",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "هل يمكنك مساعدتنا بتخصصك والمسار الذي تريده",
+        "isRead": false,
+        "createdAt": "2026-10-17T12:30:54.009Z"
+      }
+    ],
+    "conv_7uet0vasb_1792266181497": [
+      {
+        "id": "msg_3q3lfs66u_1792266181497",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": true,
+        "createdAt": "2026-10-17T19:43:01.497Z"
+      },
+      {
+        "id": "msg_gwjgcws08_1792266249093",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "؟؟؟؟",
+        "isRead": true,
+        "createdAt": "2026-10-17T19:44:09.093Z"
+      },
+      {
+        "id": "msg_yfqcak2p2_1792266294811",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "💳 طلب سداد جديد (سداد كامل بالكامل):\n• البرنامج: برنامج سفر\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €640 (~34,560 ج.م)\n• المبلغ المطلوب سداده الآن: €640 (~34,560 ج.م)\n• وسيلة الدفع المفضلة: Etisalat Cash\n• الاسم: Hesham mohamed\n• الهاتف: +201030929196\n• كود الطلب: #707fdfcc\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-17T19:44:54.811Z"
+      },
+      {
+        "id": "msg_pj7ldedba_1792266826677",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "...",
+        "isRead": true,
+        "createdAt": "2026-10-17T19:53:46.677Z"
+      },
+      {
+        "id": "msg_iicnpq01k_1792321307741",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "؟",
+        "isRead": true,
+        "createdAt": "2026-10-18T11:01:47.741Z"
+      },
+      {
+        "id": "msg_ipeoobtuy_1792335738594",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": true,
+        "createdAt": "2026-10-18T15:02:18.594Z"
+      },
+      {
+        "id": "msg_wjwqxte7i_1792343780204",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "client",
+        "senderName": "Hesham mohamed",
+        "text": "في واتساب او ميل للتواصل",
+        "isRead": true,
+        "createdAt": "2026-10-18T17:16:20.204Z"
+      },
+      {
+        "id": "msg_kk69s76bj_1792355964638",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "يمكنك محادثتنا هنا او علي الميل الخاص بنا",
+        "isRead": true,
+        "createdAt": "2026-10-18T20:39:24.638Z"
+      },
+      {
+        "id": "msg_tuzr6d9z7_1792355982368",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "Kinetix.travel.agency@gmail.com",
+        "isRead": true,
+        "createdAt": "2026-10-18T20:39:42.368Z"
+      }
+    ],
+    "conv_mcz27o25w_1792310377584": [
+      {
+        "id": "msg_rbrsp4xl4_1792310377584",
+        "conversationId": "conv_mcz27o25w_1792310377584",
+        "sender": "client",
+        "senderName": "أحمد حسن.يوسف البحراوى",
+        "text": "كم الوقت اللازم للسفر بعد التقديم؟",
+        "isRead": true,
+        "createdAt": "2026-10-18T07:59:37.584Z"
+      },
+      {
+        "id": "msg_5kkbo08d2_1792310401140",
+        "conversationId": "conv_mcz27o25w_1792310377584",
+        "sender": "client",
+        "senderName": "أحمد حسن.يوسف البحراوى",
+        "text": "التكلفة والتفصيل",
+        "isRead": true,
+        "createdAt": "2026-10-18T08:00:01.140Z"
+      },
+      {
+        "id": "msg_olcqele09_1792310424208",
+        "conversationId": "conv_mcz27o25w_1792310377584",
+        "sender": "client",
+        "senderName": "أحمد حسن.يوسف البحراوى",
+        "text": "أعمل في مجال الزراعة والثواره الحيوانية أو التعبئه والتغليف",
+        "isRead": true,
+        "createdAt": "2026-10-18T08:00:24.208Z"
+      },
+      {
+        "id": "msg_6mhnnpoza_1792335760017",
+        "conversationId": "conv_mcz27o25w_1792310377584",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-18T15:02:40.017Z"
+      },
+      {
+        "id": "msg_q84gt7m5y_1792335782610",
+        "conversationId": "conv_mcz27o25w_1792310377584",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "رجاء تحديد اادولة والبرنامج المستهدفين لمساعدتك في تحديد الوقت والتكلفة",
+        "isRead": false,
+        "createdAt": "2026-10-18T15:03:02.610Z"
+      }
+    ],
+    "conv_h95r5pv5r_1792338297787": [
+      {
+        "id": "msg_hdyi69hwj_1792338297787",
+        "conversationId": "conv_h95r5pv5r_1792338297787",
+        "sender": "client",
+        "senderName": "ايهاب فؤاد",
+        "text": "ممكن اعرف تفاصيل اكتر عن طبيعه العمل",
+        "isRead": true,
+        "createdAt": "2026-10-18T15:44:57.787Z"
+      },
+      {
+        "id": "msg_lkvip7bd1_1792338303683",
+        "conversationId": "conv_h95r5pv5r_1792338297787",
+        "sender": "client",
+        "senderName": "ايهاب فؤاد",
+        "text": "سيلز",
+        "isRead": true,
+        "createdAt": "2026-10-18T15:45:03.683Z"
+      },
+      {
+        "id": "msg_15pftduyf_1792342183785",
+        "conversationId": "conv_h95r5pv5r_1792338297787",
+        "sender": "admin",
+        "senderName": "Kinetix Admin",
+        "text": "أهلًا بيك في Kinetix، وخلينا نوضحلك كل تفاصيل الشغل بطريقة بسيطة.\n\nأولًا: طبيعة الشغل – Sales / Referral Partner\n\nالشغل مع Kinetix عبارة عن Affiliate Marketing، يعني بتسوّق لفرص الشركة بطريقتك الخاصة، وكل شخص بيسجل عن طريقك وبيكمل إجراءات السفر بيكون ليك عليه عمولة حسب نظام العمولات المعتمد.\n\nالشغل Remote بالكامل، ومن غير مواعيد عمل ثابتة، ومفيش تارجت يومي للمكالمات أو Cold Calls. إنت مش مطلوب منك تتصل بأشخاص عشوائيين أو تفضل تقنع ناس مش مهتمة بالسفر. الفكرة إنك توصل للأشخاص المهتمين فعلًا بالفرص المتاحة وتعرّفهم عليها.\n\nتقدر تجيب عملاء إزاي؟\nالموضوع كله بيعتمد على طريقتك الخاصة. ممكن تبدأ بمعارفك وأصحابك، أو تنشر عن الفرص في الجروبات اللي إنت موجود فيها، أو تستخدم السوشيال ميديا وتعمل محتوى عن السفر والعمل بالخارج، أو ترشح الشركة لأي شخص بيدور على فرصة مناسبة ليه. مفيش طريقة واحدة لازم تمشي عليها، المهم توصل لأشخاص مهتمين فعلًا.\n\nفي البداية ممكن الموضوع يحتاج مجهود عشان تجيب أول عميل، لكن مع الوقت الموضوع ممكن يبقى أسهل؛ لأن الشخص اللي بيسافر عن طريقك ممكن يرشحك لأصحابه ومعارفه، ولما حد يسأله عن تجربته أو يعرف إزاي بدأ، يقدر يوصله بيك. وده بيساعدك تبني شبكة من العملاء عن طريق الترشيحات.\n\nإمتى بتستحق العمولة؟\nأهم نقطة في الشغل إن مجرد إنك تجيب شخص مهتم أو تخليه يسجل مش معناه إن العمولة اتحسبتلك. لازم العميل:\n\n1. يسجل عن طريق كود الإحالة الخاص بيك.\n2. يرفع كل المستندات المطلوبة وتكون سليمة ومطابقة للشروط.\n3. يكمل خطوة دفع الـ Deposit المطلوبة.\n\nبعد ما الشروط دي تكتمل ويتم تأكيدها، العمولة بتتحسبلك وبتظهر في الـ Balance بتاعك على حسابك.\n\nنظام العمولة ومتابعة العملاء\nالعمولة بتبدأ من 9,350 جنيه مصري لكل عميل مكتمل، وبتزيد حسب مستوى العمولات وعدد العملاء المكتملين وفقًا للنظام المعتمد.\n\nكمان بيكون ليك كود خاص بيك، والعملاء يقدروا يستخدموه للاستفادة من الخصم المتاح ليهم حسب نظام الشركة. ومع زيادة العملاء اللي بتجيبهم، ممكن يزيد مستوى الخصم والعمولة حسب الشرائح المعتمدة.\n\nومن خلال الـ Dashboard على موقع Kinetix، تقدر تتابع العملاء اللي سجلوا عن طريقك، وتشوف تقدم كل عميل في الإجراءات، وتتابع رصيد عمولاتك. ولما يكون عندك رصيد مستحق، تقدر تعمل طلب سحب من خلال طرق الدفع المحلية المتاحة في مصر.\n\nببساطة، دورك إنك توصل الفرصة للشخص المناسب، وتساعده يعرف تفاصيلها ويوصل للتسجيل من خلالك. إنت بتشتغل بطريقتك، من غير مواعيد ثابتة أو Cold Calls، وعمولتك مرتبطة بالعملاء اللي بيكملوا الإجراءات المطلوبة فعلًا.\n\nثانيًا: Kinetix بتعمل إيه؟\n\nKinetix شركة متخصصة في السفر والسياحة، وبتساعد الطلبة والخريجين في الوصول لفرص السفر والعمل بالخارج، حسب مؤهلاتهم وشروط كل فرصة.\n\nالشركة عندها مسارين أساسيين:\n\n- مسار الطلاب: فرص مناسبة للطلاب حسب طبيعة البرنامج وشروطه، ومنها فرص العمل الطلابي الموسمي حسب الدولة.\n- مسار الخريجين: فرص عمل بالخارج بتختلف حسب الدولة، والمؤهل، والخبرة، ومتطلبات كل فرصة.\n\nKinetix بتوضح للعميل تفاصيل الفرصة المتاحة، والمستندات المطلوبة، والتكاليف، ونظام الدفع قبل بدء الإجراءات.\n\nنظام الدفع\nالمقدم بيكون في حدود 10,000 إلى 12,000 جنيه مصري، حسب الفرصة والخطة المتاحة، وباقي المبلغ بيكون وفق نظام التقسيط والشروط المتفق عليها لكل فرصة. وفي الخطط اللي بتسمح بكده، بيكون سداد الأقساط بعد بدء العمل وفقًا للاتفاق المحدد.\n\nطبيعة العمل، والراتب، ومدة العقد، وشروط السفر بتختلف من فرصة للتانية، وبتتحدد بناءً على تفاصيل البرنامج والعقد والمتطلبات المعمول بيها.\n\nهدفنا إنك تكون فاهم طبيعة شغلك كويس، وتقدر توصل المعلومات الصحيحة للناس المهتمة، وتبني شبكة عملاء خاصة بيك مع الوقت.\n\nWelcome to Kinetix! Here's a simple breakdown of how everything works.\n\nFirst: The Job – Sales / Referral Partner\n\nWorking with Kinetix is based on affiliate marketing. You promote the company's available opportunities in your own way, and you earn a commission for every referred client who completes the required steps, according to the approved commission structure.\n\nThe job is 100% remote, with no fixed working hours. There are no daily cold-calling requirements or a need to contact random people who aren't interested in traveling. Your role is to reach people who are genuinely interested in international work opportunities and introduce them to the available options.\n\nHow can you bring in clients?\nYou can start with friends and people you know, share opportunities in groups you're already part of, use social media, create content about working abroad, or refer anyone looking for a suitable opportunity.\n\nThere's no single method you have to follow. Everyone works in their own way, using the approach that suits them best.\n\nGetting your first client may take some effort, but it can become easier over time. Someone who travels through your referral may recommend you to friends and family. When people ask about their experience or how they got started, they can connect them with you. This helps you build a network through referrals.\n\nWhen do you earn your commission?\nSimply bringing in an interested person or getting them to register isn't enough. For a commission to qualify, the client must:\n\n1. Register using your personal referral code.\n2. Upload all required documents, making sure they're valid and meet the requirements.\n3. Complete the required deposit payment.\n\nOnce all these steps have been completed and verified, your commission is credited to your account balance.\n\nCommission and Client Tracking\n\nThe commission starts at EGP 9,350 per completed client and can increase based on the approved commission tiers and the number of completed clients.\n\nYou'll also receive your own referral code, which clients can use to access the applicable discount under the company's system. As you bring in more clients, your commission tier and available client discount may increase according to the approved structure.\n\nThrough your Kinetix website dashboard, you can track the clients who registered through your code, follow their progress, and monitor your commission balance. Once you have an eligible balance, you can submit a withdrawal request using the available local payment methods in Egypt.\n\nIn simple terms, your role is to connect the right people with the right opportunities and help them understand how to register through your referral. You work in your own way, without fixed hours or cold-calling requirements, and earn commissions when referred clients complete the required steps.\n\nSecond: What Does Kinetix Do?\n\nKinetix is a travel and tourism company that helps students and graduates access international travel and work opportunities, depending on their qualifications and the requirements of each opportunity.\n\nThe company currently offers two main tracks:\n\n- Student Track: Opportunities suitable for students based on each program's requirements, including seasonal student work opportunities where available.\n- Graduate Track: International work opportunities that vary according to the destination, qualifications, experience, and specific job requirements.\n\nKinetix explains the available opportunity, required documents, costs, and payment arrangements before the client begins the process.\n\nPayment System\n\nThe upfront deposit generally ranges from EGP 10,000 to EGP 12,000, depending on the available opportunity and plan. The remaining amount is paid according to the applicable installment plan and agreed terms. For plans that allow it, installments may begin after the client starts working, as specified in the agreement.\n\nJob type, salary, contract duration, and travel requirements vary from one opportunity to another and depend on the specific program, contract, and applicable requirements.\n\nOur goal is to help you understand your role clearly, communicate accurate information to interested people, and build your own referral network over time.",
+        "isRead": false,
+        "createdAt": "2026-10-18T16:49:43.785Z"
+      }
+    ],
+    "conv_dbwmhexax_1792395104878": [
+      {
+        "id": "msg_5o9k2xujv_1792395104878",
+        "conversationId": "conv_dbwmhexax_1792395104878",
+        "sender": "client",
+        "senderName": "سيد محمد عبد السلام",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": false,
+        "createdAt": "2026-10-19T07:31:44.878Z"
+      },
+      {
+        "id": "msg_k46oyhr4f_1792395126482",
+        "conversationId": "conv_dbwmhexax_1792395104878",
+        "sender": "client",
+        "senderName": "سيد محمد عبد السلام",
+        "text": "بكام عقد عمل",
+        "isRead": false,
+        "createdAt": "2026-10-19T07:32:06.482Z"
+      }
+    ],
+    "conv_58blohbmf_1792414535674": [
+      {
+        "id": "msg_7plwva0uf_1792414535674",
+        "conversationId": "conv_58blohbmf_1792414535674",
+        "sender": "client",
+        "senderName": "عبدالرحمن محمد حسين القاضي",
+        "text": "الأوراق المطلوبة لتجهيز السيرة الذاتية",
+        "isRead": false,
+        "createdAt": "2026-10-19T12:55:35.674Z"
+      },
+      {
+        "id": "msg_jlbahuv2t_1792414596452",
+        "conversationId": "conv_58blohbmf_1792414535674",
+        "sender": "client",
+        "senderName": "عبدالرحمن محمد حسين القاضي",
+        "text": "محتاج حضرتك ترشحلي افضل الدول اللي اقدر اسافر عليها طبقا للملف بتاعي",
+        "isRead": false,
+        "createdAt": "2026-10-19T12:56:36.452Z"
+      }
+    ],
+    "conv_s378k2bmq_1792427090622": [
+      {
+        "id": "msg_mb5s21dee_1792427090622",
+        "conversationId": "conv_s378k2bmq_1792427090622",
+        "sender": "client",
+        "senderName": "عمرو مصطفى",
+        "text": "أريد التحدث مع مستشار مباشرةً",
+        "isRead": false,
+        "createdAt": "2026-10-19T16:24:50.622Z"
+      },
+      {
+        "id": "msg_h9zh79jdh_1792427107348",
+        "conversationId": "conv_s378k2bmq_1792427090622",
+        "sender": "client",
+        "senderName": "عمرو مصطفى",
+        "text": "السلام عليكم",
+        "isRead": false,
+        "createdAt": "2026-10-19T16:25:07.348Z"
+      },
+      {
+        "id": "msg_xrdvs2epo_1792427136893",
+        "conversationId": "conv_s378k2bmq_1792427090622",
+        "sender": "client",
+        "senderName": "عمرو مصطفى",
+        "text": "ممكن استفسر عن موضوع معين",
+        "isRead": false,
+        "createdAt": "2026-10-19T16:25:36.893Z"
       }
     ]
   }
