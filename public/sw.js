@@ -1,4 +1,4 @@
-// Kinetix Web Notifications Service Worker for Mobile & Desktop
+// EMA Web Notifications Service Worker for Mobile & Desktop
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -19,7 +19,7 @@ self.addEventListener('notificationclick', (event) => {
         if ('focus' in client) {
           client.focus();
           client.postMessage({
-            type: 'OPEN_KINETIX_CHAT',
+            type: 'OPEN_EMA_CHAT',
             data: event.notification.data,
           });
           return;
@@ -38,13 +38,13 @@ self.addEventListener('push', (event) => {
   if (!event.data) return;
   try {
     const data = event.data.json();
-    const title = data.title || 'Kinetix';
+    const title = data.title || 'EMA';
     const options = {
       body: data.body || '',
       icon: '/logo.png',
       badge: '/logo.png',
       vibrate: [200, 100, 200],
-      tag: data.tag || 'kinetix-chat',
+      tag: data.tag || 'ema-chat',
       renotify: true,
       data: data.data || {},
     };
@@ -52,7 +52,7 @@ self.addEventListener('push', (event) => {
   } catch {
     const text = event.data.text();
     event.waitUntil(
-      self.registration.showNotification('Kinetix', {
+      self.registration.showNotification('EMA', {
         body: text,
         icon: '/logo.png',
         badge: '/logo.png',

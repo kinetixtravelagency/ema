@@ -1033,7 +1033,7 @@ export const requestPaymentSupport = createServerFn({ method: "POST" })
     const totalEgp = Math.round(totalEur * 54);
     const trackLabel = data.track === "student" ? "مسار الطلاب 🎓" : "مسار الخريجين 💼";
     const flightLabel = data.flightIncluded ? "مشمولة ضمن البرنامج ✈️" : "غير مشمولة";
-    const resolvedName = data.fullName?.trim() || existingApp?.full_name?.trim() || "عميل كينتيكس";
+    const resolvedName = data.fullName?.trim() || existingApp?.full_name?.trim() || "عميل إيما";
     const resolvedPhone = data.phone?.trim() || existingApp?.phone?.trim() || "—";
 
     const msgText = `💳 طلب سداد جديد (${data.paymentOption === "deposit" ? "سداد الديبوزيت / حجز المقعد" : "سداد كامل بالكامل"}):
@@ -1052,7 +1052,7 @@ ${data.paymentOption === "deposit" && data.remainingEur && data.remainingEur > 0
     const { postClientMessageInternal } = await import("./chat.functions");
     await postClientMessageInternal({
       userId,
-      clientName: resolvedName !== "عميل كينتيكس" ? resolvedName : undefined,
+      clientName: resolvedName !== "عميل إيما" ? resolvedName : undefined,
       clientPhone: resolvedPhone !== "—" ? resolvedPhone : undefined,
       clientEmail: resolvedEmail,
       text: msgText,

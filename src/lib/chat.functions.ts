@@ -259,7 +259,7 @@ export async function postClientMessageInternal(data: {
       id: convId,
       userId: data.userId ?? null,
       visitorId: data.visitorId ?? null,
-      clientName: (data.clientName || "").trim() || "عميل كينتيكس",
+      clientName: (data.clientName || "").trim() || "عميل إيما",
       clientEmail: (data.clientEmail || "").trim() || null,
       clientPhone: (data.clientPhone || "").trim() || null,
       status: "active",

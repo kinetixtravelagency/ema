@@ -782,12 +782,12 @@ function Dashboard() {
                 <div className="flex items-center gap-2 max-w-xl">
                   <input
                     readOnly
-                    value={typeof window !== "undefined" ? `${window.location.origin}/?ref=${partner.promo_code}` : `https://kinetix.travel/?ref=${partner.promo_code}`}
+                    value={typeof window !== "undefined" ? `${window.location.origin}/?ref=${partner.promo_code}` : `https://ema.travel/?ref=${partner.promo_code}`}
                     className="w-full rounded-xl border border-ivory/20 bg-navy px-3 py-2 font-mono text-xs text-ivory outline-none"
                   />
                   <button
                     onClick={() => {
-                      const link = typeof window !== "undefined" ? `${window.location.origin}/?ref=${partner.promo_code}` : `https://kinetix.travel/?ref=${partner.promo_code}`;
+                      const link = typeof window !== "undefined" ? `${window.location.origin}/?ref=${partner.promo_code}` : `https://ema.travel/?ref=${partner.promo_code}`;
                       navigator.clipboard.writeText(link);
                       setCopiedRef(true);
                       setTimeout(() => setCopiedRef(false), 2000);

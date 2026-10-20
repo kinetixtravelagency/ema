@@ -120,7 +120,7 @@ export function AuthPage() {
             <div className="mb-6 space-y-2 text-start">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-beige/40 bg-beige/15 px-3 py-1 text-[11px] font-bold text-navy dark:text-beige">
                 <ShieldCheck className="h-3.5 w-3.5 text-beige" />
-                <span>{tr("Client & Traveler Account", "حساب عميل / مسافر كينتيكس")}</span>
+                <span>{tr("Client & Traveler Account", "حساب عميل / مسافر إيما")}</span>
               </div>
 
               <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -309,7 +309,7 @@ export function AuthPage() {
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
                   {tr(
                     "This page is exclusively for travelers & clients. If you have a partner code or want to join as a sales partner, please access the Partner Portal:",
-                    "هذه الصفحة مخصصة للمسافرين والعملاء. إذا كنت تملك كود شريك أو ترغب في العمل كشريك مبيعات مع كينتيكس، يُرجى الدخول من بوابة الشركاء المخصصة:"
+                    "هذه الصفحة مخصصة للمسافرين والعملاء. إذا كنت تملك كود شريك أو ترغب في العمل كشريك مبيعات مع إيما، يُرجى الدخول من بوابة الشركاء المخصصة:"
                   )}
                 </p>
                 <div className="flex items-center gap-3 pt-1 text-xs font-bold">

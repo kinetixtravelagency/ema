@@ -5,13 +5,16 @@ import { useLang } from "@/lib/i18n";
 import { useSession } from "@/lib/useSession";
 import { countries } from "@/lib/catalog";
 
-import logoImg from "@/assets/pics/logo.png";
+import navLogoImg from "@/assets/logonavbar.png";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link to="/" className={`group flex items-center gap-2.5 font-display text-lg font-bold tracking-[0.16em] ${className}`}>
-      <img src={logoImg} alt="EMA Logo" className="h-9 w-auto object-contain transition-transform group-hover:scale-105" />
-      <span className="font-display tracking-[0.16em]">EMA</span>
+    <Link to="/" className={`group flex items-center shrink-0 ${className}`}>
+      <img
+        src={navLogoImg}
+        alt="EMA"
+        className="h-10 md:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+      />
     </Link>
   );
 }

@@ -188,7 +188,7 @@ export function ProgramDetailPage() {
     {
       q: ar ? "هل يتطلب هذا البرنامج إتقان اللغة الإنجليزية بطلاقة؟" : "Is fluent English required for this position?",
       a: ar
-        ? "لا، تتطلب معظم الوظائف مستوى إنجليزي بسيط إلى متوسط (A2 - B1) للتواصل الأساسي وفهم تعليمات العمل. نقوم في كينتيكس بإعدادك ومساعدتك على اجتياز المقابلة الشخصية بنجاح."
+        ? "لا، تتطلب معظم الوظائف مستوى إنجليزي بسيط إلى متوسط (A2 - B1) للتواصل الأساسي وفهم تعليمات العمل. نقوم في إيما بإعدادك ومساعدتك على اجتياز المقابلة الشخصية بنجاح."
         : "No, most entry-level opportunities require basic to intermediate English (A2 - B1) for everyday communication and shift instructions. EMA coaches you thoroughly before employer interviews."
     },
     {
@@ -664,7 +664,7 @@ export function ProgramDetailPage() {
                   {ar ? "استقبال رسمي من المطار والتوصيل للسكن" : "Official Airport Meet, Greet & Transfer"}
                 </span>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {ar ? "مندوب كينتيكس يستقبلك في مطار الوصول ويسلمك السكن وشريحة الاتصال المحلية." : "Local representative guides you to housing and provides local mobile SIM card."}
+                  {ar ? "مندوب إيما يستقبلك في مطار الوصول ويسلمك السكن وشريحة الاتصال المحلية." : "Local representative guides you to housing and provides local mobile SIM card."}
                 </p>
               </div>
             </div>
@@ -745,7 +745,7 @@ export function ProgramDetailPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/40">
-                {ar ? "جميع هذه البنود موثقة ومحمية قانونياً في عقد الوساطة الرسمي المبرم بينك وبين شركة كينتيكس." : "All inclusions are legally documented in your agreement with EMA."}
+                {ar ? "جميع هذه البنود موثقة ومحمية قانونياً في عقد الوساطة الرسمي المبرم بينك وبين شركة إيما." : "All inclusions are legally documented in your agreement with EMA."}
               </p>
             </div>
           </div>
@@ -921,7 +921,7 @@ export function ProgramDetailPage() {
                 </span>
                 <span className="text-xs text-muted-foreground block mt-0.5">
                   {ar
-                    ? `إضافة تذكرة الطيران عبر كينتيكس مقابل +${eur(flightAddon)} (≈ ${Math.round(flightAddon * 54).toLocaleString()} ج.م)`
+                    ? `إضافة تذكرة الطيران عبر إيما مقابل +${eur(flightAddon)} (≈ ${Math.round(flightAddon * 54).toLocaleString()} ج.م)`
                     : `Add flight coordination for +${eur(flightAddon)}`}
                 </span>
               </div>
@@ -1025,7 +1025,7 @@ export function ProgramDetailPage() {
               <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
             </Link>
             <span className="text-xs text-muted-foreground">
-              {ar ? "حجز فوري وتأكيد تلقائي للطلب عبر بوابة كينتيكس الرسمية" : "Instant application lock with official receipt"}
+              {ar ? "حجز فوري وتأكيد تلقائي للطلب عبر بوابة إيما الرسمية" : "Instant application lock with official receipt"}
             </span>
           </div>
         </section>
@@ -1200,7 +1200,7 @@ export function ProgramDetailPage() {
             </h3>
             <p className="text-xs md:text-sm text-muted-foreground mt-1">
               {ar
-                ? "سجّل طلبك الآن، وسيقوم مستشارك المهني في كينتيكس بالتواصل معك لبدء تجهيز الملف والمقابلة."
+                ? "سجّل طلبك الآن، وسيقوم مستشارك المهني في إيما بالتواصل معك لبدء تجهيز الملف والمقابلة."
                 : "Submit your application now and your career advisor will initiate your employer file."}
             </p>
           </div>

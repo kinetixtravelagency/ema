@@ -143,7 +143,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       id: 2,
       title: ar ? "بري انترفيو" : "Pre-Interview",
       sub: ar ? "تدريب ومراجعة الإنجليزية" : "1-on-1 English coaching & prep",
-      desc: ar ? "جلسة تدريب فردية مجانية مع خبير كينتيكس لضمان اجتياز المقابلة." : "Personalized simulation session to prepare you for employer questions.",
+      desc: ar ? "جلسة تدريب فردية مجانية مع خبير إيما لضمان اجتياز المقابلة." : "Personalized simulation session to prepare you for employer questions.",
       icon: UserCheck,
     },
     {
@@ -432,7 +432,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           <div className="mt-4 space-y-3">
             <div className="rounded-2xl border border-red-200 dark:border-red-900/50 bg-red-50/70 dark:bg-red-950/40 p-4">
               <span className="block text-xs font-bold text-red-900 dark:text-red-200 mb-1">
-                {ar ? "سبب الرفض الصادر من إدارة كينتيكس:" : "Official Rejection Reason:"}
+                {ar ? "سبب الرفض الصادر من إدارة إيما:" : "Official Rejection Reason:"}
               </span>
               <p className="text-sm font-semibold text-red-800 dark:text-red-300 leading-relaxed">
                 {rejectionReason || (ar ? "لم يستوفِ الطلب أحد المعايير أو الشروط الإلزامية الخاصة بجهة العمل الأوروبية المستضيفة." : "The application did not fulfill specific requirements for this European placement.")}
@@ -498,7 +498,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   ? (ar ? "يرجى مراجعة قسم المستندات أدناه وإعادة رفع الملفات المطلوبة بالصيغة الصحيحة." : "Please check documents section below and re-upload required items.")
                   : application.status === "in_review"
                   ? (ar ? "يقوم مسؤولو التوظيف بمطابقة بياناتك وسيرتك الذاتية مع متطلبات جهة العمل." : "Team is actively evaluating your file against host requirements.")
-                  : (ar ? "طلبك مسجل في النظام وسيتم فحصه من قبل مستشار كينتيكس خلال 24 ساعة عمل." : "Application received and queued for review within 24 business hours.")}
+                  : (ar ? "طلبك مسجل في النظام وسيتم فحصه من قبل مستشار إيما خلال 24 ساعة عمل." : "Application received and queued for review within 24 business hours.")}
               </span>
             </div>
           </div>
@@ -892,7 +892,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 {ar ? "بيانات المتقدم الرسمية" : "Candidate Profile & Details"}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {ar ? "البيانات المسجلة بطلب السفر والمعتمدة لدى كينتيكس والسفارة" : "Official applicant details registered with your travel file"}
+                {ar ? "البيانات المسجلة بطلب السفر والمعتمدة لدى إيما والسفارة" : "Official applicant details registered with your travel file"}
               </p>
             </div>
 

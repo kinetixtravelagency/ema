@@ -178,7 +178,7 @@ export function MaterialsTab() {
               </span>
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold">
-              {tr("Partner Knowledge & Sales Center", "دليل الشريك المعتمد وبرامج كينتيكس")}
+              {tr("Partner Knowledge & Sales Center", "دليل الشريك المعتمد وبرامج إيما")}
             </h1>
             <p className="mt-2 text-xs sm:text-sm text-ivory/80 leading-relaxed">
               {tr(

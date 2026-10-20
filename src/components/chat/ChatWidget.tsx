@@ -109,7 +109,7 @@ export function ChatWidget() {
     return () => clearTimeout(t);
   }, [mobileToast]);
 
-  // Listen for open-kinetix-chat event
+  // Listen for open-ema-chat event
   useEffect(() => {
     const handleOpen = () => {
       setIsOpen(true);
@@ -362,7 +362,7 @@ export function ChatWidget() {
 
             <button
               onClick={() => setIsOpen(true)}
-              id="kinetix-live-chat-btn"
+              id="ema-live-chat-btn"
               className="group relative flex items-center gap-3 rounded-full bg-gradient-to-r from-navy via-[#1a2d4b] to-navy px-4.5 py-3.5 text-ivory shadow-[0_10px_30px_-5px_rgba(15,23,42,0.4)] ring-1 ring-beige/60 hover:ring-beige transition-all hover:scale-105 active:scale-95"
               aria-label="Open Live Chat"
             >

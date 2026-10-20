@@ -218,8 +218,10 @@ const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => {
-    const saved = (localStorage.getItem("ema-lang") || localStorage.getItem("kinetix-lang") as Lang) || "en";
-    setLangState(saved);
+    const saved = localStorage.getItem("ema-lang") || localStorage.getItem("kinetix-lang");
+    if (saved === "ar" || saved === "en") {
+      setLangState(saved);
+    }
   }, []);
   useEffect(() => {
     document.documentElement.lang = lang;

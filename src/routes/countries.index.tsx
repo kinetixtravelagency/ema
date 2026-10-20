@@ -338,7 +338,7 @@ export function CountriesPage() {
           <div className="rounded-3xl bg-navy text-ivory p-8 md:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-2xl">
               <span className="text-beige text-xs font-semibold uppercase tracking-wider">
-                {tr("EMA Mobility Guarantee", "ضمانات كينيتكس")}
+                {tr("EMA Mobility Guarantee", "ضمانات إيما")}
               </span>
               <h3 className="mt-2 text-2xl md:text-3xl font-bold">
                 {tr("Official Employment Contracts & Visa Security", "عقود موثقة وضمانات قانونية")}
