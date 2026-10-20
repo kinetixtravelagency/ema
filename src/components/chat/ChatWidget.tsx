@@ -26,6 +26,25 @@ const CLIENT_NAME_KEY = "ema_chat_client_name";
 const CLIENT_PHONE_KEY = "ema_chat_client_phone";
 const INFO_DONE_KEY = "ema_chat_info_done";
 
+// Legacy key names (used before EMA rebrand) – kept for backward-compat migration
+const LEGACY_VISITOR_KEY = "kinetix_chat_visitor_id";
+const LEGACY_CONV_KEY = "kinetix_chat_conv_id";
+const LEGACY_CLIENT_NAME_KEY = "kinetix_chat_client_name";
+const LEGACY_CLIENT_PHONE_KEY = "kinetix_chat_client_phone";
+const LEGACY_INFO_DONE_KEY = "kinetix_chat_info_done";
+
+/** Read a localStorage value, falling back to the legacy key if the new key is empty. */
+function lsGetWithFallback(newKey: string, legacyKey: string): string {
+  const v = localStorage.getItem(newKey);
+  if (v) return v;
+  const legacy = localStorage.getItem(legacyKey);
+  if (legacy) {
+    // Migrate forward so subsequent reads use the new key
+    localStorage.setItem(newKey, legacy);
+  }
+  return legacy || "";
+}
+
 function validatePhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
   // Egyptian: 11 digits starting with 01
@@ -80,18 +99,24 @@ export function ChatWidget() {
 
   // Initialize visitor ID & check if info was already collected
   useEffect(() => {
-    let vid = localStorage.getItem(VISITOR_KEY);
+    // Try new key first; fall back to legacy kinetix_chat_* keys so old conversations are preserved
+    let vid = lsGetWithFallback(VISITOR_KEY, LEGACY_VISITOR_KEY);
     if (!vid) {
       vid = "v_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
       localStorage.setItem(VISITOR_KEY, vid);
     }
     setVisitorId(vid);
 
-    const savedConv = localStorage.getItem(CONV_KEY) || "";
+    const savedConv = lsGetWithFallback(CONV_KEY, LEGACY_CONV_KEY);
     if (savedConv) setConvId(savedConv);
 
+    // Migrate name/phone/info_done from legacy keys too
+    lsGetWithFallback(CLIENT_NAME_KEY, LEGACY_CLIENT_NAME_KEY);
+    lsGetWithFallback(CLIENT_PHONE_KEY, LEGACY_CLIENT_PHONE_KEY);
+    const infoDone = lsGetWithFallback(INFO_DONE_KEY, LEGACY_INFO_DONE_KEY);
+
     // If user is logged in or already gave info → skip collection
-    if (user || localStorage.getItem(INFO_DONE_KEY) === "yes") {
+    if (user || infoDone === "yes") {
       setInfoStep("done");
     } else {
       setInfoStep("collecting");

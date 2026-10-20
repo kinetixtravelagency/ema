@@ -201,6 +201,64 @@ export const adminUpdateApplicationStatus = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/* --- Admin: Send Notice / Alert to Applicant --- */
+export const adminSendNotice = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: {
+    id: string;
+    message: string;
+    suspend?: boolean | undefined;
+  }) => data)
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: currentApp } = await supabaseAdmin
+      .from("applications")
+      .select("notes, user_id, full_name, phone")
+      .eq("id", data.id)
+      .maybeSingle();
+
+    const existingNotes = (currentApp as any)?.notes || "";
+    const alertMsg = (data.message || "").trim();
+    if (!alertMsg) throw new Error("Notice message is required");
+
+    let updatedNotes = existingNotes;
+    const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+        parsed.admin_alert_message = alertMsg;
+        parsed.admin_alert_at = new Date().toISOString();
+        updatedNotes = existingNotes.replace(jsonMatch[0], JSON.stringify(parsed));
+      } catch {
+        updatedNotes = existingNotes + " [ADMIN_ALERT:" + alertMsg + "]";
+      }
+    } else {
+      updatedNotes = existingNotes + " [ADMIN_ALERT:" + alertMsg + "]";
+    }
+
+    const patch: any = { notes: updatedNotes, updated_at: new Date().toISOString() };
+    if (data.suspend) patch.status = "suspended";
+
+    const { error } = await (supabaseAdmin.from("applications") as any).update(patch).eq("id", data.id);
+    if (error) throw new Error(error.message);
+
+    const userId = (currentApp as any)?.user_id;
+    if (userId) {
+      try {
+        const { postClientMessageInternal } = await import("./chat.functions");
+        const chatMsg = "⚠️ تنبيه من إدارة EMA:\n" + alertMsg;
+        await postClientMessageInternal({ userId, text: chatMsg });
+      } catch (chatErr) {
+        console.error("[adminSendNotice] Failed to post chat message:", chatErr);
+      }
+    }
+
+    return { ok: true };
+  });
+
 export const adminUpdateProgramPrice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string; price: number; deposit: number; max_installments: number }) => data)
@@ -1040,7 +1098,7 @@ export const requestPaymentSupport = createServerFn({ method: "POST" })
     const resolvedName = data.fullName?.trim() || existingApp?.full_name?.trim() || "عميل إيما";
     const resolvedPhone = data.phone?.trim() || existingApp?.phone?.trim() || "—";
 
-    const msgText = `💳 طلب سداد جديد (${data.paymentOption === "deposit" ? "سداد الديبوزيت / حجز المقعد" : "سداد كامل بالكامل"}):
+    const msgText = `💳 طلب سداد جديد (${data.paymentOption === "deposit" ? "سداد الديبوزيت / حجز المقعد" : "سداد كامل المبلغ 💰"}):
 • البرنامج: ${data.programTitle}${data.countryName ? ` · ${data.countryName}` : ""}
 • المسار: ${trackLabel}
 • تذكرة الطيران: ${flightLabel}

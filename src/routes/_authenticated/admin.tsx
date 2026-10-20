@@ -8,7 +8,7 @@ import {
   adminUpdateApplication, adminSetDocumentStatus,
   deleteApplication,
   adminManagePartner, adminAddCommission, adminSetCommission,
-  adminUpdateLevel, adminUpdateCountry,
+  adminUpdateLevel, adminUpdateCountry, adminSendNotice,
 } from "@/lib/account.functions";
 import { adminDeletePartner, adminSetWithdrawalStatus } from "@/lib/partner.functions";
 import { getAdminChats } from "@/lib/chat.functions";
@@ -66,6 +66,24 @@ function statusColor(s: string) {
     lost: "bg-gray-100 text-gray-500",
   };
   return m[s] ?? "bg-secondary text-foreground";
+}
+
+/** Converts raw military_status enum values to human-readable Arabic labels */
+function formatMilitaryStatus(val: string | undefined | null, gender?: string): string {
+  if (!val) {
+    return gender === "female" ? "معفاة (أنثى)" : "مؤجل دراسياً / تصريح سفر سياحي";
+  }
+  const map: Record<string, string> = {
+    exempted_final:      "إعفاء نهائي",
+    exempted_temporary:  "إعفاء مؤقت",
+    completed:           "أدى الخدمة العسكرية",
+    postponed:           "مؤجل دراسياً / تصريح سفر سياحي",
+    student_deferment:   "مؤجل دراسياً / تصريح سفر سياحي",
+    exempted_female:     "غير مطلوب للتجنيد (إناث)",
+    female:              "غير مطلوب للتجنيد (إناث)",
+    "not_applicable":    "غير مطلوب للتجنيد",
+  };
+  return map[val.toLowerCase().trim()] ?? val;
 }
 
 function Admin() {
