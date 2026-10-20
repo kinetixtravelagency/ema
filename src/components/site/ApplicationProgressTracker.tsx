@@ -89,12 +89,21 @@ function parseTrackerNotes(raw: any, userMeta?: any) {
         meta["gender"] = genderMatch[1].trim();
       }
 
+      // Extract [ADMIN_ALERT:...] from plain text notes
+      const adminAlertMatch = text.match(/\[ADMIN_ALERT:\s*([^\]]+)\]/i);
+      if (adminAlertMatch && adminAlertMatch[1] && !meta["admin_alert_message"]) {
+        meta["admin_alert_message"] = adminAlertMatch[1].trim();
+      }
+
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try {
           const parsed = JSON.parse(jsonMatch[0]);
           meta = { ...meta, ...parsed };
           if (parsed["rejection_reason"]) rejectionReason = String(parsed["rejection_reason"]);
+          if (parsed["admin_alert_message"] && !meta["admin_alert_message"]) {
+            meta["admin_alert_message"] = String(parsed["admin_alert_message"]);
+          }
         } catch {}
       } else {
         try {
@@ -463,58 +472,74 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
         </div>
       )}
 
-      {/* PROMINENT OFFICIAL NOTICE & SUSPENSION BANNER */}
+      {/* LUXURY BRAND-HARMONIOUS OFFICIAL NOTICE & SUSPENSION BANNER */}
       {!isRejected && (isSuspended || adminNoticeMessage) && (
-        <div className="relative overflow-hidden rounded-3xl border-2 border-amber-500/80 bg-gradient-to-br from-amber-500/15 via-card to-amber-500/5 p-5 sm:p-6 shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/20 animate-in fade-in">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 pb-4 border-b border-amber-200 dark:border-amber-900/40">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md">
-                <BellRing className="h-6 w-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="inline-block rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-800 dark:text-amber-300">
-                  {ar ? "تنبيه رسمي من إدارة إيما" : "Official Administration Notice"}
-                </span>
-                <h3 className="font-display text-base sm:text-lg font-bold text-amber-900 dark:text-amber-200">
-                  {isSuspended
-                    ? (ar ? "تم تعليق طلبك مؤقتاً لحين استيفاء المطلوب" : "Application Temporarily On Hold")
-                    : (ar ? "تنبيه هام بشأن ملف تقديمك" : "Important Notice Regarding Your Application")}
-                </h3>
-              </div>
-            </div>
+        <div className="relative overflow-hidden rounded-3xl border border-beige/40 dark:border-beige/30 bg-card shadow-sm ring-1 ring-black/5 dark:ring-white/5 animate-in fade-in">
+          {/* Subtle top ambient indicator */}
+          <div className="absolute top-0 start-0 end-0 h-1 bg-gradient-to-r from-navy via-beige to-navy" />
 
-            <span className="rounded-full border border-amber-300 bg-amber-100 dark:border-amber-800 dark:bg-amber-950/60 px-3 py-1 text-xs font-bold text-amber-900 dark:text-amber-200 shrink-0">
-              {isSuspended ? (ar ? "الحالة: معلق مؤقتاً ⚠️" : "Status: On Hold ⚠️") : (ar ? "تنبيه نشط ⚠️" : "Active Notice ⚠️")}
-            </span>
-          </div>
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 pb-4 border-b border-border">
+              <div className="flex items-center gap-3.5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-navy text-beige border border-beige/30 shadow-xs">
+                  <BellRing className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block rounded-full bg-navy/10 text-navy dark:bg-beige/15 dark:text-beige px-2.5 py-0.5 text-[11px] font-bold">
+                      {ar ? "إخطار إداري معتمد" : "Official Notice"}
+                    </span>
+                    {isSuspended && (
+                      <span className="inline-block rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 px-2 py-0.5 text-[10px] font-bold">
+                        {ar ? "معلق مؤقتاً" : "On Hold"}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-display text-base sm:text-lg font-bold text-foreground mt-0.5">
+                    {isSuspended
+                      ? (ar ? "تنبيه إداري: تم تعليق الإجراءات مؤقتاً" : "Application Temporarily On Hold")
+                      : (ar ? "تنبيه رسمي بشأن ملف تقديمك" : "Important Notice Regarding Your Application")}
+                  </h3>
+                </div>
+              </div>
 
-          <div className="mt-4 space-y-3">
-            <div className="rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50/80 dark:bg-amber-950/40 p-4">
-              <span className="block text-xs font-bold text-amber-900 dark:text-amber-200 mb-1">
-                {ar ? "نص التنبيه من إدارة إيما:" : "Notice from EMA Administration:"}
+              <span className="rounded-full border border-border bg-secondary/80 text-foreground px-3 py-1 text-xs font-semibold shrink-0">
+                {isSuspended ? (ar ? "الحالة: معلق لحين الاستيفاء ⚠️" : "Status: On Hold ⚠️") : (ar ? "تنبيه رسمي نشط ℹ️" : "Active Notice ℹ️")}
               </span>
-              <p className="text-sm font-semibold text-amber-950 dark:text-amber-100 leading-relaxed whitespace-pre-wrap">
-                {adminNoticeMessage}
-              </p>
             </div>
 
-            {isSuspended && (
-              <p className="text-xs font-medium text-amber-900 dark:text-amber-300 leading-relaxed">
-                {ar
-                  ? "🔒 تم تعليق إمكانية دفع الديبوزيت أو الرسوم في الوقت الحالي حتى يتم استكمال المطلوب في التنبيه أعلاه أو اعتماده من الإدارة. يرجى رفع النواقص أو مراسلتنا عبر اللايف شات."
-                  : "🔒 Fee & deposit payments are paused until requirements in this notice are completed. Please upload required items or contact support via live chat."}
-              </p>
-            )}
+            <div className="space-y-3">
+              <div className="rounded-2xl border border-border/80 bg-secondary/40 p-4">
+                <span className="block text-xs font-bold text-navy dark:text-beige mb-1 flex items-center gap-1.5">
+                  <FileBadge className="h-3.5 w-3.5 text-beige" />
+                  <span>{ar ? "نص رسالة الإدارة:" : "Notice from EMA Administration:"}</span>
+                </span>
+                <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed whitespace-pre-wrap">
+                  {adminNoticeMessage}
+                </p>
+              </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
-                className="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 text-xs font-bold text-ivory hover:opacity-90 shadow-sm"
-              >
-                <MessageSquare className="h-4 w-4" />
-                <span>{ar ? "التواصل مع الدعم عبر الشات 💬" : "Speak with Advisor via Live Chat 💬"}</span>
-              </button>
+              {isSuspended && (
+                <p className="text-xs text-muted-foreground leading-relaxed flex items-center gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5 text-beige shrink-0" />
+                  <span>
+                    {ar
+                      ? "تم إيقاف سداد الديبوزيت أو الرسوم مؤقتاً حتى يتم استكمال المطلوب أعلاه والتواصل مع فريق الدعم لتفعيل الملف."
+                      : "Fee payments are paused until requirements in this notice are completed with support."}
+                  </span>
+                </p>
+              )}
+
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                  className="inline-flex items-center gap-2 rounded-xl bg-navy dark:bg-beige text-ivory dark:text-navy hover:opacity-90 px-4 py-2 text-xs font-bold shadow-xs transition-all cursor-pointer"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>{ar ? "التواصل مع الدعم عبر الشات 💬" : "Speak with Advisor via Live Chat 💬"}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1086,11 +1111,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           </div>
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2">
             <button
               type="button"
               onClick={() => setActiveSection(0)}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
               <span>{ar ? "السابق: تفاصيل البرنامج" : "Previous: Program"}</span>
@@ -1099,7 +1124,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
             <button
               type="button"
               onClick={() => setActiveSection(2)}
-              className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-xs font-bold text-ivory shadow hover:opacity-90"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-navy px-5 py-2.5 text-xs font-bold text-ivory shadow hover:opacity-90 cursor-pointer"
             >
               <span>{ar ? "القسم التالي: المستندات والأوراق" : "Next: Documents"}</span>
               <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
@@ -1282,11 +1307,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           {err && <p className="text-xs font-medium text-destructive">{err}</p>}
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2">
             <button
               type="button"
               onClick={() => setActiveSection(1)}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
               <span>{ar ? "السابق: البيانات الشخصية" : "Previous: Details"}</span>
@@ -1295,7 +1320,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
             <button
               type="button"
               onClick={() => setActiveSection(3)}
-              className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-xs font-bold text-ivory shadow hover:opacity-90"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-navy px-5 py-2.5 text-xs font-bold text-ivory shadow hover:opacity-90 cursor-pointer"
             >
               <span>{ar ? "القسم التالي: سداد الديبوزت والحساب" : "Next: Deposit & Payment"}</span>
               <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
@@ -1519,34 +1544,49 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   })}
                 </div>
 
-                {/* Selected Method & Amount Banner */}
-                <div className="rounded-2xl bg-secondary/70 p-4 border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Selected Method & Amount Banner with Clean Segmented Control */}
+                <div className="rounded-2xl bg-secondary/40 p-4 sm:p-5 border border-border flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <span className="text-xs text-muted-foreground block">
+                    <span className="text-xs text-muted-foreground block font-medium">
                       {tr("Selected payment amount via", "المبلغ المحدد للسداد عبر")}{" "}
                       <strong className="text-foreground">{paymentMethod}</strong>:
                     </span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="font-display text-2xl font-bold text-navy dark:text-beige">
+                    <div className="flex flex-wrap items-baseline gap-2 mt-1">
+                      <span className="font-display text-2xl sm:text-3xl font-bold text-navy dark:text-beige">
                         {eur(selectedEur)}
                       </span>
-                      <span className="text-xs font-medium text-muted-foreground">
-                        (≈ {selectedEgp.toLocaleString()} {tr("EGP", "جنيه مصري")})
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        ≈ {selectedEgp.toLocaleString()} {tr("EGP", "جنيه مصري")}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setPayOption(payOption === "deposit" ? "full" : "deposit")}
-                      className="rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold hover:border-beige transition-colors"
-                    >
-                      {payOption === "deposit" ? (ar ? "التبديل لسداد كامل المبلغ 💰" : "Switch to Full Payment") : (ar ? "التبديل لسداد الديبوزيت" : "Switch to Deposit")}
-                    </button>
-                    <span className="rounded-full bg-navy/10 dark:bg-ivory/10 text-navy dark:text-ivory px-3 py-1 text-xs font-semibold">
-                      {payOption === "full" ? tr("Full Payment 💰", "سداد كامل المبلغ 💰") : tr("Deposit Down Payment", "سداد الديبوزيت / حجز المقعد")}
-                    </span>
+                  {/* Segmented plan switcher */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 self-stretch md:self-auto">
+                    <div className="inline-flex p-1 rounded-2xl bg-card border border-border shadow-2xs">
+                      <button
+                        type="button"
+                        onClick={() => setPayOption("deposit")}
+                        className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          payOption === "deposit"
+                            ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {ar ? "سداد الديبوزيت (حجز المقعد)" : "Deposit Only"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPayOption("full")}
+                        className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          payOption === "full"
+                            ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {ar ? "سداد كامل المبلغ 💰" : "Full Payment"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1554,7 +1594,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               {/* 4. Action Buttons & Live Chat Trigger */}
               <div className="space-y-3">
                 {isSuspended && (
-                  <div className="flex items-center gap-2 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 p-3.5 text-xs text-amber-950 dark:text-amber-100">
+                  <div className="flex items-center gap-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-3.5 text-xs text-amber-900 dark:text-amber-200">
                     <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
                     <span className="font-semibold">{ar ? "🔒 تم تعليق إمكانية دفع المقدم والرسوم حالياً لوجود تنبيه إداري معلق (راجع التنبيه الرسمي أعلاه)." : "🔒 Payment is paused while an official administrative notice is pending."}</span>
                   </div>
@@ -1564,27 +1604,35 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   type="button"
                   disabled={requestingPay || isSuspended}
                   onClick={handlePaymentRequest}
-                  className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-beige bg-navy py-4 text-sm font-bold text-ivory hover:opacity-90 shadow-lg disabled:opacity-50 transition-all active:scale-98"
+                  className={`w-full flex items-center justify-center gap-2.5 rounded-2xl border-2 px-5 py-4 text-sm font-bold shadow-md transition-all active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed ${
+                    isSuspended
+                      ? "border-border bg-secondary text-muted-foreground opacity-60"
+                      : "border-beige/50 bg-navy dark:bg-beige text-ivory dark:text-navy hover:opacity-95 shadow-navy/10"
+                  }`}
                 >
                   {requestingPay ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin text-beige" />
-                      <span>{tr("Sending Request to Support...", "جاري إرسال الطلب والتفاصيل للشات...")}</span>
+                      <Loader2 className="h-4 w-4 animate-spin text-beige dark:text-navy" />
+                      <span>{tr("Sending Request to Support...", "جاري تجهيز بيانات السداد للشات...")}</span>
                     </>
                   ) : requestSuccess ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-beige" />
-                      <span>{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات المباشر")}</span>
+                      <CheckCircle2 className="h-4 w-4 text-beige dark:text-navy" />
+                      <span>{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات")}</span>
                     </>
                   ) : isSuspended ? (
                     <>
-                      <AlertTriangle className="h-4 w-4 text-amber-300" />
+                      <AlertTriangle className="h-4 w-4 text-amber-500" />
                       <span>{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
                     </>
                   ) : (
                     <>
-                      <MessageSquare className="h-4 w-4 text-beige" />
-                      <span>{tr(`Request ${payOption === "full" ? "Full Payment" : "Deposit"} Details via ${paymentMethod} in Live Chat 💬`, `طلب بيانات سداد (${payOption === "full" ? "كامل المبلغ" : "الديبوزيت"}) عبر ${paymentMethod} في الشات 💬`)}</span>
+                      <MessageSquare className="h-4 w-4 text-beige dark:text-navy shrink-0" />
+                      <span className="text-center leading-normal">
+                        {ar
+                          ? `طلب بيانات السداد عبر ${paymentMethod} (${payOption === "full" ? "سداد كامل" : "ديبوزيت"}) 💬`
+                          : `Request Payment Details via ${paymentMethod} in Live Chat 💬`}
+                      </span>
                     </>
                   )}
                 </button>
@@ -1625,11 +1673,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
           )}
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2">
             <button
               type="button"
               onClick={() => setActiveSection(2)}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
               <span>{ar ? "السابق: المستندات والأوراق" : "Previous: Documents"}</span>

@@ -7,7 +7,7 @@ import {
   TrendingUp, MapPin, RefreshCw, Check, Plane, Clock, DollarSign,
   ShieldCheck, FileText, Calendar, Building2, BookOpen, AlertCircle,
   Phone, MessageSquare, CreditCard, ChevronRight, User, Home, IdCard,
-  UserCheck, Video, FileBadge, Loader2, Sparkles, Wallet
+  UserCheck, Video, FileBadge, Loader2, Sparkles, Wallet, BellRing, AlertTriangle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { createApplication, requestPaymentSupport } from "@/lib/account.functions";
@@ -74,6 +74,8 @@ function Apply() {
   const [paymentMethod, setPaymentMethod] = useState<string>("InstaPay");
   const [requestingChatPay, setRequestingChatPay] = useState(false);
   const [chatPaySent, setChatPaySent] = useState(false);
+  const [appAlert, setAppAlert] = useState<string | null>(null);
+  const [isAppSuspended, setIsAppSuspended] = useState(false);
 
   // Form state
   const [f, setF] = useState({
@@ -109,7 +111,7 @@ function Apply() {
       try {
         const { data, error } = await supabase
           .from("applications")
-          .select("id, status")
+          .select("id, status, notes")
           .eq("id", persistedAppId)
           .maybeSingle();
 
@@ -121,6 +123,20 @@ function Apply() {
           setPersistedAppId(null);
           setAppId(null);
           setStep(0);
+        } else {
+          if (data.status === "suspended") setIsAppSuspended(true);
+          if (data.notes) {
+            const match = data.notes.match(/\[ADMIN_ALERT:\s*([^\]]+)\]/i);
+            if (match && match[1]) setAppAlert(match[1].trim());
+            try {
+              const j = data.notes.match(/\{[\s\S]*\}/);
+              if (j) {
+                const p = JSON.parse(j[0]);
+                if (p.admin_alert_message) setAppAlert(String(p.admin_alert_message));
+                if (p.suspended) setIsAppSuspended(true);
+              }
+            } catch {}
+          }
         }
       } catch {
         // network issue, keep state
@@ -522,7 +538,7 @@ function Apply() {
   ];
 
   const handleRequestChatPayment = async () => {
-    if (!appId) return;
+    if (!appId || isAppSuspended) return;
     setRequestingChatPay(true);
     setErr(null);
     try {
@@ -771,6 +787,79 @@ function Apply() {
               </div>
             </div>
           </div>
+
+          {/* LUXURY BRAND-HARMONIOUS OFFICIAL ADMIN NOTICE BANNER */}
+          {(isAppSuspended || appAlert) && (
+            <div className="mb-6 relative overflow-hidden rounded-3xl border border-beige/40 dark:border-beige/30 bg-card shadow-sm ring-1 ring-black/5 dark:ring-white/5 animate-in fade-in">
+              {/* Subtle top ambient indicator */}
+              <div className="absolute top-0 start-0 end-0 h-1 bg-gradient-to-r from-navy via-beige to-navy" />
+
+              <div className="p-4 sm:p-5 space-y-3.5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-navy text-beige border border-beige/30 shadow-2xs">
+                      <BellRing className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block rounded-full bg-navy/10 text-navy dark:bg-beige/15 dark:text-beige px-2.5 py-0.5 text-[10px] font-bold">
+                          {ar ? "إخطار إداري معتمد" : "Official Notice"}
+                        </span>
+                        {isAppSuspended && (
+                          <span className="inline-block rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-300 px-2 py-0.5 text-[10px] font-bold">
+                            {ar ? "معلق مؤقتاً" : "On Hold"}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-display text-sm sm:text-base font-bold text-foreground mt-0.5">
+                        {isAppSuspended
+                          ? (ar ? "تنبيه إداري: تم تعليق الإجراءات مؤقتاً" : "Application Temporarily On Hold")
+                          : (ar ? "تنبيه رسمي بشأن ملف تقديمك" : "Important Notice Regarding Your Application")}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <span className="rounded-full border border-border bg-secondary/80 text-foreground px-2.5 py-0.5 text-[11px] font-semibold self-start sm:self-auto">
+                    {isAppSuspended ? (ar ? "الحالة: معلق ⚠️" : "Status: On Hold ⚠️") : (ar ? "تنبيه نشط ℹ️" : "Active Notice ℹ️")}
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-border/80 bg-secondary/40 p-3.5">
+                    <span className="block text-xs font-bold text-navy dark:text-beige mb-1 flex items-center gap-1.5">
+                      <FileBadge className="h-3.5 w-3.5 text-beige" />
+                      <span>{ar ? "نص رسالة الإدارة:" : "Notice from EMA Administration:"}</span>
+                    </span>
+                    <p className="text-xs sm:text-sm font-medium text-foreground leading-relaxed whitespace-pre-wrap">
+                      {appAlert || (isAppSuspended ? (ar ? "تم تعليق طلبك مؤقتاً لعدم استيفاء المستندات أو البيانات المطلوبة. يرجى مراجعة إدارة إيما عبر الشات المباشر." : "Your application has been put on hold pending requirements completion.") : "")}
+                    </p>
+                  </div>
+
+                  {isAppSuspended && (
+                    <p className="text-xs text-muted-foreground leading-relaxed flex items-center gap-1.5">
+                      <AlertTriangle className="h-3.5 w-3.5 text-beige shrink-0" />
+                      <span>
+                        {ar
+                          ? "تم إيقاف سداد الديبوزيت مؤقتاً حتى يتم استكمال المطلوب أعلاه والتواصل مع فريق الدعم لتفعيل الملف."
+                          : "Fee payments are paused until requirements in this notice are completed with support."}
+                      </span>
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-navy dark:bg-beige text-ivory dark:text-navy hover:opacity-90 px-4 py-2.5 text-xs font-bold shadow-2xs transition-all cursor-pointer"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      <span>{ar ? "التواصل مع الدعم عبر الشات 💬" : "Speak with Advisor via Live Chat 💬"}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ══════════════════════════════════════════════════════════════ */}
           {/* STEP 0: PROGRAM SELECTION */}
@@ -1372,20 +1461,20 @@ function Apply() {
                 </div>
               )}
 
-              <div className="flex gap-3 pt-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-3">
                 <button
                   type="button"
                   onClick={() => setStep(0)}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3.5 text-sm font-medium hover:bg-secondary transition-colors"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
-                  {t("back")}
+                  <span>{t("back")}</span>
                 </button>
                 <button
                   type="button"
                   disabled={busy}
                   onClick={onSubmitDetails}
-                  className="flex-1 rounded-full bg-navy py-3.5 font-semibold text-ivory disabled:opacity-50 hover:opacity-90 shadow-md transition-all active:scale-98"
+                  className="w-full sm:flex-1 rounded-2xl bg-navy py-3 px-5 font-semibold text-ivory disabled:opacity-50 hover:opacity-90 shadow-md transition-all active:scale-[0.99] cursor-pointer"
                 >
                   {busy ? t("submitting") : tr("Continue to Documents Step →", "المتابعة لرفع المستندات →")}
                 </button>
@@ -1425,19 +1514,19 @@ function Apply() {
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3.5 text-sm font-medium hover:bg-secondary transition-colors"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
-                  {t("back")}
+                  <span>{t("back")}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="flex-1 rounded-full bg-navy py-3.5 font-semibold text-ivory hover:opacity-90 shadow-md transition-all active:scale-98"
+                  className="w-full sm:flex-1 rounded-2xl bg-navy py-3 px-5 font-semibold text-ivory hover:opacity-90 shadow-md transition-all active:scale-[0.99] cursor-pointer"
                 >
                   {tr("Proceed to Deposit Step (Step 4) →", "المتابعة إلى خطوة الديبوزيت وتأكيد الحجز →")}
                 </button>
@@ -1536,17 +1625,17 @@ function Apply() {
                     <span className="font-mono text-base">{eur(totalPrice)} (≈ {Math.round(totalPrice * 54).toLocaleString()} {tr("EGP", "ج.م")})</span>
                   </div>
 
-                  <div className="flex justify-between py-3 text-navy dark:text-beige/70 font-bold bg-beige/42 dark:bg-navy/20 px-3 rounded-xl border border-beige/20 my-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 py-3 text-navy dark:text-beige/70 font-bold bg-beige/42 dark:bg-navy/20 px-3.5 sm:px-4 rounded-2xl border border-beige/25 my-1.5">
                     <div>
                       <span className="block text-xs font-bold text-navy dark:text-beige">
                         {tr("Deposit Due Now (Locks spot & files)", "مبلغ التأمين (الديبوزيت) المطلوب سداده الآن")}
                       </span>
-                      <span className="text-[11px] font-normal text-navy/80 dark:text-beige/80">
+                      <span className="text-[11px] font-normal text-navy/80 dark:text-beige/80 block mt-0.5">
                         {tr("The ONLY amount to pay today to start processing", "المبلغ الوحيد المطلوب سداده اليوم لتأكيد حجز مقعدك وبدء الإجراءات")}
                       </span>
                     </div>
-                    <div className="text-end shrink-0">
-                      <span className="font-mono text-lg font-bold block">{eur(dueNow)}</span>
+                    <div className="text-start sm:text-end shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-navy/10 dark:border-beige/10">
+                      <span className="font-mono text-xl sm:text-lg font-bold block">{eur(dueNow)}</span>
                       <span className="text-xs font-normal">≈ {Math.round(dueNow * 54).toLocaleString()} {tr("EGP", "ج.م")}</span>
                     </div>
                   </div>
@@ -1588,7 +1677,7 @@ function Apply() {
               </div>
 
               {/* Interactive Payment Method Selector */}
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-4">
+              <div className="rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-sm space-y-4">
                 <div>
                   <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
                     <CreditCard className="h-4 w-4 text-beige" strokeWidth={1.5} />
@@ -1599,7 +1688,7 @@ function Apply() {
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2">
                   {paymentMethods.map((m) => {
                     const isSelected = paymentMethod === m.id;
                     const Logo = m.LogoComponent;
@@ -1611,23 +1700,23 @@ function Apply() {
                           setPaymentMethod(m.id);
                           setChatPaySent(false);
                         }}
-                        className={`relative flex items-center gap-3.5 rounded-2xl border-2 p-3.5 text-start transition-all ${
+                        className={`relative flex items-center gap-3 rounded-2xl border-2 p-3 sm:p-3.5 text-start transition-all cursor-pointer ${
                           isSelected
                             ? m.activeBg
-                            : `border-border bg-card hover:border-beige/70 hover:shadow-sm ${m.accent}`
+                            : `border-border bg-card hover:border-beige/70 hover:shadow-xs ${m.accent}`
                         }`}
                       >
-                        <Logo className="h-10 w-10 shrink-0" />
+                        <Logo className="h-9 w-9 sm:h-10 sm:w-10 shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-bold text-sm text-foreground truncate">
+                          <div className="flex items-center justify-between gap-1.5">
+                            <span className="font-bold text-xs sm:text-sm text-foreground truncate">
                               {ar ? m.nameAr : m.nameEn}
                             </span>
                             <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground border border-border">
                               {ar ? m.badgeAr : m.badgeEn}
                             </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                          <p className="mt-0.5 text-[11px] sm:text-xs text-muted-foreground truncate">
                             {ar ? m.subAr : m.subEn}
                           </p>
                         </div>
@@ -1642,13 +1731,13 @@ function Apply() {
                 </div>
 
                 {/* Selected Method & Amount Banner */}
-                <div className="rounded-2xl bg-secondary/70 p-4 border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="rounded-2xl bg-secondary/50 p-3.5 sm:p-4 border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3">
                   <div>
                     <span className="text-xs text-muted-foreground block">
                       {tr("Selected payment amount via", "المبلغ المحدد للسداد عبر")}{" "}
                       <strong className="text-foreground">{paymentMethod}</strong>:
                     </span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
+                    <div className="flex flex-wrap items-baseline gap-2 mt-0.5">
                       <span className="font-display text-2xl font-bold text-navy dark:text-beige">
                         {eur(dueNow)}
                       </span>
@@ -1666,37 +1755,55 @@ function Apply() {
 
               {/* Action Buttons & Live Chat Dispatch */}
               <div className="space-y-3">
+                {isAppSuspended && (
+                  <div className="flex items-center gap-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-3.5 text-xs text-amber-900 dark:text-amber-200">
+                    <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span className="font-semibold">{ar ? "🔒 تم تعليق إمكانية طلب السداد مؤقتاً لوجود تنبيه إداري معلق (راجع التنبيه الرسمي أعلاه)." : "🔒 Payment request is paused while an official administrative notice is pending."}</span>
+                  </div>
+                )}
+
                 <button
                   type="button"
-                  disabled={requestingChatPay}
+                  disabled={requestingChatPay || isAppSuspended}
                   onClick={handleRequestChatPayment}
-                  className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-beige bg-navy py-4 text-sm font-bold text-ivory hover:opacity-90 shadow-lg disabled:opacity-50 transition-all active:scale-98"
+                  className={`w-full flex items-center justify-center gap-2 rounded-2xl border-2 px-4 py-3.5 sm:py-4 text-xs sm:text-sm font-bold shadow-md transition-all active:scale-[0.99] min-h-[52px] ${
+                    isAppSuspended
+                      ? "border-border bg-secondary text-muted-foreground opacity-60 cursor-not-allowed"
+                      : "border-beige bg-navy text-ivory hover:opacity-95 cursor-pointer shadow-navy/10"
+                  }`}
                 >
                   {requestingChatPay ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin text-beige" />
-                      <span>{tr("Sending Request to Support...", "جاري إرسال الطلب والتفاصيل للشات...")}</span>
+                      <Loader2 className="h-4 w-4 animate-spin text-beige shrink-0" />
+                      <span className="text-center">{tr("Sending Request to Support...", "جاري إرسال الطلب والتفاصيل للشات...")}</span>
                     </>
                   ) : chatPaySent ? (
                     <>
-                      <CheckCircle2 className="h-4 w-4 text-beige" />
-                      <span>{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات المباشر")}</span>
+                      <CheckCircle2 className="h-4 w-4 text-beige shrink-0" />
+                      <span className="text-center">{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات")}</span>
+                    </>
+                  ) : isAppSuspended ? (
+                    <>
+                      <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                      <span className="text-center">{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
                     </>
                   ) : (
                     <>
-                      <MessageSquare className="h-4 w-4 text-beige" />
-                      <span>{tr(`Request Payment Details via ${paymentMethod} in Live Chat 💬`, `طلب بيانات التحويل عبر ${paymentMethod} في الشات المباشر 💬`)}</span>
+                      <MessageSquare className="h-4 w-4 text-beige shrink-0" />
+                      <span className="text-center leading-normal">
+                        {tr(`Request Payment Details via ${paymentMethod} in Live Chat 💬`, `طلب تفاصيل السداد عبر ${paymentMethod} في الشات المباشر 💬`)}
+                      </span>
                     </>
                   )}
                 </button>
 
                 {chatPaySent && (
-                  <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-xs font-medium text-beige dark:text-beige animate-in fade-in space-y-2">
-                    <p className="font-bold flex items-center gap-1.5 text-sm">
+                  <div className="rounded-2xl border border-beige/40 bg-secondary/50 p-4 text-xs font-medium text-foreground animate-in fade-in space-y-2">
+                    <p className="font-bold flex items-center gap-1.5 text-sm text-navy dark:text-beige">
                       <CheckCircle2 className="h-4 w-4 text-beige" />
                       {tr("Payment request sent to live chat successfully!", "تم إرسال تفاصيل طلب السداد إلى الشات المباشر بنجاح!")}
                     </p>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground leading-relaxed">
                       {tr(
                         `Your request of ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} EGP) via ${paymentMethod} is registered. An EMA advisor will provide the exact wallet / account number now.`,
                         `تم تسجيل طلبك لسداد مبلغ ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} ج.م) عبر ${paymentMethod}. نافذة الشات مفتوحة الآن وسيقوم مستشار إيما بتزويدك برقم المحفظة / الحساب فوراً لتأكيد الحجز.`
@@ -1705,29 +1812,30 @@ function Apply() {
                     <button
                       type="button"
                       onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-beige/30"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-navy text-ivory px-4 py-2 text-xs font-bold shadow-xs hover:opacity-90 cursor-pointer"
                     >
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      {tr("Open Chat Now 💬", "فتح شات الموقع الآن 💬")}
+                      <MessageSquare className="h-3.5 w-3.5 text-beige" />
+                      <span>{tr("Open Chat Now 💬", "فتح شات الموقع الآن 💬")}</span>
                     </button>
                   </div>
                 )}
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setStep(2)}
-                    className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3.5 text-sm font-medium hover:bg-secondary transition-colors"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium hover:bg-secondary transition-colors cursor-pointer"
                   >
                     <ArrowLeft className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
-                    {tr("Back to Documents", "الرجوع للمستندات")}
+                    <span>{tr("Back to Documents", "الرجوع للمستندات")}</span>
                   </button>
 
                   <Link
                     to="/dashboard"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-secondary border border-border py-3.5 text-sm font-semibold text-foreground hover:bg-secondary/80 transition-all active:scale-98"
+                    className="w-full sm:flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-secondary border border-border px-5 py-3 text-sm font-semibold text-foreground hover:bg-secondary/80 transition-all active:scale-[0.99]"
                   >
-                    {t("goDashboard")} <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
+                    <span>{t("goDashboard")}</span>
+                    <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>

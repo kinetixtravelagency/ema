@@ -23,10 +23,11 @@ export const getMyAccount = createServerFn({ method: "GET" })
       referred = r.data ?? [];
     }
     const { data: u } = await supabase.auth.getUser();
+    const userMeta = (u.user?.user_metadata ?? {}) as Record<string, any>;
     const { getProgram } = await import("./catalog");
     const enrichedApps = (applications.data ?? []).map((app: any) => {
       const catProg = app.programs?.slug ? getProgram(app.programs.slug)?.program : undefined;
-      return catProg ? {
+      const base = catProg ? {
         ...app,
         programs: {
           ...catProg,
@@ -34,7 +35,10 @@ export const getMyAccount = createServerFn({ method: "GET" })
           deposit: app.programs?.deposit ?? catProg.deposit,
           price: app.programs?.price ?? catProg.price,
         },
-      } : app;
+      } : { ...app };
+      // Attach user_metadata so ApplicationProgressTracker can display personal data fields
+      if (!base.user_metadata) base.user_metadata = userMeta;
+      return base;
     });
 
     return {
@@ -249,11 +253,17 @@ export const adminSendNotice = createServerFn({ method: "POST" })
     const userId = (currentApp as any)?.user_id;
     if (userId) {
       try {
-        const { postClientMessageInternal } = await import("./chat.functions");
-        const chatMsg = "⚠️ تنبيه من إدارة EMA:\n" + alertMsg + (data.suspend ? "\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)" : "");
-        await postClientMessageInternal({ userId, text: chatMsg });
+        const { postAdminMessageInternal } = await import("./chat.functions");
+        const chatMsg = "⚠️ تنبيه رسمي من إدارة إيما:\n" + alertMsg + (data.suspend ? "\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)" : "");
+        await postAdminMessageInternal({
+          userId,
+          clientName: (currentApp as any)?.full_name,
+          clientPhone: (currentApp as any)?.phone,
+          senderName: "إدارة إيما (EMA Admin)",
+          text: chatMsg,
+        });
       } catch (chatErr) {
-        console.error("[adminSendNotice] Failed to post chat message:", chatErr);
+        console.error("[adminSendNotice] Failed to post admin chat message:", chatErr);
       }
     }
 
@@ -804,6 +814,52 @@ export const adminUpdateApplication = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminPatchApplicantData = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: {
+    id: string;
+    national_id?: string;
+    gender?: string;
+    birth_date?: string;
+    education_level?: string;
+    university?: string;
+    faculty?: string;
+    academic_year?: string;
+    graduation_year?: string;
+    current_city?: string;
+    current_address?: string;
+    hometown_city?: string;
+    hometown_address?: string;
+    military_status?: string;
+    english_level?: string;
+    passport_number?: string;
+  }) => d)
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { id, ...fields } = data;
+    const { data: curr } = await supabaseAdmin.from("applications").select("notes").eq("id", id).maybeSingle();
+    const existingNotes = curr?.notes || "";
+    const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+    let existingJson: Record<string, any> = {};
+    if (jsonMatch) { try { existingJson = JSON.parse(jsonMatch[0]); } catch {} }
+    const updatedJson: Record<string, any> = { ...existingJson };
+    for (const [k, v] of Object.entries(fields)) {
+      if (v !== undefined && v !== null && String(v).trim() !== "") updatedJson[k] = String(v).trim();
+    }
+    const newJsonStr = JSON.stringify(updatedJson);
+    let textPart = existingNotes;
+    if (jsonMatch) textPart = existingNotes.replace(jsonMatch[0], "").trim();
+    const newNotes = textPart ? `${textPart}\n${newJsonStr}` : newJsonStr;
+    const appPatch: { notes: string; passport_number?: string; birth_date?: string; education?: string } = { notes: newNotes };
+    if (fields["passport_number"]) appPatch.passport_number = fields["passport_number"].trim();
+    if (fields["birth_date"]) appPatch.birth_date = fields["birth_date"];
+    if (fields["university"]) appPatch.education = fields["university"];
+    const { error } = await supabaseAdmin.from("applications").update(appPatch as any).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
 
 export const adminSetDocumentStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -1156,9 +1212,9 @@ export const requestPaymentSupport = createServerFn({ method: "POST" })
         parsed.payment_requested_at = new Date().toISOString();
         parsed.payment_summary = `طلب سداد ${data.paymentOption === "full" ? "كامل المبلغ" : "الديبوزيت / حجز المقعد"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}`;
         if (data.flightIncluded !== undefined) parsed.flight_included = data.flightIncluded;
-        updatedNotes = existingApp.notes.replace(jsonMatch[0], JSON.stringify(parsed));
+        updatedNotes = (existingApp?.notes || "").replace(jsonMatch[0], JSON.stringify(parsed));
       } catch {
-        updatedNotes = `${existingApp.notes}\n[طلب سداد: ${data.paymentOption === "full" ? "سداد كامل المبلغ" : "سداد الديبوزيت"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}]`;
+        updatedNotes = `${existingApp?.notes || ""}\n[طلب سداد: ${data.paymentOption === "full" ? "سداد كامل المبلغ" : "سداد الديبوزيت"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}]`;
       }
     } else {
       updatedNotes = `${existingApp?.notes || ""}\n[طلب سداد: ${data.paymentOption === "full" ? "سداد كامل المبلغ" : "سداد الديبوزيت"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod} - ${new Date().toLocaleString("ar-EG")}]`;

@@ -28,7 +28,7 @@
       "status": "active",
       "lastMessage": "💳 طلب سداد جديد (المقدم):\n• البرنامج: Program\n• المبلغ المطلوب: €500 (~27,000 ج.م)\n• وسيلة الدفع المفضلة: Etisalat Cash\n• الاسم: youssef\n• الهاتف: 01032944753\n• كود الطلب: #36b1124b\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
       "lastMessageAt": "2026-10-08T07:05:32.283Z",
-      "unreadCount": 1,
+      "unreadCount": 0,
       "unreadClientCount": 0,
       "createdAt": "2026-10-08T06:44:57.429Z",
       "updatedAt": "2026-10-09T15:58:31.997Z",
@@ -43,12 +43,12 @@
       "clientEmail": "yoseif.mohamed@gmail.com",
       "clientPhone": "+202312312312",
       "status": "active",
-      "lastMessage": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: WE Pay\n• الاسم: سيسي سيس\n• الهاتف: +202312312312\n• كود الطلب: #41ed86c7\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
-      "lastMessageAt": "2026-10-09T19:29:23.966Z",
+      "lastMessage": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)",
+      "lastMessageAt": "2026-10-20T12:26:41.705Z",
       "unreadCount": 0,
       "unreadClientCount": 0,
       "createdAt": "2026-10-09T12:35:05.871Z",
-      "updatedAt": "2026-10-09T19:29:23.966Z",
+      "updatedAt": "2026-10-20T12:26:41.705Z",
       "isDeleted": false,
       "hasPaymentRequest": true
     },
@@ -298,12 +298,12 @@
       "clientEmail": "yoseif.muhamed@gmail.com",
       "clientPhone": "+201032944753",
       "status": "active",
-      "lastMessage": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
-      "lastMessageAt": "2026-10-17T13:03:08.086Z",
-      "unreadCount": 0,
+      "lastMessage": "D",
+      "lastMessageAt": "2026-10-20T12:41:04.091Z",
+      "unreadCount": 2,
       "unreadClientCount": 0,
       "createdAt": "2026-10-11T19:45:17.248Z",
-      "updatedAt": "2026-10-17T13:03:08.086Z",
+      "updatedAt": "2026-10-20T12:41:04.091Z",
       "isDeleted": false,
       "hasPaymentRequest": true,
       "flag": "important"
@@ -503,12 +503,12 @@
       "clientEmail": "xxxv710@gmail.com",
       "clientPhone": "01030929196",
       "status": "active",
-      "lastMessage": "Kinetix.travel.agency@gmail.com",
-      "lastMessageAt": "2026-10-18T20:39:42.368Z",
+      "lastMessage": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+      "lastMessageAt": "2026-10-20T12:21:54.713Z",
       "unreadCount": 0,
       "unreadClientCount": 0,
       "createdAt": "2026-10-17T19:43:01.497Z",
-      "updatedAt": "2026-10-18T20:39:42.368Z",
+      "updatedAt": "2026-10-20T12:21:54.713Z",
       "isDeleted": false,
       "hasPaymentRequest": true,
       "flag": "important"
@@ -555,12 +555,12 @@
       "clientEmail": "sayydsaloom7@gmail.com",
       "clientPhone": "7869637064",
       "status": "active",
-      "lastMessage": "بكام عقد عمل",
-      "lastMessageAt": "2026-10-19T07:32:06.482Z",
-      "unreadCount": 2,
-      "unreadClientCount": 0,
+      "lastMessage": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+      "lastMessageAt": "2026-10-20T12:21:44.953Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
       "createdAt": "2026-10-19T07:31:44.878Z",
-      "updatedAt": "2026-10-19T07:32:06.482Z",
+      "updatedAt": "2026-10-20T12:21:44.953Z",
       "isDeleted": false,
       "hasPaymentRequest": false
     },
@@ -572,12 +572,12 @@
       "clientEmail": "alqadymhndsbdalrhmn@gmail.com",
       "clientPhone": "01011523252",
       "status": "active",
-      "lastMessage": "محتاج حضرتك ترشحلي افضل الدول اللي اقدر اسافر عليها طبقا للملف بتاعي",
-      "lastMessageAt": "2026-10-19T12:56:36.452Z",
-      "unreadCount": 2,
-      "unreadClientCount": 0,
+      "lastMessage": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+      "lastMessageAt": "2026-10-20T12:21:09.516Z",
+      "unreadCount": 0,
+      "unreadClientCount": 2,
       "createdAt": "2026-10-19T12:55:35.674Z",
-      "updatedAt": "2026-10-19T12:56:36.452Z",
+      "updatedAt": "2026-10-20T12:21:09.516Z",
       "isDeleted": false,
       "hasPaymentRequest": false
     },
@@ -589,12 +589,12 @@
       "clientEmail": null,
       "clientPhone": "01210638565",
       "status": "active",
-      "lastMessage": "ممكن استفسر عن موضوع معين",
-      "lastMessageAt": "2026-10-19T16:25:36.893Z",
-      "unreadCount": 3,
-      "unreadClientCount": 0,
+      "lastMessage": "أهلاً بك! معك فريق إيما للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+      "lastMessageAt": "2026-10-20T12:20:16.843Z",
+      "unreadCount": 0,
+      "unreadClientCount": 1,
       "createdAt": "2026-10-19T16:24:50.622Z",
-      "updatedAt": "2026-10-19T16:25:36.893Z",
+      "updatedAt": "2026-10-20T12:20:16.843Z",
       "isDeleted": false,
       "hasPaymentRequest": false
     }
@@ -670,7 +670,7 @@
         "sender": "client",
         "senderName": "admin",
         "text": "💳 طلب سداد جديد (المقدم):\n• البرنامج: Student Seasonal Hospitality · Bulgaria\n• المبلغ المطلوب: €196 (~10,584 ج.م)\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: يسبسي يسببس\n• الهاتف: 123123123213213123\n• كود الطلب: #130f0253\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-09T17:10:16.066Z"
       },
       {
@@ -679,7 +679,7 @@
         "sender": "client",
         "senderName": "admin",
         "text": "💳 طلب سداد جديد (المقدم):\n• البرنامج: Student Seasonal Hospitality · Bulgaria\n• المبلغ المطلوب: €196 (~10,584 ج.م)\n• وسيلة الدفع المفضلة: Vodafone Cash\n• الاسم: يسيسي يسبيسبيس\n• الهاتف: 24242342342342342342\n• كود الطلب: #e5411ace\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-09T17:10:49.941Z"
       },
       {
@@ -688,7 +688,7 @@
         "sender": "client",
         "senderName": "admin",
         "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Seasonal Agriculture & Harvest Work · Bulgaria · Bulgaria\n• المسار: مسار الطلاب 🎓\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €489 (~26,406 ج.م)\n• المبلغ المطلوب سداده الآن: €185 (~9,990 ج.م)\n• المتبقي بالتقسيط: €304 (~16,416 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: عميل كينتيكس\n• الهاتف: —\n• كود الطلب: #af8a00e2\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-09T18:33:45.011Z"
       },
       {
@@ -769,7 +769,7 @@
         "sender": "client",
         "senderName": "admin",
         "text": "اه",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-17T12:31:28.633Z"
       },
       {
@@ -829,6 +829,15 @@
         "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Hotel & Restaurant Operations · Bulgaria · Bulgaria\n• المسار: مسار الخريجين 💼\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €720 (~38,880 ج.م)\n• المبلغ المطلوب سداده الآن: €204 (~11,016 ج.م)\n• المتبقي بالتقسيط: €516 (~27,864 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: WE Pay\n• الاسم: سيسي سيس\n• الهاتف: +202312312312\n• كود الطلب: #41ed86c7\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
         "isRead": true,
         "createdAt": "2026-10-09T19:29:23.966Z"
+      },
+      {
+        "id": "msg_5ygng946p_1792499201705",
+        "conversationId": "conv_kvjiyyx2g_1791549305871",
+        "sender": "admin",
+        "senderName": "إدارة إيما (EMA Admin)",
+        "text": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)",
+        "isRead": true,
+        "createdAt": "2026-10-20T12:26:41.705Z"
       }
     ],
     "conv_78sufobdl_1791555314078": [
@@ -1453,6 +1462,33 @@
         "text": "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
         "isRead": true,
         "createdAt": "2026-10-17T13:03:08.086Z"
+      },
+      {
+        "id": "msg_mm4rv16kt_1792499918983",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "client",
+        "senderName": "Youssef Mohamed",
+        "text": "💳 طلب سداد جديد (سداد الديبوزيت / حجز المقعد):\n• البرنامج: Seasonal Hospitality & Hotel Services · Bulgaria · Bulgaria\n• المسار: مسار الطلاب 🎓\n• تذكرة الطيران: غير مشمولة\n• إجمالي تكلفة البرنامج: €665 (~35,910 ج.م)\n• المبلغ المطلوب سداده الآن (الديبوزيت): €196 (~10,584 ج.م)\n• المتبقي بالتقسيط: €469 (~25,326 ج.م) على 6 شهور\n• وسيلة الدفع المفضلة: InstaPay\n• الاسم: Youssef Mohamed\n• الهاتف: +201032944753\n• كود الطلب: #cca86026\n\nأرغب في استكمال الدفع، برجاء تزويدي ببيانات التحويل عبر هذه الوسيلة وتأكيد الحجز.",
+        "isRead": true,
+        "createdAt": "2026-10-20T12:38:38.983Z"
+      },
+      {
+        "id": "msg_n7bw1kd85_1792500032476",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "admin",
+        "senderName": "إدارة إيما (EMA Admin)",
+        "text": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:40:32.475Z"
+      },
+      {
+        "id": "msg_i5hprrly2_1792500064092",
+        "conversationId": "conv_e2mmxxiy7_1791747917248",
+        "sender": "client",
+        "senderName": "Youssef Mohamed",
+        "text": "D",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:41:04.091Z"
       }
     ],
     "conv_jltizbe9y_1791753017962": [
@@ -1855,6 +1891,15 @@
         "text": "Kinetix.travel.agency@gmail.com",
         "isRead": true,
         "createdAt": "2026-10-18T20:39:42.368Z"
+      },
+      {
+        "id": "msg_trltfskdq_1792498914713",
+        "conversationId": "conv_7uet0vasb_1792266181497",
+        "sender": "admin",
+        "senderName": "إدارة إيما (EMA Admin)",
+        "text": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+        "isRead": true,
+        "createdAt": "2026-10-20T12:21:54.713Z"
       }
     ],
     "conv_mcz27o25w_1792310377584": [
@@ -1940,7 +1985,7 @@
         "sender": "client",
         "senderName": "سيد محمد عبد السلام",
         "text": "أريد التحدث مع مستشار مباشرةً",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T07:31:44.878Z"
       },
       {
@@ -1949,8 +1994,35 @@
         "sender": "client",
         "senderName": "سيد محمد عبد السلام",
         "text": "بكام عقد عمل",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T07:32:06.482Z"
+      },
+      {
+        "id": "msg_ppamjp92e_1792498758547",
+        "conversationId": "conv_dbwmhexax_1792395104878",
+        "sender": "admin",
+        "senderName": "EMA Admin",
+        "text": "أهلاً بك! معك فريق إيما للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:19:18.547Z"
+      },
+      {
+        "id": "msg_cadvcfbk2_1792498772042",
+        "conversationId": "conv_dbwmhexax_1792395104878",
+        "sender": "admin",
+        "senderName": "EMA Admin",
+        "text": "برجاء اختيار الدولة المستهدفة",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:19:32.042Z"
+      },
+      {
+        "id": "msg_b98mharn9_1792498904954",
+        "conversationId": "conv_dbwmhexax_1792395104878",
+        "sender": "admin",
+        "senderName": "إدارة إيما (EMA Admin)",
+        "text": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+        "isRead": true,
+        "createdAt": "2026-10-20T12:21:44.953Z"
       }
     ],
     "conv_58blohbmf_1792414535674": [
@@ -1960,7 +2032,7 @@
         "sender": "client",
         "senderName": "عبدالرحمن محمد حسين القاضي",
         "text": "الأوراق المطلوبة لتجهيز السيرة الذاتية",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T12:55:35.674Z"
       },
       {
@@ -1969,8 +2041,35 @@
         "sender": "client",
         "senderName": "عبدالرحمن محمد حسين القاضي",
         "text": "محتاج حضرتك ترشحلي افضل الدول اللي اقدر اسافر عليها طبقا للملف بتاعي",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T12:56:36.452Z"
+      },
+      {
+        "id": "msg_3ot3nonw3_1792498786045",
+        "conversationId": "conv_58blohbmf_1792414535674",
+        "sender": "admin",
+        "senderName": "EMA Admin",
+        "text": "أهلاً بك! معك فريق إيما للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:19:46.045Z"
+      },
+      {
+        "id": "msg_kq1hhe63l_1792498811520",
+        "conversationId": "conv_58blohbmf_1792414535674",
+        "sender": "admin",
+        "senderName": "EMA Admin",
+        "text": "رجاء مساعدتنا بتخصصك ومجال تخرجك لتحديد افضل دولة لك",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:20:11.520Z"
+      },
+      {
+        "id": "msg_vev1s93b2_1792498869516",
+        "conversationId": "conv_58blohbmf_1792414535674",
+        "sender": "admin",
+        "senderName": "إدارة إيما (EMA Admin)",
+        "text": "⚠️ تنبيه من إدارة EMA:\nYour application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+        "isRead": true,
+        "createdAt": "2026-10-20T12:21:09.516Z"
       }
     ],
     "conv_s378k2bmq_1792427090622": [
@@ -1980,7 +2079,7 @@
         "sender": "client",
         "senderName": "عمرو مصطفى",
         "text": "أريد التحدث مع مستشار مباشرةً",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T16:24:50.622Z"
       },
       {
@@ -1989,7 +2088,7 @@
         "sender": "client",
         "senderName": "عمرو مصطفى",
         "text": "السلام عليكم",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T16:25:07.348Z"
       },
       {
@@ -1998,8 +2097,17 @@
         "sender": "client",
         "senderName": "عمرو مصطفى",
         "text": "ممكن استفسر عن موضوع معين",
-        "isRead": false,
+        "isRead": true,
         "createdAt": "2026-10-19T16:25:36.893Z"
+      },
+      {
+        "id": "msg_l7y6wtk3c_1792498816843",
+        "conversationId": "conv_s378k2bmq_1792427090622",
+        "sender": "admin",
+        "senderName": "EMA Admin",
+        "text": "أهلاً بك! معك فريق إيما للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "isRead": false,
+        "createdAt": "2026-10-20T12:20:16.843Z"
       }
     ]
   }

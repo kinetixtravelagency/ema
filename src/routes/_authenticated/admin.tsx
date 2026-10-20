@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   getAdminFull, adminUpdateApplicationStatus, adminUpdateProgramPrice,
   adminCreateProgram, adminUpdateProgram, adminDeleteProgram, adminSyncCatalogPrograms,
-  adminUpdateApplication, adminSetDocumentStatus,
+  adminUpdateApplication, adminSetDocumentStatus, adminPatchApplicantData,
   deleteApplication,
   adminManagePartner, adminAddCommission, adminSetCommission,
   adminUpdateLevel, adminUpdateCountry, adminSendNotice, adminClearNotice,
@@ -542,6 +542,7 @@ interface ApplicantMeta {
   payment_option?: string;
   payment_requested_at?: string;
   payment_summary?: string;
+  passport_number?: string;
   email?: string;
 }
 
@@ -559,12 +560,21 @@ function parseAppNotes(notes: string | null | undefined, userMeta?: Record<strin
       rejectionReason = rejMatch[1].trim();
     }
 
+    // Extract [ADMIN_ALERT:...] from plain text notes
+    const adminAlertMatch = notes.match(/\[ADMIN_ALERT:\s*([^\]]+)\]/i);
+    if (adminAlertMatch && adminAlertMatch[1] && !meta.admin_alert_message) {
+      meta.admin_alert_message = adminAlertMatch[1].trim();
+    }
+
     const jsonMatch = notes.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       try {
         const parsed = JSON.parse(jsonMatch[0]);
         meta = { ...meta, ...parsed };
         if (parsed.rejection_reason) rejectionReason = parsed.rejection_reason;
+        if (parsed.admin_alert_message && !meta.admin_alert_message) {
+          meta.admin_alert_message = String(parsed.admin_alert_message);
+        }
       } catch {}
     } else {
       try {
@@ -589,6 +599,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const delApp      = useServerFn(deleteApplication);
   const sendNotice  = useServerFn(adminSendNotice);
   const clearNotice = useServerFn(adminClearNotice);
+  const patchApplicant = useServerFn(adminPatchApplicantData);
 
   const [search,      setSearch]      = useState("");
   const [filter,      setFilter]      = useState("all");
@@ -614,6 +625,27 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const [noticeCustomText, setNoticeCustomText] = useState<string>("");
   const [noticeSuspend, setNoticeSuspend] = useState<boolean>(true);
   const [savingNotice, setSavingNotice] = useState(false);
+
+  // Edit applicant data modal state
+  const [editApplicantModal, setEditApplicantModal] = useState<{
+    id: string;
+    name: string;
+    national_id: string;
+    passport_number: string;
+    birth_date: string;
+    gender: string;
+    military_status: string;
+    education_level: string;
+    university: string;
+    faculty: string;
+    academic_year: string;
+    graduation_year: string;
+    current_city: string;
+    current_address: string;
+    hometown_city: string;
+    english_level: string;
+  } | null>(null);
+  const [savingApplicant, setSavingApplicant] = useState(false);
 
   const statuses = [
     { key: "all", en: "All", ar: "الكل" },
@@ -782,6 +814,38 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       alert(e?.message || tr("Failed to clear notice", "فشل إلغاء التنبيه"));
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const handleSaveApplicantData = async () => {
+    if (!editApplicantModal) return;
+    setSavingApplicant(true);
+    try {
+      await patchApplicant({
+        data: {
+          id: editApplicantModal.id,
+          national_id: editApplicantModal.national_id,
+          passport_number: editApplicantModal.passport_number,
+          birth_date: editApplicantModal.birth_date,
+          gender: editApplicantModal.gender,
+          military_status: editApplicantModal.military_status,
+          education_level: editApplicantModal.education_level,
+          university: editApplicantModal.university,
+          faculty: editApplicantModal.faculty,
+          academic_year: editApplicantModal.academic_year,
+          graduation_year: editApplicantModal.graduation_year,
+          current_city: editApplicantModal.current_city,
+          current_address: editApplicantModal.current_address,
+          hometown_city: editApplicantModal.hometown_city,
+          english_level: editApplicantModal.english_level,
+        },
+      });
+      setEditApplicantModal(null);
+      onChange();
+    } catch (e: any) {
+      alert(e?.message || tr("Failed to update applicant data", "فشل تحديث بيانات المتقدم"));
+    } finally {
+      setSavingApplicant(false);
     }
   };
 
@@ -1375,7 +1439,45 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
 
                     {/* ══ TAB 2: FULL APPLICANT DATA (COMPREHENSIVE DOSSIER) ══ */}
                     {curTab === "applicant" && (
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="space-y-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-secondary/50 border border-border/80 p-3.5 shadow-2xs">
+                          <div>
+                            <p className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                              <FileBadge className="h-4 w-4 text-beige" />
+                              <span>{tr("Applicant File & Dossier Records", "بيانات ملف المتقدم والمستندات الرسمية")}</span>
+                            </p>
+                            <p className="text-[11px] text-muted-foreground mt-0.5">
+                              {tr("View and update personal, academic and location data for European filing", "استعراض وتعديل البيانات الشخصية، الدراسية والعنوان لملف السفر")}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setEditApplicantModal({
+                              id: a.id,
+                              name: candidateName,
+                              national_id: meta.national_id || "",
+                              passport_number: a.passport_number || meta.passport_number || "",
+                              birth_date: a.birth_date || meta.birth_date || "",
+                              gender: meta.gender || "male",
+                              military_status: meta.military_status || "",
+                              education_level: meta.education_level || "graduate",
+                              university: meta.university || a.education || "",
+                              faculty: meta.faculty || "",
+                              academic_year: meta.academic_year || "",
+                              graduation_year: meta.graduation_year || "",
+                              current_city: meta.current_city || meta.city || "",
+                              current_address: meta.current_address || meta.address || "",
+                              hometown_city: meta.hometown_city || meta.origin_city || "",
+                              english_level: meta.english_level || meta.english || "",
+                            })}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-navy dark:bg-beige text-ivory dark:text-navy px-3.5 py-2 text-xs font-bold hover:opacity-90 shadow-xs transition-all cursor-pointer"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                            <span>{tr("Edit / Complete Missing Data", "تعديل البيانات واستكمال النواقص ✍️")}</span>
+                          </button>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
                         {/* 1. Identity & Personal Info */}
                         <div className="rounded-2xl border border-border bg-card p-5 space-y-3.5 shadow-xs">
                           <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-navy dark:text-beige border-b border-border/70 pb-2.5">
@@ -1591,7 +1693,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           </div>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
                     {/* ══ TAB 3: PROGRAM & CONTRACT SPECIFICATIONS ══ */}
                     {curTab === "program" && (
@@ -1937,6 +2040,260 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
               >
                 {savingNotice ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <BellRing className="h-3.5 w-3.5" />}
                 <span>{tr("Send Notice & Alert", "إرسال التنبيه فوراً")}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ EDIT APPLICANT DATA MODAL (BILINGUAL) ══ */}
+      {editApplicantModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-5 my-8 max-h-[90vh] flex flex-col">
+            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-navy/10 text-navy dark:bg-beige/10 dark:text-beige">
+                  <Pencil className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-foreground">
+                    {tr(`Edit Applicant Dossier — ${editApplicantModal.name}`, `تعديل واستكمال بيانات المتقدم — ${editApplicantModal.name}`)}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {tr("Fill in missing records such as college, city, or national ID to reflect in official documents.", "استكمال وتعديل النواقص مثل الكلية، المدينة أو الرقم القومي لتحديث ملف السفر الرسمي.")}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditApplicantModal(null)}
+                className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 overflow-y-auto pr-1 flex-1 text-xs">
+              {/* Section 1: Civil & Identity */}
+              <div className="rounded-2xl border border-border/70 bg-secondary/20 p-4 space-y-3">
+                <p className="font-bold text-navy dark:text-beige flex items-center gap-1.5 uppercase text-[11px] tracking-wider">
+                  <FileBadge className="h-3.5 w-3.5" />
+                  <span>{tr("Identity & Civil Records", "الهوية والأوراق الرسمية")}</span>
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("National ID (14 digits)", "الرقم القومي (14 رقم)")}
+                    </label>
+                    <input
+                      type="text"
+                      maxLength={14}
+                      value={editApplicantModal.national_id}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, national_id: e.target.value })}
+                      placeholder="e.g. 29801130102345"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 font-mono outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Passport Number", "رقم جواز السفر")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.passport_number}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, passport_number: e.target.value })}
+                      placeholder="e.g. A12345678"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 font-mono outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Birth Date", "تاريخ الميلاد")}
+                    </label>
+                    <input
+                      type="date"
+                      value={editApplicantModal.birth_date}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, birth_date: e.target.value })}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Gender", "النوع / الجنس")}
+                    </label>
+                    <select
+                      value={editApplicantModal.gender}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, gender: e.target.value })}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige cursor-pointer"
+                    >
+                      <option value="male">{tr("Male", "ذكر")}</option>
+                      <option value="female">{tr("Female", "أنثى")}</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Military Status", "الموقف من التجنيد")}
+                    </label>
+                    <select
+                      value={editApplicantModal.military_status}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, military_status: e.target.value })}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige cursor-pointer"
+                    >
+                      <option value="">{tr("— Select Military Status —", "— اختر الموقف التجنيدي —")}</option>
+                      <option value="exempt">{tr("Exempted / Final Exemption", "إعفاء نهائي")}</option>
+                      <option value="completed">{tr("Completed Military Service", "أدى الخدمة العسكرية (إنهاء الخدمة)")}</option>
+                      <option value="postponed">{tr("Postponed (Temporary Exemption)", "تأجيل دراسي / إعفاء مؤقت")}</option>
+                      <option value="student">{tr("Currently Enrolled Student (Eligible for Travel Permit)", "طالب مقيد (مستحق تصريح سفر)")}</option>
+                      <option value="none">{tr("Not Applicable (Female / Foreign)", "غير مطلوب (إناث / غير مصريين)")}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Education & Academic */}
+              <div className="rounded-2xl border border-border/70 bg-secondary/20 p-4 space-y-3">
+                <p className="font-bold text-navy dark:text-beige flex items-center gap-1.5 uppercase text-[11px] tracking-wider">
+                  <GraduationCap className="h-3.5 w-3.5" />
+                  <span>{tr("Education & University Profile", "التعليم والمسار الجامعي واللغة")}</span>
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Academic Track Level", "المستوى الدراسي")}
+                    </label>
+                    <select
+                      value={editApplicantModal.education_level}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, education_level: e.target.value })}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige cursor-pointer"
+                    >
+                      <option value="graduate">{tr("University Graduate (خريج)", "خريج جامعي (Graduate)")}</option>
+                      <option value="student">{tr("Enrolled Student (طالب مقيد)", "طالب مقيد بالجامعة (Student)")}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("University", "الجامعة")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.university}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, university: e.target.value })}
+                      placeholder="e.g. جامعة القاهرة / Cairo University"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Faculty & Major", "الكلية والتخصص")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.faculty}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, faculty: e.target.value })}
+                      placeholder="e.g. كلية التجارة / Faculty of Commerce"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {editApplicantModal.education_level === "student" ? tr("Academic Year (1-6)", "الفرقة الدراسية الحالية") : tr("Graduation Year", "سنة التخرج")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.education_level === "student" ? editApplicantModal.academic_year : editApplicantModal.graduation_year}
+                      onChange={e => {
+                        if (editApplicantModal.education_level === "student") {
+                          setEditApplicantModal({ ...editApplicantModal, academic_year: e.target.value });
+                        } else {
+                          setEditApplicantModal({ ...editApplicantModal, graduation_year: e.target.value });
+                        }
+                      }}
+                      placeholder={editApplicantModal.education_level === "student" ? "e.g. 3" : "e.g. 2023"}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("English Proficiency Level", "مستوى اللغة الإنجليزية")}
+                    </label>
+                    <select
+                      value={editApplicantModal.english_level}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, english_level: e.target.value })}
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige cursor-pointer"
+                    >
+                      <option value="">{tr("— Select English Level —", "— حدد المستوى —")}</option>
+                      <option value="Beginner (A1-A2)">{tr("Beginner (A1-A2)", "مبتدئ (A1-A2)")}</option>
+                      <option value="Intermediate (B1)">{tr("Intermediate (B1)", "متوسط (B1)")}</option>
+                      <option value="Upper Intermediate (B2)">{tr("Upper Intermediate (B2)", "فوق متوسط (B2)")}</option>
+                      <option value="Advanced / Fluent (C1-C2)">{tr("Advanced / Fluent (C1-C2)", "متقدم / طليق (C1-C2)")}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 3: Residence & Location */}
+              <div className="rounded-2xl border border-border/70 bg-secondary/20 p-4 space-y-3">
+                <p className="font-bold text-navy dark:text-beige flex items-center gap-1.5 uppercase text-[11px] tracking-wider">
+                  <MapPin className="h-3.5 w-3.5" />
+                  <span>{tr("Current Residence & Hometown", "محل الإقامة الحالي والمحافظة")}</span>
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Current City / Governorate", "المحافظة / المدينة الحالية")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.current_city}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, current_city: e.target.value })}
+                      placeholder="e.g. القاهرة / Cairo"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Hometown / Birthplace City", "المحافظة الأصلية (محل الميلاد)")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.hometown_city}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, hometown_city: e.target.value })}
+                      placeholder="e.g. المنصورة / Giza"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-muted-foreground font-semibold mb-1">
+                      {tr("Current Detailed Address", "العنوان التفصيلي الحالي")}
+                    </label>
+                    <input
+                      type="text"
+                      value={editApplicantModal.current_address}
+                      onChange={e => setEditApplicantModal({ ...editApplicantModal, current_address: e.target.value })}
+                      placeholder="e.g. شارع التحرير، الدقي، الجيزة"
+                      className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:border-navy dark:focus:border-beige"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border/60 shrink-0">
+              <button
+                type="button"
+                onClick={() => setEditApplicantModal(null)}
+                className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              >
+                {tr("Cancel", "إلغاء")}
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveApplicantData}
+                disabled={savingApplicant}
+                className="inline-flex items-center gap-1.5 rounded-full bg-navy dark:bg-beige text-ivory dark:text-navy px-6 py-2 text-xs font-bold shadow-md transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {savingApplicant ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+                <span>{tr("Save & Update Records", "حفظ وتحديث البيانات فوراً")}</span>
               </button>
             </div>
           </div>

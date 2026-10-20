@@ -361,6 +361,117 @@ export async function postClientMessageInternal(data: {
   };
 }
 
+export async function postAdminMessageInternal(data: {
+  conversationId?: string | undefined;
+  visitorId?: string | undefined;
+  userId?: string | undefined;
+  clientName?: string | undefined;
+  clientEmail?: string | undefined;
+  clientPhone?: string | undefined;
+  senderName?: string | undefined;
+  text: string;
+}) {
+  const text = (data.text || "").trim();
+  if (!text) throw new Error("Message text is required");
+
+  const store = await getStore();
+  let conv: ChatConversation | undefined;
+
+  // 1. Look by userId first if provided
+  if (data.userId) {
+    conv = Object.values(store.conversations).find((c) => c.userId === data.userId);
+  }
+
+  // 2. Or look by explicit conversationId
+  if (!conv && data.conversationId && store.conversations[data.conversationId]) {
+    conv = store.conversations[data.conversationId];
+    if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+  } else if (!conv && data.visitorId) {
+    // 3. Or look by visitorId
+    conv = Object.values(store.conversations).find((c) => c.visitorId === data.visitorId);
+    if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+  }
+
+  // 4. Fallback: match by email if provided
+  if (!conv && data.clientEmail) {
+    const em = data.clientEmail.trim().toLowerCase();
+    conv = Object.values(store.conversations).find((c) => c.clientEmail && c.clientEmail.trim().toLowerCase() === em);
+    if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+  }
+
+  // 5. Fallback: match by phone if provided
+  if (!conv && data.clientPhone) {
+    const clean = data.clientPhone.replace(/[^0-9]/g, "");
+    if (clean.length >= 8) {
+      conv = Object.values(store.conversations).find((c) => {
+        if (!c.clientPhone) return false;
+        const cp = c.clientPhone.replace(/[^0-9]/g, "");
+        return cp.includes(clean) || clean.includes(cp);
+      });
+      if (conv && data.userId && !conv.userId) conv.userId = data.userId;
+    }
+  }
+
+  const now = new Date().toISOString();
+
+  if (!conv) {
+    const convId = "conv_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
+    conv = {
+      id: convId,
+      userId: data.userId ?? null,
+      visitorId: data.visitorId ?? null,
+      clientName: (data.clientName || "").trim() || "عميل إيما",
+      clientEmail: (data.clientEmail || "").trim() || null,
+      clientPhone: (data.clientPhone || "").trim() || null,
+      status: "active",
+      lastMessage: text,
+      lastMessageAt: now,
+      unreadCount: 0,
+      unreadClientCount: 1,
+      createdAt: now,
+      updatedAt: now,
+      isDeleted: false,
+    };
+    store.conversations[conv.id] = conv;
+    store.messages[conv.id] = [];
+  } else {
+    conv.lastMessage = text;
+    conv.lastMessageAt = now;
+    conv.status = "active";
+    conv.unreadClientCount = (conv.unreadClientCount || 0) + 1;
+    conv.updatedAt = now;
+    conv.isDeleted = false;
+    if (data.clientName && (!conv.clientName || conv.clientName.includes("Visitor") || conv.clientName.includes("زائر"))) {
+      conv.clientName = data.clientName;
+    }
+    if (data.clientEmail && !conv.clientEmail) conv.clientEmail = data.clientEmail;
+    if (data.clientPhone && (!conv.clientPhone || conv.clientPhone === "—")) {
+      conv.clientPhone = data.clientPhone;
+    }
+    if (data.userId && !conv.userId) conv.userId = data.userId;
+  }
+
+  const newMsg: ChatMessage = {
+    id: "msg_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
+    conversationId: conv.id,
+    sender: "admin",
+    senderName: data.senderName || "إدارة إيما (EMA Admin)",
+    text,
+    isRead: false,
+    createdAt: now,
+  };
+
+  const msgList = store.messages[conv.id] ?? [];
+  msgList.push(newMsg);
+  store.messages[conv.id] = msgList;
+  await saveStore(store);
+
+  return {
+    conversationId: conv.id,
+    message: newMsg,
+  };
+}
+
 export const sendClientMessage = createServerFn({ method: "POST" })
   .inputValidator(
     (d: {
