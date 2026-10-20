@@ -205,7 +205,7 @@ export function AdminChatTab() {
       id: tempId,
       conversationId: selectedId,
       sender: "admin",
-      senderName: "Kinetix Admin",
+      senderName: "EMA Admin",
       text,
       isRead: false,
       createdAt: nowIso,
@@ -230,7 +230,7 @@ export function AdminChatTab() {
         data: {
           conversationId: selectedId,
           text,
-          senderName: "Kinetix Admin",
+          senderName: "EMA Admin",
         },
       });
 
@@ -346,12 +346,12 @@ export function AdminChatTab() {
   });
 
   const cannedTemplates = [
-    "أهلاً بك! معك فريق كينتيكس للاستشارات، كيف يمكننا مساعدتك اليوم؟",
+        "أهلاً بك! معك فريق إيما للاستشارات، كيف يمكننا مساعدتك اليوم؟",
     "🩺 نوفر برامج توظيف معتمدة للأطباء والممرضين ومساعدي الأطباء والمهندسين في أيرلندا وإيطاليا مع تسهيلات وتقسيط.",
     "تمت مراجعة استفسارك، يسعدنا تزويدك بكافة تفاصيل البرنامج وإجراءات التقديم.",
     "يمكنك سداد الدفعة الأولى الآن وتقسيط الباقي حتى 6 أشهر بكل سهولة.",
     "يرجى تزويدنا برقم الهاتف / الواتساب للتواصل معك وتنسيق موعد المقابلة.",
-    "💳 بيانات إنستاباي: يرجى التحويل على معرف (kinetix@instapay) وإرسال إيصال التحويل هنا.",
+    "💳 بيانات إنستاباي: يرجى التحويل على معرف (ema@instapay) وإرسال إيصال التحويل هنا.",
     "💳 بيانات فودافون كاش: يرجى التحويل على رقم (01000000000) وإرسال سكرين شوت بالعملية.",
   ];
 

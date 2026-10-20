@@ -10,8 +10,8 @@ import logoImg from "@/assets/pics/logo.png";
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <Link to="/" className={`group flex items-center gap-2.5 font-display text-lg font-bold tracking-[0.16em] ${className}`}>
-      <img src={logoImg} alt="KINETIX Logo" className="h-9 w-auto object-contain transition-transform group-hover:scale-105" />
-      <span className="font-display tracking-[0.16em]">KINETIX</span>
+      <img src={logoImg} alt="EMA Logo" className="h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+      <span className="font-display tracking-[0.16em]">EMA</span>
     </Link>
   );
 }
@@ -328,7 +328,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-ivory/10">
-        <p className="mx-auto max-w-7xl px-5 py-6 text-xs text-ivory/45 md:px-8">© {new Date().getFullYear()} Kinetix. {t("disclaimer")}</p>
+        <p className="mx-auto max-w-7xl px-5 py-6 text-xs text-ivory/45 md:px-8">© {new Date().getFullYear()} EMA. {t("disclaimer")}</p>
       </div>
     </footer>
   );

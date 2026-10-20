@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowRight, ArrowUpRight, Compass, FileCheck2, PlaneTakeoff, Wallet, ShieldCheck, Eye,
-  CalendarClock, Users, Plus, Minus, Gift, MapPin, Sparkles, Globe, Building2, Receipt, BadgeCheck, FileCheck, Camera,
+  CalendarClock, Users, Plus, Minus, Gift, MapPin, Sparkles, Globe, Building2, Receipt, BadgeCheck, FileCheck, Camera, Award, ExternalLink
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import commRegImg from "@/assets/trustgate/commercial_registration.jpeg";
@@ -19,9 +19,9 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kinetix — Your next career move starts here" },
+      { title: "EMA — Your next career move starts here" },
       { name: "description", content: "Explore international work programs in Bulgaria, Luxembourg, Armenia, Russia and Italy with transparent costs and flexible payment plans." },
-      { property: "og:title", content: "Kinetix — International career mobility" },
+      { property: "og:title", content: "EMA — International career mobility" },
       { property: "og:description", content: "Work abroad with transparent costs, installment plans and guidance from application to arrival." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -253,8 +253,8 @@ function TrustGateHomeSection() {
             </h2>
             <p className="mt-4 text-base text-ivory/70 leading-relaxed">
               {tr(
-                "Kinetix is a government-registered limited liability recruitment consultancy. Review our authentic Commercial Register and Tax Card before taking any step.",
-                "نحن في كينتيكس شركة مصرية ذات مسؤولية محدودة مقيدة رسمياً لممارسة نشاط استشارات السفر وإلحاق العمالة بالخارج. نوفر لك وثائقنا الرسمية لحمايتك وضمان حقوقك المالية والقانونية."
+                "EMA Tours is a government-registered limited liability recruitment and travel consultancy holding an official Ministry of Tourism license. Review our authentic Commercial Register, Tax Card, and Tourism accreditation before taking any step.",
+                "نحن في إيما (EMA Tours) شركة مصرية ذات مسؤولية محدودة مقيدة رسمياً لممارسة نشاط استشارات السفر وإلحاق العمالة بالخارج ومرخصة لدى وزارة السياحة برقم 1339. نوفر لك وثائقنا الرسمية لحمايتك وضمان حقوقك المالية والقانونية."
               )}
             </p>
           </Reveal>
@@ -269,6 +269,50 @@ function TrustGateHomeSection() {
             </Link>
           </Reveal>
         </div>
+
+        {/* Featured Ministry of Tourism License Banner Card */}
+        <Reveal className="mb-8 rounded-3xl border-2 border-beige/40 bg-gradient-to-r from-navy via-navy-soft to-navy p-6 md:p-8 backdrop-blur-xl relative overflow-hidden shadow-xl">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-beige/15 text-beige border border-beige/30">
+                <Award className="h-7 w-7 text-amber-400" strokeWidth={1.5} />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/20 mb-1">
+                  <span>{tr("Official Government License", "اعتماد حكومي رسمي")}</span>
+                </div>
+                <h3 className="text-xl md:text-2xl font-semibold font-display text-ivory">
+                  {tr("Ministry of Tourism License — No. 1339", "الترخيص لدى وزارة السياحة — رقم 1339")}
+                </h3>
+                <p className="text-xs md:text-sm text-ivory/70 mt-1">
+                  {tr(
+                    "EMA Tours is fully licensed under the Egyptian Ministry of Tourism and Antiquities. Verify credentials on the official government portal.",
+                    "شركة إيما تورز معتمدة ومرخصة رسمياً لدى وزارة السياحة والآثار المصرية برقم 1339. يمكنك التحقق المباشر من بيانات وسريان الترخيص عبر البوابة الإلكترونية الرسمية."
+                  )}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <a
+                href="https://trans.hajj.gov.eg/Citizenservices/Business/CitizenservicesCompanySearchData.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-beige px-5 py-2.5 text-xs md:text-sm font-semibold text-navy hover:bg-beige/90 transition-colors shadow-md"
+              >
+                <span>{tr("Verify License on Ministry Portal", "التحقق من الترخيص على بوابة وزارة السياحة")}</span>
+                <ExternalLink className="h-3.5 w-3.5" strokeWidth={2} />
+              </a>
+              <Link
+                to="/trust"
+                className="inline-flex items-center gap-1.5 rounded-full border border-ivory/20 px-4 py-2.5 text-xs md:text-sm font-medium text-ivory hover:border-beige hover:text-beige transition-colors"
+              >
+                <span>{tr("Learn More", "تفاصيل الاعتماد")}</span>
+                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" strokeWidth={1.5} />
+              </Link>
+            </div>
+          </div>
+        </Reveal>
 
         {/* Two Featured Document Teaser Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -286,13 +330,13 @@ function TrustGateHomeSection() {
                 {tr("Commercial Registration Certificate", "مستخرج السجل التجاري الرسمي")}
               </h3>
               <p className="text-sm text-ivory/60 mt-1">
-                {tr("Ministry of Supply and Internal Trade — New Valley Register Office", "وزارة التموين والتجارة الداخلية — مكتب سجل الوادي الجديد")}
+                {tr("Ministry of Supply and Internal Trade — Sharm El Sheikh Register Office", "وزارة التموين والتجارة الداخلية — مكتب سجل شرم الشيخ")}
               </p>
 
               <div className="mt-5 relative aspect-[16/10] overflow-hidden rounded-2xl border border-ivory/15 bg-navy/90 p-2">
                 <img
                   src={commRegImg}
-                  alt="السجل التجاري"
+                  alt="السجل التجاري لشركة إيما"
                   className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover:scale-102"
                 />
               </div>
@@ -328,21 +372,21 @@ function TrustGateHomeSection() {
                 {tr("Official Tax Registration Card", "البطاقة الضريبية الرسمية")}
               </h3>
               <p className="text-sm text-ivory/60 mt-1">
-                {tr("Ministry of Finance — Egyptian Tax Authority (Dakhla Office)", "وزارة المالية — مصلحة الضرائب المصرية (مأمورية الداخلة)")}
+                {tr("Ministry of Finance — Egyptian Tax Authority (Sharm El Sheikh Office)", "وزارة المالية — مصلحة الضرائب المصرية (مأمورية شرم الشيخ)")}
               </p>
 
               <div className="mt-5 relative aspect-[16/10] overflow-hidden rounded-2xl border border-ivory/15 bg-navy/90 p-2">
                 <img
                   src={taxCardImg}
-                  alt="البطاقة الضريبية"
+                  alt="البطاقة الضريبية لشركة إيما"
                   className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover:scale-102"
                 />
               </div>
 
               <p className="mt-4 text-sm text-ivory/70 leading-relaxed">
                 {tr(
-                  "Registered Entity: Kinetix for Overseas Employment LLC — Tax Reg: 2669476241204859",
-                  "الكيان: كينتيكس لإلحاق العمالة بالخارج ذ.م.م — رقم التسجيل: 2669476241204859"
+                  "Registered Entity: EMA Tours for Overseas Employment LLC — Tax Reg: 2669476241204859",
+                  "الكيان: إيما تورز لإلحاق العمالة بالخارج ذ.م.م — رقم التسجيل: 2669476241204859"
                 )}
               </p>
             </div>
@@ -366,7 +410,7 @@ function TrustGateHomeSection() {
                 {tr("Physical Presence", "مقر واستقبال الشركة الميداني")}
               </p>
               <h3 className="text-2xl md:text-3xl font-semibold font-display text-ivory">
-                {tr("Step Inside Kinetix Official Office", "صور حقيقية من داخل مقر كينتيكس")}
+                {tr("Step Inside EMA Official Office", "صور حقيقية من داخل مقر إيما")}
               </h3>
             </div>
             <Link to="/trust" className="text-sm text-beige hover:underline flex items-center gap-1 font-medium">
@@ -381,7 +425,7 @@ function TrustGateHomeSection() {
                 img: hqReceptionImg,
                 title: tr("Client Reception Desk", "مكتب استقبال المشتركين والعملاء"),
                 badge: tr("Customer Service", "مكتب الاستقبال والترحيب"),
-                desc: tr("Illuminated neon Kinetix emblem and European destination flags.", "شعار كينتيكس المضيء وأعلام الدول الأوروبية المعتمدة لخدمتكم.")
+                desc: tr("Illuminated neon EMA emblem and European destination flags.", "شعار إيما المضيء وأعلام الدول الأوروبية المعتمدة لخدمتكم.")
               },
               {
                 img: hqConsultingImg,

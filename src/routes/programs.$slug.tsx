@@ -55,7 +55,7 @@ export const Route = createFileRoute("/programs/$slug")({
   head: ({ loaderData }) => {
     const p = loaderData?.program;
     const c = loaderData?.country;
-    const title = p && c ? `${p.title} in ${c.name} — Full Details & Requirements | Kinetix` : "Job Opportunity Details — Kinetix";
+    const title = p && c ? `${p.title} in ${c.name} — Full Details & Requirements | EMA` : "Job Opportunity Details — EMA";
     const desc = p && c
       ? `Complete job details for ${p.title} in ${c.name}. Expected salary ${p.expectedSalary ?? ""}, requirements, accommodation, working hours, and transparent payment plans.`
       : "Complete international work opportunity details and requirements.";
@@ -189,7 +189,7 @@ export function ProgramDetailPage() {
       q: ar ? "هل يتطلب هذا البرنامج إتقان اللغة الإنجليزية بطلاقة؟" : "Is fluent English required for this position?",
       a: ar
         ? "لا، تتطلب معظم الوظائف مستوى إنجليزي بسيط إلى متوسط (A2 - B1) للتواصل الأساسي وفهم تعليمات العمل. نقوم في كينتيكس بإعدادك ومساعدتك على اجتياز المقابلة الشخصية بنجاح."
-        : "No, most entry-level opportunities require basic to intermediate English (A2 - B1) for everyday communication and shift instructions. Kinetix coaches you thoroughly before employer interviews."
+        : "No, most entry-level opportunities require basic to intermediate English (A2 - B1) for everyday communication and shift instructions. EMA coaches you thoroughly before employer interviews."
     },
     {
       q: ar ? "كيف يتم توفير السكن والوجبات؟" : "How is accommodation and dining handled?",
@@ -745,7 +745,7 @@ export function ProgramDetailPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border/40">
-                {ar ? "جميع هذه البنود موثقة ومحمية قانونياً في عقد الوساطة الرسمي المبرم بينك وبين شركة كينتيكس." : "All inclusions are legally documented in your agreement with Kinetix."}
+                {ar ? "جميع هذه البنود موثقة ومحمية قانونياً في عقد الوساطة الرسمي المبرم بينك وبين شركة كينتيكس." : "All inclusions are legally documented in your agreement with EMA."}
               </p>
             </div>
           </div>
@@ -991,13 +991,20 @@ export function ProgramDetailPage() {
 
             <div className="py-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-6">
               <span className="sm:w-1/3 shrink-0 text-xs md:text-sm font-semibold text-muted-foreground">
-                {ar ? "إجمالي التكلفة الإجمالية للبرنامج" : "Total Program Cost"}
+                {ar ? `إجمالي التكلفة (مدة ${selectedDuration})` : `Total Cost (${selectedDuration})`}
               </span>
               <div className="sm:w-2/3">
                 <span className="text-3xl font-black text-beige">{eur(totalPrice)}</span>
                 <span className="text-base font-bold text-foreground ms-2">
                   (≈ {Math.round(totalPrice * 54).toLocaleString()} {ar ? "جنيه مصري" : "EGP"})
                 </span>
+                {durationAddon > 0 && (
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {ar
+                      ? `السعر الأساسي ${eur(p.price)} + تعديل المدة +${eur(durationAddon)}`
+                      : `Base ${eur(p.price)} + duration adjustment +${eur(durationAddon)}`}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                   {ar
                     ? "تشمل التكلفة كامل إجراءات التنسيق مع جهة العمل، تصاريح العمل الرسمية، تجهيز ملف التأشيرة، والدعم الميداني."

@@ -11,12 +11,12 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "Frequently Asked Questions — Kinetix" },
+      { title: "Frequently Asked Questions — EMA" },
       {
         name: "description",
         content: "Find honest, clear answers to common questions about European work programs, deposits, visa procedures, accommodation, and partner commissions.",
       },
-      { property: "og:title", content: "Kinetix FAQ — Honest Answers to Your Questions" },
+      { property: "og:title", content: "EMA FAQ — Honest Answers to Your Questions" },
       {
         property: "og:description",
         content: "Everything about contracts, fees, visas, and arrival support explained.",
@@ -50,17 +50,17 @@ export function FaqPage() {
   const faqs = [
     {
       category: "general",
-      qEn: "What is Kinetix and how does it differ from a traditional visa broker?",
-      qAr: "ما هي كينيتكس وما الفرق بينها وبين مكاتب التأشيرات التقليدية؟",
+      qEn: "What is EMA and how does it differ from a traditional visa broker?",
+      qAr: "ما هي إيما وما الفرق بينها وبين مكاتب التأشيرات التقليدية؟",
       aEn:
-        "Kinetix is a structured international career mobility company. Unlike visa brokers who sell promises without contracts, Kinetix partners directly with certified European employers and Chambers of Commerce. We provide legally binding contracts, transparent installment financing, end-to-end relocation support, and a formal refund guarantee.",
+        "EMA is a structured international career mobility company. Unlike visa brokers who sell promises without contracts, EMA partners directly with certified European employers and Chambers of Commerce. We provide legally binding contracts, transparent installment financing, end-to-end relocation support, and a formal refund guarantee.",
       aAr:
-        "كينيتكس هي شركة متخصصة في التنقل المهني الدولي. على عكس السماسرة أو مكاتب التأشيرات التي تبيع وعوداً غير موثقة، تتعاقد كينيتكس مباشرة مع أصحاب عمل ومؤسسات معتمدة في أوروبا. نقدم عقود عمل قانونية ملزمة، وخطط تقسيط واضحة، ومرافقة متكاملة من التقديم حتى استلام العمل، وسياسة استرجاع رسمية.",
+        "إيما هي شركة متخصصة في التنقل المهني الدولي وحاصلة على ترخيص وزارة السياحة رقم 1339. على عكس السماسرة أو مكاتب التأشيرات التي تبيع وعوداً غير موثقة، تتعاقد إيما مباشرة مع أصحاب عمل ومؤسسات معتمدة في أوروبا. نقدم عقود عمل قانونية ملزمة، وخطط تقسيط واضحة، ومرافقة متكاملة من التقديم حتى استلام العمل، وسياسة استرجاع رسمية.",
     },
     {
       category: "general",
       qEn: "Which countries are currently available for travel and work?",
-      qAr: "ما هي الدول المتاحة للسفر والعمل حالياً عبر كينيتكس؟",
+      qAr: "ما هي الدول المتاحة للسفر والعمل حالياً عبر إيما؟",
       aEn:
         "We currently operate across 7 verified destinations: Bulgaria (EU/Schengen), Luxembourg (EU/Schengen), Armenia, Russia, Italy (EU/Schengen), Slovenia (EU/Schengen), and Ireland (EU). Programs cover seasonal student internships, hospitality, agriculture, healthcare/nursing, IT, engineering, and logistics.",
       aAr:

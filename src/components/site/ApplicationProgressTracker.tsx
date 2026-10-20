@@ -129,7 +129,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       id: 0,
       title: ar ? "تقديم ومستندات" : "Application & Docs",
       sub: ar ? "تسجيل البيانات ورفع الأوراق" : "Profile registration & documents",
-      desc: ar ? "مراجعة واعتماد الملف الأولي من فريق كينتيكس." : "Initial review and verification by Kinetix experts.",
+      desc: ar ? "مراجعة واعتماد الملف الأولي من فريق إيما." : "Initial review and verification by EMA team.",
       icon: FileText,
     },
     {
@@ -217,7 +217,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   );
   const [paymentMethod, setPaymentMethod] = useState<string>("InstaPay");
   const [requestingPay, setRequestingPay] = useState(false);
-  const PAYMENT_PERSIST_KEY = `kinetix_pay_req_${application.id}`;
+  const PAYMENT_PERSIST_KEY = `ema_pay_req_${application.id}`;
   const [requestSuccess, setRequestSuccess] = useState(
     typeof window !== "undefined" && localStorage.getItem(PAYMENT_PERSIST_KEY) === "yes"
   );
@@ -324,7 +324,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       setRequestSuccess(true);
       if (typeof window !== "undefined") {
         localStorage.setItem(PAYMENT_PERSIST_KEY, "yes");
-        window.dispatchEvent(new CustomEvent("open-kinetix-chat"));
+                window.dispatchEvent(new CustomEvent("open-ema-chat"));
       }
     } catch (e: any) {
       setRequestErr(e.message || (ar ? "حدث خطأ أثناء إرسال طلب الدفع" : "Failed to send payment request"));
@@ -1288,7 +1288,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
               <div className="mt-5 flex justify-end">
                 <button
                   type="button"
-                  onClick={() => window.dispatchEvent(new CustomEvent("open-kinetix-chat"))}
+                  onClick={() =>         window.dispatchEvent(new CustomEvent("open-ema-chat"))}
                   className="inline-flex items-center gap-2 rounded-full bg-navy px-5 py-2.5 text-xs font-bold text-ivory hover:opacity-90 shadow"
                 >
                   <MessageSquare className="h-4 w-4 text-beige" />
@@ -1535,7 +1535,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                         <div className="mt-2.5">
                           <button
                             type="button"
-                            onClick={() => window.dispatchEvent(new CustomEvent("open-kinetix-chat"))}
+                            onClick={() =>         window.dispatchEvent(new CustomEvent("open-ema-chat"))}
                             className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-beige/30"
                           >
                             <MessageSquare className="h-3.5 w-3.5" />

@@ -70,7 +70,7 @@ export const getMaterialsPdfHtml = createServerFn({ method: "GET" })
 <html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Kinetix Partner Materials Guide — دليل شركاء كينتيكس</title>
+  <title>EMA Partner Materials Guide — دليل شركاء إيما</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap');
     @page {
@@ -190,13 +190,13 @@ export const getMaterialsPdfHtml = createServerFn({ method: "GET" })
 <body>
   <div class="header">
     <div>
-      <div class="brand">KINETIX <span>PARTNERS</span></div>
+      <div class="brand">EMA <span>TOURS</span></div>
       <div class="doc-meta">مركز المواد التدريبية والمعلومات المعتمدة — إصدار رقم ${store.version} (${dateFormatted})</div>
     </div>
     <div class="badge">OFFICIAL SALES GUIDE</div>
   </div>
 
-  <h1>دليل الشريك المعتمد وبرامج كينتيكس الدولية</h1>
+  <h1>دليل الشريك المعتمد وبرامج إيما الدولية</h1>
   <p style="font-size: 12px; color: #64748b; margin-bottom: 20px;">
     هذا المستند يتضمن كافة المعلومات الرسمية، مسارات السفر والتدريب، تفاصيل الرسوم والأقساط، ودليل الإجابة على استفسارات واعتراضات العملاء المحدثة تلقائياً من لوحة التحكم.
   </p>
@@ -226,7 +226,7 @@ export const getMaterialsPdfHtml = createServerFn({ method: "GET" })
     .join("")}
 
   <div class="footer">
-    Kinetix Travel Agency — All rights reserved © ${new Date().getFullYear()} — www.kinetix.travel
+    EMA Tours for Overseas Employment — All rights reserved © ${new Date().getFullYear()} — ema-tours.com
   </div>
 </body>
 </html>`;

@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Kinetix — International career mobility" },
+      { title: "EMA — International career mobility" },
       { name: "description", content: "Work abroad with transparent costs and flexible payment plans." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

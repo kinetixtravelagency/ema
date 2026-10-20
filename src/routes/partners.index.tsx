@@ -10,12 +10,12 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/partners/")({
   head: () => ({
     meta: [
-      { title: "Sales Partner Program — Earn with Kinetix" },
+      { title: "Sales Partner Program — Earn with EMA" },
       {
         name: "description",
-        content: "Join the Kinetix sales partner network. Guaranteed fixed commissions starting at 9,350 EGP up to 14,000 EGP per client. Dedicated portal and promo code.",
+        content: "Join the EMA sales partner network. Guaranteed fixed commissions starting at 9,350 EGP up to 14,000 EGP per client. Dedicated portal and promo code.",
       },
-      { property: "og:title", content: "Kinetix Sales Partner Program" },
+      { property: "og:title", content: "EMA Sales Partner Program" },
       {
         property: "og:description",
         content: "Turn your network into substantial income. Fixed commissions, levels, and real-time tracking.",
@@ -265,8 +265,8 @@ export function PartnersOverviewPage() {
                 </h3>
                 <p className="mt-3 text-sm text-ivory/80 leading-relaxed">
                   {tr(
-                    "Whether you are a university student, sales executive, or community leader, referring candidates to Kinetix is a sustainable high-yield income stream.",
-                    "سواء كنت طالباً جامعياً، أو مسوقاً محترفاً، أو لديك دائرة علاقات واسعة، برنامج شركاء كينيتكس يمنحك أعلى عائد عمولة ثابتة في مصر."
+                    "Whether you are a university student, sales executive, or community leader, referring candidates to EMA is a sustainable high-yield income stream.",
+                    "سواء كنت طالباً جامعياً، أو مسوقاً محترفاً، أو لديك دائرة علاقات واسعة، برنامج شركاء إيما يمنحك أعلى عائد عمولة ثابتة في مصر."
                   )}
                 </p>
               </div>

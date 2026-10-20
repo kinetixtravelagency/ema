@@ -9,18 +9,25 @@ import {
 import { Nav, Footer } from "@/components/site/SiteChrome";
 import { Reveal } from "@/components/site/Reveal";
 import { getCountry, eur, docsAr, docsEn, type Program } from "@/lib/catalog";
+import { getPublicCountryDetails } from "@/lib/program.functions";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/countries/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
+    try {
+      const res = await getPublicCountryDetails({ data: { slug: params.slug } });
+      if (res?.country) return res;
+    } catch (e) {
+      console.error("[countries.$slug] getPublicCountryDetails error:", e);
+    }
     const country = getCountry(params.slug);
     if (!country) throw notFound();
     return { country };
   },
   head: ({ loaderData }) => {
     const c = loaderData?.country;
-    const title = c ? `Work in ${c.name} — Kinetix` : "Country — Kinetix";
-    const desc = c ? `${c.tagline}. Programs, costs, payment plans and requirements.` : "Kinetix country programs.";
+    const title = c ? `Work in ${c.name} — EMA` : "Country — EMA";
+    const desc = c ? `${c.tagline}. Programs, costs, payment plans and requirements.` : "EMA country programs.";
     return {
       meta: [
         { title }, { name: "description", content: desc },
@@ -149,7 +156,7 @@ function ProgramCard({ p, ar, t }: { p: Program; ar: boolean; t: (k: any) => str
         <div className="grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-secondary/30 overflow-hidden">
           <div className="px-4 py-3 text-center">
             <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">
-              {ar ? "الإجمالي" : "Total"}
+              {ar ? "يبدأ من" : "From"}
             </p>
             <p className="mt-1 font-display text-base font-bold text-foreground">{eur(p.price)}</p>
             <p className="text-[10px] text-muted-foreground mt-0.5">

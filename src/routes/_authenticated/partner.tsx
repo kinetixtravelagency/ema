@@ -325,7 +325,7 @@ function ReferredClientsSection({ apps, comms, ar, tr, egp }: { apps: any[]; com
 }
 
 export const Route = createFileRoute("/_authenticated/partner")({
-  head: () => ({ meta: [{ title: "Sales Partner Portal — Kinetix" }, { name: "description", content: "Track your leads, level and commissions." }] }),
+  head: () => ({ meta: [{ title: "Sales Partner Portal — EMA" }, { name: "description", content: "Track your leads, level and commissions." }] }),
   component: PartnerPortal,
 });
 
@@ -764,7 +764,7 @@ function PartnerPortal() {
               <div className="mt-6 rounded-2xl border border-beige/40 bg-navy-soft p-4 text-sm flex items-center gap-3">
                 <AlertCircle className="h-5 w-5 text-beige shrink-0" />
                 <span>
-                  {p.status === "pending" ? tr("Your partner account is under review. Your promo code works once an admin approves it.", "حسابك قيد المراجعة. الكود هيشتغل بعد موافقة الإدارة.") : tr("Your partner account is suspended. Contact Kinetix.", "حسابك موقوف. تواصل مع Kinetix.")}
+                  {p.status === "pending" ? tr("Your partner account is under review. Your promo code works once an admin approves it.", "حسابك قيد المراجعة. الكود هيشتغل بعد موافقة الإدارة.") : tr("Your partner account is suspended. Contact EMA.", "حسابك موقوف. تواصل مع إيما.")}
                 </span>
               </div>
             )}

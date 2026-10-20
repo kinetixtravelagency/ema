@@ -1,4 +1,4 @@
-// Mobile & Desktop Audio & Notification Utility for Kinetix
+// Mobile & Desktop Audio & Notification Utility for EMA
 
 let sharedAudioCtx: AudioContext | null = null;
 let isAudioUnlocked = false;
@@ -62,8 +62,8 @@ if (typeof window !== "undefined") {
   // Listen to Service Worker messages when notification is tapped on mobile
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data?.type === "OPEN_KINETIX_CHAT") {
-        window.dispatchEvent(new CustomEvent("open-kinetix-chat"));
+      if (event.data?.type === "OPEN_EMA_CHAT") {
+        window.dispatchEvent(new CustomEvent("open-ema-chat"));
       }
     });
   }
@@ -180,7 +180,7 @@ export async function sendBrowserNotification(
   const notificationPayload: NotificationOptions = {
     icon: "/logo.png",
     badge: "/logo.png",
-    tag: notifOptions.tag || "kinetix-chat-msg",
+    tag: notifOptions.tag || "ema-chat-msg",
     ...notifOptions,
   };
 

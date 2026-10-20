@@ -13,12 +13,12 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Transparent Pricing & Payment Plans — Kinetix" },
+      { title: "Transparent Pricing & Payment Plans — EMA" },
       {
         name: "description",
         content: "Explore 100% transparent pricing for European work programs. Initial deposits starting from 10,000 EGP with 0% interest installments over 6 months.",
       },
-      { property: "og:title", content: "Kinetix Pricing & Flexible Installments" },
+      { property: "og:title", content: "EMA Pricing & Flexible Installments" },
       {
         property: "og:description",
         content: "Know the full cost before you start. Clear deposits, verified salaries, and flexible payment plans.",
@@ -133,7 +133,7 @@ export function PricingPage() {
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   {tr(
-                    "With European salaries averaging €1,200 to €2,500/month, most Kinetix candidates recoup their entire program investment within their first 1 to 2 months of work abroad.",
+                    "With European salaries averaging €1,200 to €2,500/month, most EMA candidates recoup their entire program investment within their first 1 to 2 months of work abroad.",
                     "بفضل الرواتب الأوروبية التي تتراوح بين 1,200 و2,500 يورو شهرياً، يتمكن معظم المسافرين من استرداد إجمالي تكلفة البرنامج كاملة خلال أول شهر أو شهرين من بدء العمل."
                   )}
                 </p>

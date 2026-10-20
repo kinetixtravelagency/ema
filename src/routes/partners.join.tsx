@@ -8,9 +8,9 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/partners/join")({
   head: () => ({
     meta: [
-      { title: "Become a Sales Partner — Kinetix" },
-      { name: "description", content: "Join the Kinetix sales partner program: your own promo code, levels, client discounts and commissions." },
-      { property: "og:title", content: "Become a Sales Partner — Kinetix" },
+      { title: "Become a Sales Partner — EMA" },
+      { name: "description", content: "Join the EMA sales partner program: your own promo code, levels, client discounts and commissions." },
+      { property: "og:title", content: "Become a Sales Partner — EMA" },
       { property: "og:description", content: "Your own promo code, levels, client discounts and commissions." },
       { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
     ],

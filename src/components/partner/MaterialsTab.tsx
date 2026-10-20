@@ -127,7 +127,7 @@ export function MaterialsTab() {
     { id: "interviews", nameAr: "المقابلات والإنجليزي 🗣️", nameEn: "Interviews", icon: Sparkles },
     { id: "procedures", nameAr: "الأوراق والفيزا 📄", nameEn: "Docs & Visa", icon: FileText },
     { id: "partners", nameAr: "عمولات السيلز 💰", nameEn: "Commissions", icon: Building2 },
-    { id: "general", nameAr: "عن كينتيكس 🏢", nameEn: "About Kinetix", icon: Building2 },
+    { id: "general", nameAr: "عن إيما 🏢", nameEn: "About EMA", icon: Building2 },
   ];
 
   const filteredFaqs = faqs.filter((f: MaterialFAQ) => {

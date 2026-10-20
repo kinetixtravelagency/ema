@@ -34,8 +34,8 @@ export const Route = createFileRoute("/_authenticated/apply")({
   }),
   head: () => ({
     meta: [
-      { title: "Apply — Kinetix" },
-      { name: "description", content: "Apply to a Kinetix program, submit personal details, and upload documents." },
+      { title: "Apply — EMA" },
+      { name: "description", content: "Apply to an EMA Tours program, submit personal details, and upload documents." },
     ],
   }),
   component: Apply,
@@ -57,7 +57,7 @@ function Apply() {
   const [selectedDuration, setSelectedDuration] = useState<string>(initialDuration || "");
   const [flightIncluded, setFlightIncluded] = useState(false);
 
-  const PERSIST_KEY = `kinetix_app_submitted_${initial || "default"}`;
+  const PERSIST_KEY = `ema_app_submitted_${initial || "default"}`;
   const [persistedAppId, setPersistedAppId] = useState<string | null>(() => {
     return typeof window !== "undefined" ? localStorage.getItem(PERSIST_KEY) : null;
   });
@@ -515,7 +515,7 @@ function Apply() {
         },
       });
       setChatPaySent(true);
-      window.dispatchEvent(new CustomEvent("open-kinetix-chat"));
+      window.dispatchEvent(new CustomEvent("open-ema-chat"));
     } catch (e: any) {
       setErr(e.message || (ar ? "حدث خطأ أثناء إرسال طلب الدفع" : "Failed to send payment request"));
     } finally {
@@ -1668,13 +1668,13 @@ function Apply() {
                     </p>
                     <p className="text-muted-foreground">
                       {tr(
-                        `Your request of ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} EGP) via ${paymentMethod} is registered. A Kinetix advisor will provide the exact wallet / account number now.`,
-                        `تم تسجيل طلبك لسداد مبلغ ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} ج.م) عبر ${paymentMethod}. نافذة الشات مفتوحة الآن وسيقوم مستشار كينتيكس بتزويدك برقم المحفظة / الحساب فوراً لتأكيد الحجز.`
+                        `Your request of ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} EGP) via ${paymentMethod} is registered. An EMA advisor will provide the exact wallet / account number now.`,
+                        `تم تسجيل طلبك لسداد مبلغ ${eur(dueNow)} (~${Math.round(dueNow * 54).toLocaleString()} ج.م) عبر ${paymentMethod}. نافذة الشات مفتوحة الآن وسيقوم مستشار إيما بتزويدك برقم المحفظة / الحساب فوراً لتأكيد الحجز.`
                       )}
                     </p>
                     <button
                       type="button"
-                      onClick={() => window.dispatchEvent(new CustomEvent("open-kinetix-chat"))}
+                      onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
                       className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-beige/30"
                     >
                       <MessageSquare className="h-3.5 w-3.5" />

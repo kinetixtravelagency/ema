@@ -8,20 +8,20 @@ const dict = {
     applyNow: "Apply now", signIn: "Sign in", dashboard: "Dashboard", signOut: "Sign out",
     heroEyebrow: "International career mobility",
     heroTitle1: "Your next career move", heroTitle2: "starts here.",
-    heroSub: "Explore international work opportunities, understand the costs, prepare your documents, and start your journey with Kinetix.",
+    heroSub: "Explore international work opportunities, understand the costs, prepare your documents, and start your journey with EMA.",
     exploreCta: "Explore Opportunities", applyCta: "Start Your Application",
     statCountries: "Countries", statPrograms: "Programs", statInstallments: "Installments",
     countriesEyebrow: "Destinations", countriesTitle: "Where could your next move take you?",
     from: "From", viewPrograms: "View programs", programsWord: "programs",
     featuredEyebrow: "Featured programs", featuredTitle: "Clear programs. Clear prices.",
-    howEyebrow: "How Kinetix works", howTitle: "Four steps from idea to arrival.",
+    howEyebrow: "How EMA works", howTitle: "Four steps from idea to arrival.",
     step: "Step",
     how1t: "Choose", how1d: "Explore countries and pick the program that fits your goals.",
     how2t: "Apply", how2d: "Submit your application and upload documents securely.",
     how3t: "Pay in parts", how3d: "Start with a deposit, then pay the rest in installments.",
     how4t: "Move", how4d: "We guide permits, visa and travel until you arrive.",
-    whyEyebrow: "Why Kinetix", whyTitle: "Not a visa office. A mobility partner.",
-    whySub: "We built Kinetix for people who want to understand every step of their move — and every euro.",
+    whyEyebrow: "Why EMA", whyTitle: "Not a visa office. A mobility partner.",
+    whySub: "We built EMA for people who want to understand every step of their move — and every euro.",
     why1t: "Full price transparency", why1d: "Every cost listed upfront. No surprise fees.",
     why2t: "Flexible installments", why2d: "Spread payments across up to six months.",
     why3t: "Secure documents", why3d: "Encrypted storage, visible only to your case team.",
@@ -30,7 +30,7 @@ const dict = {
     pricingSub: "Pick a program and see exactly what you pay today and every month after.",
     programLabel: "Program", totalCost: "Total program cost", installmentsLabel: "Installments",
     dueToday: "Due today", thenMonthly: "monthly", applyProgram: "Apply for this program",
-    promoTitle: "Have a promo code?", promoText: "Friends and partners of Kinetix can share codes that give you a discount on any program.",
+    promoTitle: "Have a promo code?", promoText: "Friends and partners of EMA can share codes that give you a discount on any program.",
     partnerTitle: "Turn connections into opportunities.",
     partnerText: "Become a Sales Partner, earn a guaranteed fixed commission starting at 9,350 EGP on every client, and level up from Starter to Platinum.",
     becomePartner: "Become a partner",
@@ -39,11 +39,11 @@ const dict = {
     ctaSub: "Create a free account, choose a program and submit your application in minutes.",
     footerTag: "International career mobility. Transparent costs, flexible payment plans and guidance from application to arrival.",
     explore: "Explore", legal: "Legal", terms: "Terms", privacy: "Privacy", refund: "Refund policy",
-    disclaimer: "Kinetix does not guarantee employment or visa approval; final decisions rest with employers and authorities.",
+    disclaimer: "EMA does not guarantee employment or visa approval; final decisions rest with employers and authorities.",
     allCountries: "All countries", availablePrograms: "Available programs", requiredDocs: "Required documents",
     eligibility: "Eligibility", timeline: "Timeline", deposit: "Deposit", upToMonthly: "monthly", apply: "Apply",
     // auth
-    welcome: "Welcome to Kinetix", authSub: "Sign in or create an account to apply and track your journey.",
+    welcome: "Welcome to EMA", authSub: "Sign in or create an account to apply and track your journey.",
     email: "Email", password: "Password", fullName: "Full name",
     signInBtn: "Sign in", createAccount: "Create account", needAccount: "New here? Create an account",
     haveAccount: "Already have an account? Sign in", checkEmail: "Check your email to confirm your account, then sign in.",
@@ -74,7 +74,7 @@ const dict = {
     stageSub5: "Visa issued & travel ready",
     stageDesc0: "Your application and documents have been submitted and are under initial verification.",
     stageDesc1: "Deposit payment required to confirm your file and activate employer interviews.",
-    stageDesc2: "Initial screening call and CV preparation session with your Kinetix career advisor.",
+    stageDesc2: "Initial screening call and CV preparation session with your EMA career advisor.",
     stageDesc3: "Official job interview with the employer or institution abroad.",
     stageDesc4: "Work permit issuance and visa file submission to the embassy.",
     stageDesc5: "Visa approved! Flight coordination, arrival support and start of work.",
@@ -111,20 +111,20 @@ const dict = {
     applyNow: "قدّم الآن", signIn: "تسجيل الدخول", dashboard: "لوحتي", signOut: "تسجيل الخروج",
     heroEyebrow: "التنقّل المهني الدولي",
     heroTitle1: "خطوتك المهنية القادمة", heroTitle2: "تبدأ من هنا.",
-    heroSub: "استكشف فرص العمل الدولية، وافهم التكاليف، وجهّز مستنداتك، وابدأ رحلتك مع كينتيكس.",
+    heroSub: "استكشف فرص العمل الدولية، وافهم التكاليف، وجهّز مستنداتك، وابدأ رحلتك مع إيما.",
     exploreCta: "استكشف الفرص", applyCta: "ابدأ طلبك",
     statCountries: "دول", statPrograms: "برامج", statInstallments: "أقساط",
     countriesEyebrow: "الوجهات", countriesTitle: "إلى أين ستأخذك خطوتك القادمة؟",
     from: "ابتداءً من", viewPrograms: "عرض البرامج", programsWord: "برامج",
     featuredEyebrow: "برامج مميزة", featuredTitle: "برامج واضحة. أسعار واضحة.",
-    howEyebrow: "كيف تعمل كينتيكس", howTitle: "أربع خطوات من الفكرة إلى الوصول.",
+    howEyebrow: "كيف تعمل إيما", howTitle: "أربع خطوات من الفكرة إلى الوصول.",
     step: "الخطوة",
     how1t: "اختر", how1d: "استكشف الدول واختر البرنامج المناسب لأهدافك.",
     how2t: "قدّم", how2d: "أرسل طلبك وارفع مستنداتك بأمان.",
     how3t: "ادفع بالتقسيط", how3d: "ابدأ بدفعة أولى، ثم ادفع الباقي على أقساط.",
     how4t: "انتقل", how4d: "نرشدك في التصاريح والتأشيرة والسفر حتى وصولك.",
-    whyEyebrow: "لماذا كينتيكس", whyTitle: "لسنا مكتب تأشيرات. نحن شريك تنقّل.",
-    whySub: "بنينا كينتيكس لمن يريد فهم كل خطوة في رحلته — وكل يورو فيها.",
+    whyEyebrow: "لماذا إيما", whyTitle: "لسنا مكتب تأشيرات. نحن شريك تنقّل.",
+    whySub: "بنينا إيما لمن يريد فهم كل خطوة في رحلته — وكل يورو فيها.",
     why1t: "شفافية كاملة في الأسعار", why1d: "كل التكاليف مذكورة مسبقاً. بلا رسوم مفاجئة.",
     why2t: "أقساط مرنة", why2d: "وزّع الدفعات على ستة أشهر كحد أقصى.",
     why3t: "مستندات آمنة", why3d: "تخزين مشفّر، لا يراه إلا فريق ملفك.",
@@ -133,7 +133,7 @@ const dict = {
     pricingSub: "اختر برنامجاً وشاهد بالضبط ما تدفعه اليوم وكل شهر بعده.",
     programLabel: "البرنامج", totalCost: "التكلفة الإجمالية", installmentsLabel: "الأقساط",
     dueToday: "يُدفع اليوم", thenMonthly: "شهرياً", applyProgram: "قدّم على هذا البرنامج",
-    promoTitle: "لديك رمز ترويجي؟", promoText: "يمكن لأصدقاء وشركاء كينتيكس مشاركة رموز تمنحك خصماً على أي برنامج.",
+    promoTitle: "لديك رمز ترويجي؟", promoText: "يمكن لأصدقاء وشركاء إيما مشاركة رموز تمنحك خصماً على أي برنامج.",
     partnerTitle: "حوّل علاقاتك إلى فرص.",
     partnerText: "كن شريك مبيعات، واكسب عمولة ثابتة مضمونة تبدأ من 9,350 جنيه عن كل عميل، وتزيد مع ارتقائك من مبتدئ إلى بلاتيني.",
     becomePartner: "كن شريكاً",
@@ -142,10 +142,10 @@ const dict = {
     ctaSub: "أنشئ حساباً مجانياً، اختر برنامجاً، وأرسل طلبك في دقائق.",
     footerTag: "تنقّل مهني دولي. تكاليف شفافة وخطط دفع مرنة ومرافقة من التقديم حتى الوصول.",
     explore: "استكشف", legal: "قانوني", terms: "الشروط", privacy: "الخصوصية", refund: "سياسة الاسترداد",
-    disclaimer: "لا تضمن كينتيكس التوظيف أو الموافقة على التأشيرة؛ القرار النهائي لأصحاب العمل والسلطات.",
+    disclaimer: "لا تضمن إيما التوظيف أو الموافقة على التأشيرة؛ القرار النهائي لأصحاب العمل والسلطات.",
     allCountries: "كل الدول", availablePrograms: "البرامج المتاحة", requiredDocs: "المستندات المطلوبة",
     eligibility: "شروط الأهلية", timeline: "الجدول الزمني", deposit: "الدفعة الأولى", upToMonthly: "شهرياً", apply: "قدّم",
-    welcome: "مرحباً بك في كينتيكس", authSub: "سجّل الدخول أو أنشئ حساباً للتقديم ومتابعة رحلتك.",
+    welcome: "مرحباً بك في إيما", authSub: "سجّل الدخول أو أنشئ حساباً للتقديم ومتابعة رحلتك.",
     email: "البريد الإلكتروني", password: "كلمة المرور", fullName: "الاسم الكامل",
     signInBtn: "تسجيل الدخول", createAccount: "إنشاء حساب", needAccount: "جديد هنا؟ أنشئ حساباً",
     haveAccount: "لديك حساب؟ سجّل الدخول", checkEmail: "تحقق من بريدك لتأكيد حسابك ثم سجّل الدخول.",
@@ -175,7 +175,7 @@ const dict = {
     stageSub5: "صدور التأشيرة وجاهزية السفر",
     stageDesc0: "تم تقديم الطلب، وجاري فحص السيرة الذاتية والمستندات الأولية.",
     stageDesc1: "سداد الدفعة الأولى (Deposit) مطلوب لتأكيد جدية الطلب والبدء في ترتيب المقابلات.",
-    stageDesc2: "جلسة المقابلة التمهيدية (Pre-Interview) وتجهيز السيرة الذاتية مع مستشار كينتيكس.",
+    stageDesc2: "جلسة المقابلة التمهيدية (Pre-Interview) وتجهيز السيرة الذاتية مع مستشار إيما.",
     stageDesc3: "المقابلة الرسمية مع صاحب العمل في الدولة وتأكيد عرض العمل.",
     stageDesc4: "استخراج تصريح العمل الرسمي وإيداع ملف التأشيرة لدى السفارة.",
     stageDesc5: "مبروك! صدرت التأشيرة، ويتم الآن تنسيق حجز الطيران واستقبال الوصول.",
@@ -218,14 +218,14 @@ const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: (
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
   useEffect(() => {
-    const saved = (localStorage.getItem("kinetix-lang") as Lang) || "en";
+    const saved = (localStorage.getItem("ema-lang") || localStorage.getItem("kinetix-lang") as Lang) || "en";
     setLangState(saved);
   }, []);
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
-  const setLang = (l: Lang) => { setLangState(l); localStorage.setItem("kinetix-lang", l); };
+  const setLang = (l: Lang) => { setLangState(l); localStorage.setItem("ema-lang", l); };
   return <LangContext.Provider value={{ lang, setLang, t: (k) => dict[lang][k] }}>{children}</LangContext.Provider>;
 }
 

@@ -31,7 +31,7 @@ import { AdminMaterialsTab } from "@/components/admin/AdminMaterialsTab";
 import { AdminBroadcastTab } from "@/components/admin/AdminBroadcastTab";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin Dashboard — Kinetix" }] }),
+  head: () => ({ meta: [{ title: "Admin Dashboard — EMA" }] }),
   component: Admin,
   errorComponent: ({ error }) => (
     <div className="flex min-h-screen flex-col items-center justify-center gap-3">
@@ -4815,7 +4815,7 @@ function PartnersTab({
         const score = p.leads.length + p.apps.length;
         const expanded = exp === p.id;
         const curLevel = getLevel(score);
-        const refUrl = typeof window !== "undefined" ? `${window.location.origin}/?ref=${p.promo_code}` : `https://kinetix.travel/?ref=${p.promo_code}`;
+        const refUrl = typeof window !== "undefined" ? `${window.location.origin}/?ref=${p.promo_code}` : `https://ema-tours.com/?ref=${p.promo_code}`;
 
         return (
           <div key={p.id} className="rounded-3xl border border-border bg-card overflow-hidden shadow-xs transition-all">

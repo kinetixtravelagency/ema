@@ -430,7 +430,7 @@ export const sendAdminReply = createServerFn({ method: "POST" })
       id: "msg_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
       conversationId: conv.id,
       sender: "admin",
-      senderName: data.senderName || "Kinetix Support",
+      senderName: data.senderName || "EMA Support",
       text,
       isRead: false,
       createdAt: now,

@@ -20,11 +20,11 @@ import { useLang } from "@/lib/i18n";
 import { playChatChime, sendBrowserNotification, requestNotificationPermission, triggerHapticFeedback } from "@/lib/chatSound";
 import logoImg from "@/assets/pics/logo.png";
 
-const VISITOR_KEY = "kinetix_chat_visitor_id";
-const CONV_KEY = "kinetix_chat_conv_id";
-const CLIENT_NAME_KEY = "kinetix_chat_client_name";
-const CLIENT_PHONE_KEY = "kinetix_chat_client_phone";
-const INFO_DONE_KEY = "kinetix_chat_info_done";
+const VISITOR_KEY = "ema_chat_visitor_id";
+const CONV_KEY = "ema_chat_conv_id";
+const CLIENT_NAME_KEY = "ema_chat_client_name";
+const CLIENT_PHONE_KEY = "ema_chat_client_phone";
+const INFO_DONE_KEY = "ema_chat_info_done";
 
 function validatePhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
@@ -135,8 +135,8 @@ export function ChatWidget() {
           .catch(() => {});
       }
     };
-    window.addEventListener("open-kinetix-chat", handleOpen);
-    return () => window.removeEventListener("open-kinetix-chat", handleOpen);
+    window.addEventListener("open-ema-chat", handleOpen);
+    return () => window.removeEventListener("open-ema-chat", handleOpen);
   }, [visitorId, user?.id, convId]);
 
   // Poll for messages
@@ -176,7 +176,7 @@ export function ChatWidget() {
                 latestAdmin?.text?.slice(0, 90) ??
                 (ar ? "لديك رسالة جديدة من المستشار" : "You have a new message from our advisor");
 
-              sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
+              sendBrowserNotification(ar ? "رسالة جديدة من إيما 💬" : "New message from EMA 💬", {
                 body: preview,
                 onClick: () => setIsOpen(true),
               });
@@ -192,7 +192,7 @@ export function ChatWidget() {
               playChatChime("client");
               triggerHapticFeedback([120, 60, 120]);
               if (typeof document !== "undefined" && document.hidden) {
-                sendBrowserNotification(ar ? "رسالة جديدة من كينتيكس 💬" : "New message from Kinetix 💬", {
+                sendBrowserNotification(ar ? "رسالة جديدة من إيما 💬" : "New message from EMA 💬", {
                   body: latestAdmin.text.slice(0, 90),
                   onClick: () => window.focus(),
                 });
@@ -412,12 +412,12 @@ export function ChatWidget() {
           <div className="relative flex items-center justify-between bg-gradient-to-r from-navy via-[#162742] to-navy px-5 py-4 text-ivory shrink-0 border-b border-beige/20 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-beige/50 bg-white p-1 shadow-md">
-                <img src={logoImg} alt="Kinetix" className="h-full w-full object-contain" />
+                <img src={logoImg} alt="EMA" className="h-full w-full object-contain" />
                 <span className="absolute bottom-0 end-0 h-3 w-3 rounded-full bg-beige/100 ring-2 ring-navy shadow-xs" />
               </div>
               <div>
                 <h3 className="font-bold text-sm leading-tight text-ivory flex items-center gap-1.5">
-                  {ar ? "فريق كينتيكس للاستشارات" : "Kinetix Support & Advisory"}
+                  {ar ? "فريق إيما للاستشارات" : "EMA Support & Advisory"}
                   <Sparkles className="h-3.5 w-3.5 text-beige" />
                 </h3>
                 <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-beige/80 font-medium">
@@ -462,7 +462,7 @@ export function ChatWidget() {
                   <div className="max-w-[88%] rounded-2xl rounded-ss-xs border border-border bg-background p-4 text-xs text-foreground shadow-xs">
                     <p className="font-bold text-navy dark:text-beige mb-1 flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-beige" />
-                      {ar ? "مرحباً بك في كينتيكس للسفر والعمل!" : "Welcome to Kinetix Travel & Work!"}
+                      {ar ? "مرحباً بك في إيما تورز للسفر والعمل!" : "Welcome to EMA Tours for Work & Travel!"}
                     </p>
                     <p className="leading-relaxed text-muted-foreground text-[11.5px]">
                       {ar
@@ -553,7 +553,7 @@ export function ChatWidget() {
                   <div className="max-w-[85%] rounded-2xl rounded-ss-xs border border-border bg-card p-3.5 text-xs shadow-xs text-foreground">
                     <p className="font-bold text-navy dark:text-beige mb-1 flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-beige" />
-                      {ar ? "أهلاً بك! مستشار كينتيكس معك الآن" : "Welcome! Kinetix Advisor with you"}
+                      {ar ? "أهلاً بك! مستشار إيما معك الآن" : "Welcome! EMA Advisor with you"}
                     </p>
                     <p className="leading-relaxed text-muted-foreground text-[11.5px]">
                       {ar
@@ -590,7 +590,7 @@ export function ChatWidget() {
                       >
                         {!isMe && (
                           <p className="mb-1 text-[10.5px] font-bold text-beige">
-                            {m.senderName || "Kinetix Advisory Team"}
+                            {m.senderName || "EMA Advisory Team"}
                           </p>
                         )}
                         <p className="whitespace-pre-wrap text-[12px]">{m.text}</p>
@@ -672,14 +672,14 @@ export function ChatWidget() {
             className="flex items-center gap-3 rounded-2xl border border-beige/40 bg-navy/95 text-ivory p-3.5 shadow-2xl backdrop-blur-md cursor-pointer active:scale-98 transition-transform"
           >
             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-beige/40 bg-white p-1 shadow-sm">
-              <img src={logoImg} alt="Kinetix" className="h-full w-full object-contain" />
+              <img src={logoImg} alt="EMA" className="h-full w-full object-contain" />
               <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full bg-beige/100 ring-2 ring-navy" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-1">
                 <span className="text-xs font-bold text-beige flex items-center gap-1 truncate">
                   <Sparkles className="h-3 w-3 text-beige shrink-0" />
-                  {ar ? "رسالة من كينتيكس" : "Kinetix Advisory"}
+                  {ar ? "رسالة من إيما" : "EMA Advisory"}
                 </span>
                 <span className="text-[10px] text-ivory/50 shrink-0">{mobileToast.time}</span>
               </div>

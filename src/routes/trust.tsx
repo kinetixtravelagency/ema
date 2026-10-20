@@ -40,15 +40,15 @@ import hqEntranceStoneImg from "@/assets/trustgate/hq_entrance_stone.jpeg";
 export const Route = createFileRoute("/trust")({
   head: () => ({
     meta: [
-      { title: "بوابة الثقة والاعتماد القانوني ومقر الشركة | Kinetix" },
+      { title: "بوابة الثقة والاعتماد القانوني ومقر الشركة | EMA" },
       {
         name: "description",
-        content: "اطّلع على التراخيص الرسمية والمستندات القانونية وصور مقر شركة كينتيكس: السجل التجاري والبطاقة الضريبية ومكاتب استقبال العملاء.",
+        content: "اطّلع على التراخيص الرسمية والمستندات القانونية وصور مقر شركة إيما: السجل التجاري والبطاقة الضريبية وترخيص وزارة السياحة ومكاتب استقبال العملاء.",
       },
-      { property: "og:title", content: "بوابة الثقة — مستندات ومقر شركة Kinetix الرسمي" },
+      { property: "og:title", content: "بوابة الثقة — مستندات ومقر شركة EMA الرسمي" },
       {
         property: "og:description",
-        content: "شركة مرخصة قانونياً لإلحاق العمالة بالخارج مع مقر ميداني رسمي لاستقبالكم ومراجعة عقود السفر.",
+        content: "شركة مرخصة قانونياً لإلحاق العمالة بالخارج مع ترخيص وزارة السياحة رقم 1339 ومقر ميداني رسمي لاستقبالكم ومراجعة عقود السفر.",
       },
     ],
   }),
@@ -126,7 +126,7 @@ export function TrustGatePage() {
   const [activeModal, setActiveModal] = useState<LightboxModalData>(null);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"docs" | "office" | "visas">("docs");
+  const [activeTab, setActiveTab] = useState<"docs" | "tourism" | "office" | "visas">("docs");
 
   const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard?.writeText(text);
@@ -145,7 +145,7 @@ export function TrustGatePage() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
-  const scrollToSection = (id: string, tabKey: "docs" | "office" | "visas") => {
+  const scrollToSection = (id: string, tabKey: "docs" | "tourism" | "office" | "visas") => {
     setActiveTab(tabKey);
     const el = document.getElementById(id);
     if (el) {
@@ -160,10 +160,10 @@ export function TrustGatePage() {
       badge: tr("Customer Reception", "مكتب الاستقبال والترحيب"),
       title: tr("Client Reception & Information Desk", "مكتب استقبال المشتركين والعملاء"),
       desc: tr(
-        "Illuminated neon Kinetix emblem, European destination flags, and our dedicated customer reception counter.",
-        "شعار كينتيكس المضيء، أعلام الدول الأوروبية المعتمدة، ومكتب مجهز لخدمتكم والرد على كافة استفساراتكم."
+        "Illuminated neon EMA emblem, European destination flags, and our dedicated customer reception counter.",
+        "شعار إيما (EMA) المضيء، أعلام الدول الأوروبية المعتمدة، ومكتب مجهز لخدمتكم والرد على كافة استفساراتكم."
       ),
-      location: tr("Headquarters Reception", "المقر الرئيسي — الواحات الداخلة"),
+      location: tr("Headquarters Reception", "المقر الرئيسي — شرم الشيخ"),
       align: "right" as const,
     },
     {
@@ -173,21 +173,21 @@ export function TrustGatePage() {
       title: tr("Executive Mobility Advisory Office", "مكتب استشارات السفر وتنسيق العقود"),
       desc: tr(
         "Spacious advisory room dedicated for candidate counseling sessions, CV review, and legal contract discussion.",
-        "مساحة مخصصة لجلسات الإرشاد المهني وتجهيز المستندات ومراجعة تفاصيل عقود العمل وجهاً لوجه مع مستشارك."
+        "مساحة مخصصة لجلسات الإرشاد المهني وتجهيز المستندات ومراجعة تفاصيل عقود العمل وجهاً لوجه مع مستشارك في إيما."
       ),
-      location: tr("Consulting Division", "قسم الاستشارات والمقابلات"),
+      location: tr("Consulting Division", "قسم الاستشارات والمقابلات — شرم الشيخ"),
       align: "left" as const,
     },
     {
       id: "entrance-marble",
       image: hqEntranceMarbleImg,
       badge: tr("Main Lobby", "المدخل والواجهة الداخلية"),
-      title: tr("Headquarters Entrance & Wall Emblem", "واجهة المدخل واللوجو الدائري المضيء"),
+      title: tr("Headquarters Entrance & Wall Emblem", "واجهة المدخل وشعار EMA المضيء"),
       desc: tr(
-        "Modern marble finish wall featuring the glowing Move · Work · Grow emblem and European Union flag.",
-        "تصميم رخامي فاخر بشعار Move · Work · Grow المضيء وعلم الاتحاد الأوروبي يزين مدخل المقر الميداني."
+        "Modern marble finish wall featuring the glowing EMA emblem (Excellence · Innovation · Growth) and European Union flag.",
+        "تصميم رخامي فاخر بشعار EMA المضيء (التميز · الابتكار · النمو) وعلم الاتحاد الأوروبي يزين مدخل المقر الميداني."
       ),
-      location: tr("Entrance Lobby", "بهو الاستقبال الداخلي"),
+      location: tr("Entrance Lobby", "بهو الاستقبال الداخلي — شرم الشيخ"),
       align: "right" as const,
     },
     {
@@ -197,9 +197,9 @@ export function TrustGatePage() {
       title: tr("Lobby Hallway & Illuminated Column", "بهو المقر الداخلي والأروقة المضيئة"),
       desc: tr(
         "Warm stone architecture with ambient lighting inviting candidates into our registered consulting agency.",
-        "ديكورات حجرية دافئة بإضاءات هادئة تستقبل المرشحين عند زيارة مقرنا الميداني لتوقيع العقود."
+        "ديكورات حجرية دافئة بإضاءات هادئة تستقبل المرشحين عند زيارة مقر شركة إيما لتوقيع العقود."
       ),
-      location: tr("Main Gallery", "أروقة مقر كينتيكس"),
+      location: tr("Main Gallery", "أروقة مقر إيما الرسمي"),
       align: "left" as const,
     },
   ];
@@ -243,13 +243,13 @@ export function TrustGatePage() {
             {/* Description */}
             <p className="mt-6 text-base md:text-lg text-ivory/75 leading-relaxed max-w-2xl mx-auto">
               {tr(
-                "At Kinetix, transparency is our foundation. We are a legally registered Egyptian limited liability recruitment consultancy with official government documents and fully equipped physical headquarters welcoming our candidates.",
-                "في كينتيكس، الشفافية هي أساس تعاملنا. شركتنا مقيدة رسمياً لدى كافة الجهات الحكومية المصرية لممارسة نشاط استشارات السفر والتوظيف بالخارج، مع مقر ميداني حقيقي مجهز لاستقبالكم ومراجعة عقودكم بأمان تام."
+                "At EMA, transparency is our foundation. We are a legally registered Egyptian recruitment and travel consultancy holding an official Ministry of Tourism license, with authentic government documents and physical headquarters welcoming our candidates.",
+                "في إيما (EMA Tours)، الشفافية هي أساس تعاملنا. شركتنا مقيدة رسمياً لدى كافة الجهات الحكومية المصرية لممارسة نشاط استشارات السفر وإلحاق العمالة بالخارج، ومرخصة لدى وزارة السياحة المصرية (ترخيص 1339)، مع مقر ميداني حقيقي مجهز لاستقبالكم ومراجعة عقودكم بأمان تام."
               )}
             </p>
 
-            {/* Fast Stats / Pillars */}
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-start border-t border-ivory/15 pt-8">
+            {/* Fast Stats / Pillars - 5 Key Verified Pillars */}
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-5 gap-4 text-start border-t border-ivory/15 pt-8">
               <div>
                 <p className="eyebrow text-beige">{tr("Legal Status", "الحالة القانونية")}</p>
                 <p className="font-display text-xl md:text-2xl font-semibold text-ivory mt-1">
@@ -263,7 +263,7 @@ export function TrustGatePage() {
                 <p className="font-display text-xl md:text-2xl font-semibold text-ivory mt-1">
                   22944
                 </p>
-                <p className="text-xs text-ivory/60 mt-1">{tr("Ministry of Internal Trade", "وزارة التموين والتجارة")}</p>
+                <p className="text-xs text-ivory/60 mt-1">{tr("Sharm El Sheikh Office", "مكتب سجل شرم الشيخ")}</p>
               </div>
 
               <div>
@@ -274,12 +274,20 @@ export function TrustGatePage() {
                 <p className="text-xs text-ivory/60 mt-1">{tr("Egyptian Tax Authority", "مصلحة الضرائب المصرية")}</p>
               </div>
 
-              <div>
+              <div className="rounded-xl border border-beige/40 bg-beige/5 p-2 -m-2">
+                <p className="eyebrow text-beige font-bold">{tr("Tourism License", "ترخيص وزارة السياحة")}</p>
+                <p className="font-display text-xl md:text-2xl font-bold text-beige mt-1">
+                  1339
+                </p>
+                <p className="text-xs text-ivory/80 mt-1 font-medium">{tr("Ministry of Tourism", "وزارة السياحة والآثار")}</p>
+              </div>
+
+              <div className="col-span-2 md:col-span-1">
                 <p className="eyebrow text-beige">{tr("Headquarters", "المقر الميداني")}</p>
                 <p className="font-display text-xl md:text-2xl font-semibold text-ivory mt-1">
-                  {tr("Open for Clients", "مفتوح لاستقبالكم")}
+                  {tr("Sharm El Sheikh", "شرم الشيخ")}
                 </p>
-                <p className="text-xs text-ivory/60 mt-1">{tr("New Valley — Dakhla", "الواحات الداخلة — الوادي الجديد")}</p>
+                <p className="text-xs text-ivory/60 mt-1">{tr("Villa 18, Al Noor District", "حي النور — فيلا 18")}</p>
               </div>
             </div>
           </div>
@@ -299,7 +307,19 @@ export function TrustGatePage() {
               }`}
             >
               <FileCheck className="h-4 w-4 shrink-0" strokeWidth={1.25} />
-              <span>{tr("Official Documents", "المستندات الرسمية")}</span>
+              <span>{tr("Official Documents", "المستندات والسجلات")}</span>
+            </button>
+
+            <button
+              onClick={() => scrollToSection("tourism-license", "tourism")}
+              className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm transition-all shrink-0 ${
+                activeTab === "tourism"
+                  ? "bg-beige text-navy font-semibold shadow-sm"
+                  : "text-ivory/70 hover:text-ivory hover:bg-ivory/10"
+              }`}
+            >
+              <Award className="h-4 w-4 shrink-0 text-amber-400" strokeWidth={1.5} />
+              <span>{tr("Tourism License No. 1339", "الترخيص لدى وزارة السياحة")}</span>
             </button>
 
             <button
@@ -353,7 +373,7 @@ export function TrustGatePage() {
             <p className="mt-4 text-ivory/70 leading-relaxed">
               {tr(
                 "Review our authentic government registration certificates below. Every document is verifiable through the Egyptian Ministries.",
-                "يمكنك تفحص ومراجعة مستخرجات السجل التجاري والبطاقة الضريبية الرسمية لشركة كينتيكس المعتمدة لدى جهاز تنمية التجارة ومصلحة الضرائب المصرية."
+                "يمكنك تفحص ومراجعة مستخرجات السجل التجاري والبطاقة الضريبية الرسمية لشركة إيما (EMA Tours) المعتمدة لدى جهاز تنمية التجارة ومصلحة الضرائب المصرية."
               )}
             </p>
           </Reveal>
@@ -370,7 +390,7 @@ export function TrustGatePage() {
                       {tr("Commercial Registration Certificate", "مستخرج السجل التجاري الرسمي")}
                     </h3>
                     <p className="text-sm text-ivory/60 mt-1">
-                      {tr("Central Administration for Commercial Register — New Valley Office", "الإدارة المركزية للسجل التجاري — مكتب سجل الوادي الجديد")}
+                      {tr("Central Administration for Commercial Register — Sharm El Sheikh Office", "الإدارة المركزية للسجل التجاري — مكتب سجل شرم الشيخ")}
                     </p>
                   </div>
                   <Building2 {...ico} className="h-7 w-7 text-beige shrink-0" strokeWidth={1.25} />
@@ -381,7 +401,7 @@ export function TrustGatePage() {
                   onClick={() =>
                     setActiveModal({
                       title: tr("Official Commercial Registration Certificate", "مستخرج السجل التجاري الرسمي"),
-                      subtitle: tr("Issued by the Central Administration for Commercial Register — New Valley Office", "صادر من الإدارة المركزية للسجل التجاري — مكتب سجل الوادي الجديد"),
+                      subtitle: tr("Issued by the Central Administration for Commercial Register — Sharm El Sheikh Office", "صادر من الإدارة المركزية للسجل التجاري — مكتب سجل شرم الشيخ"),
                       image: commRegImg,
                       badge: tr("Verified LLC", "شركة ذات مسؤولية محدودة"),
                       code: "22944",
@@ -392,7 +412,7 @@ export function TrustGatePage() {
                 >
                   <img
                     src={commRegImg}
-                    alt="السجل التجاري الرسمي لشركة كينتيكس"
+                    alt="السجل التجاري الرسمي لشركة إيما"
                     className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover/img:scale-102"
                     loading="lazy"
                   />
@@ -440,8 +460,8 @@ export function TrustGatePage() {
                     <p className="text-xs text-ivory/50">{tr("Commercial Entity Name", "السمة والاسم التجاري")}</p>
                     <p className="text-sm font-medium text-ivory mt-0.5">
                       {tr(
-                        "Kinetix for Overseas Employment (Limited Liability Company)",
-                        "كينتكس لالحاق العمالة بالخارج (ذات مسؤولية محدودة)"
+                        "EMA Tours for Overseas Employment (Limited Liability Company)",
+                        "إيما تورز لالحاق العمالة بالخارج (ذات مسؤولية محدودة)"
                       )}
                     </p>
                   </div>
@@ -455,16 +475,23 @@ export function TrustGatePage() {
                       )}
                     </p>
                   </div>
+
+                  <div className="rounded-xl border border-ivory/10 bg-ivory/[0.03] p-3">
+                    <p className="text-xs text-ivory/50">{tr("Registered Office Address", "عنوان المقر المسجل")}</p>
+                    <p className="text-xs text-ivory/75 mt-0.5">
+                      {tr("Villa 18 — Al Noor District — Premium Housing — Sharm El Sheikh", "فيلا رقم 18 - حي النور - الإسكان المتميز - شرم الشيخ")}
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div className="mt-6 pt-4 border-t border-ivory/10 flex items-center justify-between">
-                <span className="text-xs text-ivory/50">{tr("Validity: Active through 2028", "ساري المفعول حتى 2028/09/07")}</span>
+                <span className="text-xs text-ivory/50">{tr("Validity: Active through 2028/09/07", "ساري المفعول حتى 2028/09/07")}</span>
                 <button
                   onClick={() =>
                     setActiveModal({
                       title: tr("Official Commercial Registration Certificate", "مستخرج السجل التجاري الرسمي"),
-                      subtitle: tr("Issued by the Central Administration for Commercial Register", "صادر من الإدارة المركزية للسجل التجاري"),
+                      subtitle: tr("Issued by the Central Administration for Commercial Register — Sharm El Sheikh", "صادر من الإدارة المركزية للسجل التجاري — مكتب شرم الشيخ"),
                       image: commRegImg,
                       code: "22944",
                       codeLabel: tr("Commercial Register No.", "رقم السجل التجاري"),
@@ -488,7 +515,7 @@ export function TrustGatePage() {
                       {tr("Official Tax Registration Card", "البطاقة الضريبية الرسمية")}
                     </h3>
                     <p className="text-sm text-ivory/60 mt-1">
-                      {tr("Egyptian Tax Authority — New Valley (Dakhla Office)", "مصلحة الضرائب المصرية — مأمورية ضرائب الوادي الجديد (الداخلة)")}
+                      {tr("Egyptian Tax Authority — Sharm El Sheikh Office", "مصلحة الضرائب المصرية — مأمورية ضرائب شرم الشيخ")}
                     </p>
                   </div>
                   <Receipt {...ico} className="h-7 w-7 text-beige shrink-0" strokeWidth={1.25} />
@@ -510,7 +537,7 @@ export function TrustGatePage() {
                 >
                   <img
                     src={taxCardImg}
-                    alt="البطاقة الضريبية الرسمية لشركة كينتيكس"
+                    alt="البطاقة الضريبية الرسمية لشركة إيما"
                     className="h-full w-full object-contain rounded-xl transition-transform duration-500 group-hover/img:scale-102"
                     loading="lazy"
                   />
@@ -559,7 +586,7 @@ export function TrustGatePage() {
                   <div className="rounded-xl border border-ivory/10 bg-ivory/[0.03] p-3">
                     <p className="text-xs text-ivory/50">{tr("Competent Tax Office", "المأمورية التابعة لها الشركة")}</p>
                     <p className="text-sm font-medium text-ivory mt-0.5">
-                      {tr("New Valley — Dakhla Tax Office", "مأمورية ضرائب الوادي الجديد — الداخلة")}
+                      {tr("Sharm El Sheikh Tax Office", "مأمورية ضرائب شرم الشيخ")}
                     </p>
                   </div>
 
@@ -567,9 +594,16 @@ export function TrustGatePage() {
                     <p className="text-xs text-ivory/50">{tr("Registered Entity & Scope", "الكيان القانوني والنشاط المسجل")}</p>
                     <p className="text-xs text-ivory/75 leading-relaxed mt-0.5">
                       {tr(
-                        "Kinetix for Overseas Employment LLC — Placement of Egyptian workforce abroad.",
-                        "كينتيكس لإلحاق العمالة المصرية بالخارج (ذات مسؤولية محدودة) — نشاط: إلحاق العمالة بالخارج."
+                        "EMA Tours for Overseas Employment LLC — Placement of Egyptian workforce abroad.",
+                        "إيما تورز لإلحاق العمالة بالخارج (ذات مسؤولية محدودة) — نشاط: إلحاق العمالة المصرية بالخارج."
                       )}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-ivory/10 bg-ivory/[0.03] p-3">
+                    <p className="text-xs text-ivory/50">{tr("Registered Office Address", "عنوان المقر المسجل")}</p>
+                    <p className="text-xs text-ivory/75 mt-0.5">
+                      {tr("Villa 18 — Al Noor District — Premium Housing — Sharm El Sheikh", "فيلا رقم 18 - حي النور - الإسكان المتميز - شرم الشيخ")}
                     </p>
                   </div>
                 </div>
@@ -597,6 +631,129 @@ export function TrustGatePage() {
           </div>
         </section>
 
+        {/* SECTION: MINISTRY OF TOURISM LICENSE (FEATURED OFFICIAL ACCREDITATION) */}
+        <section id="tourism-license" className="scroll-mt-32">
+          <div className="relative isolate overflow-hidden rounded-3xl border-2 border-beige/40 bg-gradient-to-br from-navy via-navy-soft to-navy p-8 md:p-14 shadow-2xl">
+            {/* Background Glow & Pattern */}
+            <div className="absolute top-0 right-0 -z-10 h-72 w-72 rounded-full bg-beige/15 blur-[90px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 -z-10 h-72 w-72 rounded-full bg-beige/10 blur-[90px] pointer-events-none" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Left Column / Details */}
+              <div className="lg:col-span-7">
+                <div className="inline-flex items-center gap-2 rounded-full border border-beige/40 bg-beige/10 px-4 py-1.5 text-xs font-semibold text-beige mb-4">
+                  <Award className="h-4 w-4 text-amber-400" />
+                  <span>{tr("Ministry of Tourism Accreditation", "جمهورية مصر العربية — وزارة السياحة والآثار")}</span>
+                </div>
+
+                <h2 className="text-3xl md:text-5xl font-semibold leading-tight text-ivory">
+                  {tr("Official Ministry of Tourism License", "الترخيص لدى وزارة السياحة")}
+                </h2>
+
+                <p className="mt-4 text-base md:text-lg text-ivory/80 leading-relaxed">
+                  {tr(
+                    "EMA Tours is fully licensed and recognized by the Egyptian Ministry of Tourism and Antiquities under official License No. 1339. This license grants our travelers and candidates complete governmental protection, formal contract enforcement, and full regulatory oversight.",
+                    "شركة إيما تورز (EMA Tours) معتمدة وحاصلة على الترخيص الرسمي الصادر من وزارة السياحة والآثار المصرية برقم 1339. يمنح هذا الترخيص عملاءنا أعلى درجات الموثوقية القانونية وحماية كاملة لحقوق السفر وفق الضوابط واللوائح الرسمية للدولة."
+                  )}
+                </p>
+
+                {/* Steps to Verify on Portal */}
+                <div className="mt-6 rounded-2xl border border-ivory/15 bg-navy/60 p-4 md:p-5 backdrop-blur-md">
+                  <p className="text-xs font-semibold text-beige uppercase tracking-wider mb-2">
+                    {tr("How to Verify in 3 Easy Steps:", "خطوات الاستعلام والتحقق المباشر من البوابة الحكومية:")}
+                  </p>
+                  <ol className="space-y-2 text-xs md:text-sm text-ivory/75 list-decimal list-inside">
+                    <li>{tr("Click the verification portal button below to open the official Ministry of Tourism website.", "اضغط على زر (التحقق من بيانات الترخيص) للانتقال لبوابة خدمات المواطنين بوزارة السياحة.")}</li>
+                    <li>{tr("Enter License Number 1339 into the search query field.", "أدخل رقم الترخيص (1339) في خانة البحث.")}</li>
+                    <li>{tr("Instantly inspect the active registration data and official company credentials.", "تظهر لك بيانات شركة إيما تورز واعتمادها وسريان الترخيص مباشرة.")}</li>
+                  </ol>
+                </div>
+
+                {/* Direct External Link Button */}
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <a
+                    href="https://trans.hajj.gov.eg/Citizenservices/Business/CitizenservicesCompanySearchData.aspx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 rounded-full bg-beige px-7 py-3.5 text-sm md:text-base font-semibold text-navy shadow-lg transition-transform hover:-translate-y-0.5 hover:shadow-xl"
+                  >
+                    <span>{tr("Verify License on Ministry Portal", "التحقق من الترخيص على بوابة وزارة السياحة")}</span>
+                    <ExternalLink className="h-4 w-4" strokeWidth={2} />
+                  </a>
+
+                  <button
+                    onClick={() => copyToClipboard("1339", "tourismLic")}
+                    className="inline-flex items-center gap-2 rounded-full border border-ivory/20 bg-ivory/5 px-5 py-3 text-sm font-medium text-ivory hover:bg-ivory/10 hover:border-beige/50 transition-colors"
+                  >
+                    {copiedKey === "tourismLic" ? (
+                      <>
+                        <Check className="h-4 w-4 text-beige" strokeWidth={2} />
+                        <span>{tr("License 1339 Copied!", "تم نسخ رقم 1339")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 text-beige" strokeWidth={1.5} />
+                        <span>{tr("Copy License No. 1339", "نسخ رقم الترخيص 1339")}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column / Highlight Badge & Details Card */}
+              <div className="lg:col-span-5">
+                <div className="rounded-3xl border border-beige/40 bg-navy/80 p-6 md:p-8 backdrop-blur-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 h-32 w-32 bg-beige/10 rounded-full blur-2xl pointer-events-none" />
+
+                  <div className="flex items-center justify-between border-b border-ivory/10 pb-4 mb-5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-beige/15 text-beige border border-beige/30">
+                        <Award className="h-6 w-6 text-amber-400" strokeWidth={1.5} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-ivory/50">{tr("Tourism Entity", "الجهة المانحة للترخيص")}</p>
+                        <p className="font-semibold text-sm text-ivory">{tr("Ministry of Tourism & Antiquities", "وزارة السياحة والآثار")}</p>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/20">
+                      {tr("Active & Certified", "ساري وموثق")}
+                    </span>
+                  </div>
+
+                  <div className="rounded-2xl border border-ivory/15 bg-navy-soft/60 p-4 text-center mb-5">
+                    <p className="text-xs text-beige mb-1">{tr("Official License Number", "رقم ترخيص وزارة السياحة")}</p>
+                    <p className="font-display text-4xl md:text-5xl font-bold tracking-wider text-ivory">
+                      1339
+                    </p>
+                    <p className="text-[11px] text-ivory/50 mt-1">
+                      {tr("Registered to: EMA Tours for Overseas Employment LLC", "مسجل باسم: إيما تورز لإلحاق العمالة بالخارج (ذ.م.م)")}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs text-ivory/70">
+                    <div className="flex items-center justify-between py-1.5 border-b border-ivory/5">
+                      <span>{tr("Competent Sector", "القطاع المختص:")}</span>
+                      <span className="font-medium text-ivory">{tr("Tourism Companies & Guides Sector", "قطاع الشركات السياحية")}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1.5 border-b border-ivory/5">
+                      <span>{tr("Official Register No.", "رقم السجل التجاري:")}</span>
+                      <span className="font-semibold text-beige">22944</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1.5 border-b border-ivory/5">
+                      <span>{tr("Tax Card No.", "رقم البطاقة الضريبية:")}</span>
+                      <span className="font-semibold text-beige">2669476241204859</span>
+                    </div>
+                    <div className="flex items-center justify-between py-1.5">
+                      <span>{tr("Verification Portal", "بوابة التحقق الحكومية:")}</span>
+                      <span className="text-beige underline">{tr("trans.hajj.gov.eg", "trans.hajj.gov.eg")}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* SECTION 2: COMPANY HEADQUARTERS — LARGE PHOTOS WITH SIDE GRADIENT & SCROLL ANIMATION */}
         <section id="headquarters" className="scroll-mt-32">
           <Reveal className="max-w-2xl mb-12">
@@ -605,7 +762,7 @@ export function TrustGatePage() {
               {tr("Section 2 — Official Headquarters", "القسم الثاني — مقر واستقبال الشركة الرسمي")}
             </p>
             <h2 className="text-3xl md:text-5xl font-semibold leading-[1.05]">
-              {tr("Step Inside Kinetix Headquarters", "جولة مصورة داخل مقر كينتيكس الميداني")}
+              {tr("Step Inside EMA Headquarters", "جولة مصورة داخل مقر إيما الميداني")}
             </h2>
             <p className="mt-4 text-ivory/70 leading-relaxed">
               {tr(
@@ -703,8 +860,8 @@ export function TrustGatePage() {
                 <p className="eyebrow text-beige">{tr("Official Headquarters Location", "عنوان المقر الرسمي للزيارة")}</p>
                 <p className="text-base md:text-lg font-semibold text-ivory mt-0.5">
                   {tr(
-                    "33 Tenth of Ramadan St. — Dakhla Oasis, New Valley Governorate, Egypt",
-                    "33 شارع العاشر من رمضان — الواحات الداخلة — الوادي الجديد — جمهورية مصر العربية"
+                    "Villa 18 — Al Noor District — Premium Housing — Sharm El Sheikh, South Sinai, Egypt",
+                    "فيلا رقم 18 - حي النور - الإسكان المتميز - شرم الشيخ - جنوب سيناء - جمهورية مصر العربية"
                   )}
                 </p>
               </div>
@@ -940,13 +1097,13 @@ export function TrustGatePage() {
               ) : (
                 <div className="flex items-center gap-2 text-ivory/70">
                   <Building2 className="h-4 w-4 text-beige" strokeWidth={1.25} />
-                  <span>{activeModal.badge ?? tr("Kinetix Registered Facility", "مقر شركة كينتيكس المعتمد")}</span>
+                  <span>{activeModal.badge ?? tr("EMA Registered Facility", "مقر شركة إيما المعتمد")}</span>
                 </div>
               )}
 
               <div className="flex items-center gap-2 text-ivory/50">
                 <ShieldCheck className="h-4 w-4 text-beige shrink-0" strokeWidth={1.25} />
-                <span>{tr("Authentic Registered Asset of Kinetix", "أصول ومستندات رسمية موثقة لشركة كينتيكس")}</span>
+                <span>{tr("Authentic Registered Asset of EMA", "أصول ومستندات رسمية موثقة لشركة إيما")}</span>
               </div>
             </div>
           </div>

@@ -9,8 +9,8 @@ import { useSession } from "@/lib/useSession";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Client Sign in & Registration — Kinetix" },
-      { name: "description", content: "Sign in or create your Kinetix client account to manage your travel programs, track application stages, and speak with advisors." },
+      { title: "Client Sign in & Registration — EMA" },
+      { name: "description", content: "Sign in or create your EMA client account to manage your travel programs, track application stages, and speak with advisors." },
     ],
   }),
   component: AuthPage,

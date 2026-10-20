@@ -53,10 +53,22 @@ export const getPublicProgramDetails = createServerFn({ method: "POST" })
       categoryAr: ov.category_ar || dbProg?.category_ar || baseProgram?.categoryAr || "عام",
       duration: ov.duration || dbProg?.duration || baseProgram?.duration || "3–6 months",
       durationOptions: baseProgram?.durationOptions || [ov.duration || dbProg?.duration || "3–6 months"],
-      price: ov.price !== undefined && ov.price !== null ? Number(ov.price) : (dbProg?.price !== undefined && dbProg?.price !== null ? Number(dbProg.price) : (baseProgram?.price ?? 640)),
-      deposit: ov.deposit !== undefined && ov.deposit !== null ? Number(ov.deposit) : (dbProg?.deposit !== undefined && dbProg?.deposit !== null ? Number(dbProg.deposit) : (baseProgram?.deposit ?? 196)),
+      price: ov.price !== undefined && ov.price !== null
+        ? Number(ov.price)
+        : (dbProg?.price !== undefined && dbProg?.price !== null
+          ? Number(dbProg.price)
+          : (baseProgram?.price ?? 640)),
+      deposit: ov.deposit !== undefined && ov.deposit !== null
+        ? Number(ov.deposit)
+        : (dbProg?.deposit !== undefined && dbProg?.deposit !== null
+          ? Number(dbProg.deposit)
+          : (baseProgram?.deposit ?? 196)),
       installments: ov.max_installments || dbProg?.max_installments || baseProgram?.installments || 6,
-      flightPrice: ov.flight_price !== undefined ? Number(ov.flight_price) : (dbProg?.flight_price !== undefined && dbProg?.flight_price !== null ? Number(dbProg.flight_price) : (baseProgram?.flightPrice ?? 204)),
+      flightPrice: ov.flight_price !== undefined
+        ? Number(ov.flight_price)
+        : (dbProg?.flight_price !== undefined && dbProg?.flight_price !== null
+          ? Number(dbProg.flight_price)
+          : (baseProgram?.flightPrice ?? 204)),
       expectedSalary: ov.expected_salary || dbProg?.expected_salary || baseProgram?.expectedSalary,
       expectedSalaryAr: ov.expected_salary_ar || dbProg?.expected_salary_ar || baseProgram?.expectedSalaryAr || dbProg?.expected_salary,
       workingHours: ov.working_hours || dbProg?.working_hours || baseProgram?.workingHours,
@@ -99,5 +111,83 @@ export const getPublicProgramDetails = createServerFn({ method: "POST" })
     return {
       program: mergedProgram,
       country: mergedCountry,
+    };
+  });
+
+export type PublicCountryData = {
+  country: Country;
+};
+
+export const getPublicCountryDetails = createServerFn({ method: "POST" })
+  .inputValidator((d: { slug: string }) => d)
+  .handler(async ({ data }): Promise<PublicCountryData | null> => {
+    const slug = (data.slug || "").trim().toLowerCase();
+    if (!slug) return null;
+
+    const { getCountry } = await import("@/lib/catalog");
+    const baseCountry = getCountry(slug);
+    if (!baseCountry) return null;
+
+    let dbPrograms: any[] = [];
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: dbData } = await supabase
+        .from("programs")
+        .select("*, countries!inner(*)")
+        .eq("countries.slug", slug);
+      if (dbData && dbData.length > 0) {
+        dbPrograms = dbData;
+      }
+    } catch (e) {
+      console.error("[getPublicCountryDetails] Supabase error:", e);
+    }
+
+    let allOverrides: Record<string, any> = {};
+    try {
+      const { getProgramOverrides } = await import("./program_overrides.server");
+      allOverrides = getProgramOverrides();
+    } catch {}
+
+    const dbMap = new Map<string, any>();
+    for (const p of dbPrograms) {
+      if (p.slug) dbMap.set(p.slug, p);
+    }
+
+    const mergedPrograms: Program[] = baseCountry.programs.map((baseProg) => {
+      const ov = allOverrides[baseProg.slug] || {};
+      const dbP = dbMap.get(baseProg.slug);
+
+      const price = ov.price !== undefined && ov.price !== null
+        ? Number(ov.price)
+        : (dbP?.price !== undefined && dbP?.price !== null
+          ? Number(dbP.price)
+          : baseProg.price);
+
+      const deposit = ov.deposit !== undefined && ov.deposit !== null
+        ? Number(ov.deposit)
+        : (dbP?.deposit !== undefined && dbP?.deposit !== null
+          ? Number(dbP.deposit)
+          : baseProg.deposit);
+
+      const installments = ov.max_installments || dbP?.max_installments || baseProg.installments;
+
+      return {
+        ...baseProg,
+        price,
+        deposit,
+        installments,
+        title: ov.title_en || dbP?.title_en || baseProg.title,
+        titleAr: ov.title_ar || dbP?.title_ar || baseProg.titleAr,
+        expectedSalary: ov.expected_salary || dbP?.expected_salary || baseProg.expectedSalary,
+        expectedSalaryAr: ov.expected_salary_ar || dbP?.expected_salary_ar || baseProg.expectedSalaryAr,
+        published: dbP?.published !== false,
+      };
+    });
+
+    return {
+      country: {
+        ...baseCountry,
+        programs: mergedPrograms,
+      },
     };
   });

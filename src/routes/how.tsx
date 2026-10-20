@@ -11,12 +11,12 @@ import { countries, eur } from "@/lib/catalog";
 export const Route = createFileRoute("/how")({
   head: () => ({
     meta: [
-      { title: "How It Works — Step-by-Step Guide | Kinetix" },
+      { title: "How It Works — Step-by-Step Guide | EMA" },
       {
         name: "description",
-        content: "Discover how Kinetix guides your international relocation: from document audit and work permit to embassy visa stamping and airport arrival.",
+        content: "Discover how EMA guides your international relocation: from document audit and work permit to embassy visa stamping and airport arrival.",
       },
-      { property: "og:title", content: "How Kinetix Works — 4 Easy Steps to Work Abroad" },
+      { property: "og:title", content: "How EMA Works — 4 Easy Steps to Work Abroad" },
       {
         property: "og:description",
         content: "A clear, transparent roadmap from your initial deposit to your first day at work in Europe.",
@@ -184,7 +184,7 @@ export function HowPage() {
                 {tr("Transparent Relocation Blueprint", "دليل السفر والعمل الشفاف")}
               </span>
               <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">
-                {tr("How Kinetix Works", "كيف تعمل كينيتكس")}
+                {tr("How EMA Works", "كيف تعمل إيما")}
               </h1>
               <p className="mt-4 text-base md:text-lg leading-relaxed text-ivory/80">
                 {tr(

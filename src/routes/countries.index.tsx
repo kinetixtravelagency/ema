@@ -12,12 +12,12 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/countries/")({
   head: () => ({
     meta: [
-      { title: "Destinations & Work Programs — Kinetix" },
+      { title: "Destinations & Work Programs — EMA" },
       {
         name: "description",
         content: "Explore verified international work programs in Bulgaria, Luxembourg, Armenia, Russia, and Italy. Transparent deposits starting from 10,000 EGP.",
       },
-      { property: "og:title", content: "Destinations & Work Programs — Kinetix" },
+      { property: "og:title", content: "Destinations & Work Programs — EMA" },
       {
         property: "og:description",
         content: "Explore European work opportunities with guaranteed legal contracts, flexible payment plans, and visa support.",
@@ -338,7 +338,7 @@ export function CountriesPage() {
           <div className="rounded-3xl bg-navy text-ivory p-8 md:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="max-w-2xl">
               <span className="text-beige text-xs font-semibold uppercase tracking-wider">
-                {tr("Kinetix Mobility Guarantee", "ضمانات كينيتكس")}
+                {tr("EMA Mobility Guarantee", "ضمانات كينيتكس")}
               </span>
               <h3 className="mt-2 text-2xl md:text-3xl font-bold">
                 {tr("Official Employment Contracts & Visa Security", "عقود موثقة وضمانات قانونية")}

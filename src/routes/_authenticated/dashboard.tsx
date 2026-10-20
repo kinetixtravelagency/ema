@@ -18,7 +18,7 @@ import { egp, defaultCommissionFor } from "@/lib/levels";
 import { ApplicationProgressTracker } from "@/components/site/ApplicationProgressTracker";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard & Client Profile — Kinetix" }] }),
+  head: () => ({ meta: [{ title: "Dashboard & Client Profile — EMA" }] }),
   component: Dashboard,
 });
 
@@ -141,7 +141,7 @@ function Dashboard() {
       await deleteApp({ data: { id: appId } });
       if (typeof window !== "undefined") {
         Object.keys(localStorage).forEach((k) => {
-          if (k.startsWith("kinetix_app_submitted_") && localStorage.getItem(k) === appId) {
+          if (k.startsWith("ema_app_submitted_") && localStorage.getItem(k) === appId) {
             localStorage.removeItem(k);
           }
         });
@@ -442,10 +442,10 @@ function Dashboard() {
                   </div>
                   <div>
                     <h2 className="font-display text-xl font-bold text-foreground">
-                      {fullName || tr("Kinetix Client", "عميل كينتيكس")}
+                      {fullName || tr("EMA Client", "عميل إيما")}
                     </h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {user?.email || "—"} · {tr("Registered Client Account", "حساب عميل موثق لدى Kinetix")}
+                      {user?.email || "—"} · {tr("Registered Client Account", "حساب عميل موثق لدى EMA")}
                     </p>
                   </div>
                 </div>
@@ -708,7 +708,7 @@ function Dashboard() {
                 {/* Save Profile Button */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-3xl border border-border bg-card p-5">
                   <span className="text-xs text-muted-foreground text-center sm:text-start">
-                    {tr("Your information is strictly encrypted and protected according to Kinetix privacy policy.", "بياناتك مشفرة ومحمية وفق سياسة خصوصية وأمان كينتيكس المعتمدة.")}
+                    {tr("Your information is strictly encrypted and protected according to EMA privacy policy.", "بياناتك مشفرة ومحمية وفق سياسة خصوصية وأمان إيما المعتمدة.")}
                   </span>
                   <button
                     type="submit"

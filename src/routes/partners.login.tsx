@@ -9,8 +9,8 @@ import { ArrowRight, Lock, Eye, EyeOff } from "lucide-react";
 export const Route = createFileRoute("/partners/login")({
   head: () => ({
     meta: [
-      { title: "Sales Partner Sign In — Kinetix" },
-      { name: "description", content: "Sign in to your Kinetix Sales Partner portal." },
+      { title: "Sales Partner Sign In — EMA" },
+      { name: "description", content: "Sign in to your EMA Sales Partner portal." },
     ],
   }),
   component: PartnerLogin,

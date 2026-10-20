@@ -208,9 +208,22 @@ export const adminUpdateProgramPrice = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { saveProgramOverride } = await import("./program_overrides.server");
+
+    const { data: current } = await supabaseAdmin.from("programs").select("slug").eq("id", data.id).maybeSingle();
+
     const { error } = await supabaseAdmin.from("programs")
       .update({ price: data.price, deposit: data.deposit, max_installments: data.max_installments, updated_at: new Date().toISOString() }).eq("id", data.id);
     if (error) throw new Error(error.message);
+
+    if (current?.slug) {
+      saveProgramOverride(current.slug, {
+        price: data.price,
+        deposit: data.deposit,
+        max_installments: data.max_installments,
+      });
+    }
+
     return { ok: true };
   });
 
@@ -715,7 +728,7 @@ export const getAdminFull = createServerFn({ method: "GET" })
     }
 
     let progList = programs.data ?? [];
-    if (progList.length < 20) {
+    if (progList.length < 72) {
       try {
         const { countries: catCountries } = await import("./catalog");
         for (const c of catCountries) {
