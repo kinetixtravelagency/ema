@@ -216,7 +216,7 @@ export const adminSendNotice = createServerFn({ method: "POST" })
 
     const { data: currentApp } = await supabaseAdmin
       .from("applications")
-      .select("notes, user_id, full_name, phone")
+      .select("notes, user_id, full_name, phone, status")
       .eq("id", data.id)
       .maybeSingle();
 
@@ -231,12 +231,13 @@ export const adminSendNotice = createServerFn({ method: "POST" })
         const parsed = JSON.parse(jsonMatch[0]);
         parsed.admin_alert_message = alertMsg;
         parsed.admin_alert_at = new Date().toISOString();
+        parsed.suspended = Boolean(data.suspend);
         updatedNotes = existingNotes.replace(jsonMatch[0], JSON.stringify(parsed));
       } catch {
-        updatedNotes = existingNotes + " [ADMIN_ALERT:" + alertMsg + "]";
+        updatedNotes = existingNotes + "\n[ADMIN_ALERT:" + alertMsg + "]" + (data.suspend ? " [SUSPENDED]" : "");
       }
     } else {
-      updatedNotes = existingNotes + " [ADMIN_ALERT:" + alertMsg + "]";
+      updatedNotes = existingNotes + "\n[ADMIN_ALERT:" + alertMsg + "]" + (data.suspend ? " [SUSPENDED]" : "");
     }
 
     const patch: any = { notes: updatedNotes, updated_at: new Date().toISOString() };
@@ -249,13 +250,52 @@ export const adminSendNotice = createServerFn({ method: "POST" })
     if (userId) {
       try {
         const { postClientMessageInternal } = await import("./chat.functions");
-        const chatMsg = "⚠️ تنبيه من إدارة EMA:\n" + alertMsg;
+        const chatMsg = "⚠️ تنبيه من إدارة EMA:\n" + alertMsg + (data.suspend ? "\n\n(تم تعليق الإجراءات ودفع الرسوم مؤقتاً لحين استيفاء المطلوب)" : "");
         await postClientMessageInternal({ userId, text: chatMsg });
       } catch (chatErr) {
         console.error("[adminSendNotice] Failed to post chat message:", chatErr);
       }
     }
 
+    return { ok: true };
+  });
+
+/* --- Admin: Clear / Resolve Notice on Application --- */
+export const adminClearNotice = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (!isAdmin) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: currentApp } = await supabaseAdmin
+      .from("applications")
+      .select("notes, status")
+      .eq("id", data.id)
+      .maybeSingle();
+
+    const existingNotes = (currentApp as any)?.notes || "";
+    let updatedNotes = existingNotes;
+    const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+        delete parsed.admin_alert_message;
+        delete parsed.admin_alert_at;
+        delete parsed.suspended;
+        updatedNotes = existingNotes.replace(jsonMatch[0], JSON.stringify(parsed));
+      } catch {}
+    }
+    updatedNotes = updatedNotes.replace(/\[ADMIN_ALERT:[^\]]*\]/g, "").replace(/\[SUSPENDED\]/g, "").trim();
+
+    const patch: any = { notes: updatedNotes, updated_at: new Date().toISOString() };
+    if ((currentApp as any)?.status === "suspended") {
+      patch.status = "in_review";
+    }
+
+    const { error } = await (supabaseAdmin.from("applications") as any).update(patch).eq("id", data.id);
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 
@@ -590,8 +630,17 @@ export const createApplication = createServerFn({ method: "POST" })
 
     // Egyptian National ID format validation (14 digits)
     const nid = clip(d.national_id, 20);
-    if (nid && !/^\d{14}$/.test(nid)) {
+    if (!nid || !/^\d{14}$/.test(nid)) {
       throw new Error("Invalid Egyptian National ID: must be exactly 14 digits");
+    }
+
+    if (!d.gender) throw new Error("Gender is required");
+    if (!d.birth_date) throw new Error("Birth date is required");
+    if (!d.current_city?.trim() || !d.current_address?.trim()) {
+      throw new Error("Current residence address and city are required");
+    }
+    if (d.gender === "male" && !d.military_status?.trim()) {
+      throw new Error("Military service status is required for male applicants");
     }
 
     return {
@@ -739,8 +788,17 @@ export const adminUpdateApplication = createServerFn({ method: "POST" })
       patch.deposit_paid_at = data.deposit_paid ? new Date().toISOString() : null;
       if (data.deposit_paid && data.stage === undefined) patch.stage = 1;
     }
-    if (data.notes !== undefined) patch.notes = data.notes;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.notes !== undefined) {
+      const { data: curr } = await supabaseAdmin.from("applications").select("notes").eq("id", data.id).maybeSingle();
+      const existingNotes = curr?.notes || "";
+      const jsonMatch = existingNotes.match(/\{[\s\S]*\}/);
+      if (jsonMatch && !data.notes.includes(jsonMatch[0])) {
+        patch.notes = data.notes.trim() ? `${data.notes.trim()}\n\n${jsonMatch[0]}` : jsonMatch[0];
+      } else {
+        patch.notes = data.notes;
+      }
+    }
     const { error } = await supabaseAdmin.from("applications").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -1070,20 +1128,21 @@ export const requestPaymentSupport = createServerFn({ method: "POST" })
     } catch {}
 
     let updatedNotes = existingApp?.notes || "";
-    try {
-      if (existingApp?.notes && existingApp.notes.startsWith("{")) {
-        const parsed = JSON.parse(existingApp.notes);
+    const jsonMatch = existingApp?.notes?.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
         parsed.payment_method = data.paymentMethod;
         parsed.payment_option = data.paymentOption;
         parsed.payment_requested_at = new Date().toISOString();
-        parsed.payment_summary = `طلب سداد ${data.paymentOption === "deposit" ? "الديبوزيت" : "كامل"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}`;
+        parsed.payment_summary = `طلب سداد ${data.paymentOption === "full" ? "كامل المبلغ" : "الديبوزيت / حجز المقعد"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}`;
         if (data.flightIncluded !== undefined) parsed.flight_included = data.flightIncluded;
-        updatedNotes = JSON.stringify(parsed);
-      } else {
-        updatedNotes = `[طلب سداد عبر الشات] ${data.paymentOption === "deposit" ? "المقدم / الديبوزيت" : "سداد كامل"} بمبلغ €${data.amountEur} (~${data.amountEgp.toLocaleString()} EGP) بطريقة ${data.paymentMethod} - ${new Date().toLocaleString("ar-EG")}`;
+        updatedNotes = existingApp.notes.replace(jsonMatch[0], JSON.stringify(parsed));
+      } catch {
+        updatedNotes = `${existingApp.notes}\n[طلب سداد: ${data.paymentOption === "full" ? "سداد كامل المبلغ" : "سداد الديبوزيت"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod}]`;
       }
-    } catch {
-      updatedNotes = `[طلب سداد عبر الشات] ${data.paymentOption === "deposit" ? "المقدم / الديبوزيت" : "سداد كامل"} بمبلغ €${data.amountEur} (~${data.amountEgp.toLocaleString()} EGP) بطريقة ${data.paymentMethod} - ${new Date().toLocaleString("ar-EG")}`;
+    } else {
+      updatedNotes = `${existingApp?.notes || ""}\n[طلب سداد: ${data.paymentOption === "full" ? "سداد كامل المبلغ" : "سداد الديبوزيت"} بمبلغ €${data.amountEur} عبر ${data.paymentMethod} - ${new Date().toLocaleString("ar-EG")}]`;
     }
 
     await supabaseAdmin.from("applications").update({
@@ -1097,13 +1156,15 @@ export const requestPaymentSupport = createServerFn({ method: "POST" })
     const flightLabel = data.flightIncluded ? "مشمولة ضمن البرنامج ✈️" : "غير مشمولة";
     const resolvedName = data.fullName?.trim() || existingApp?.full_name?.trim() || "عميل إيما";
     const resolvedPhone = data.phone?.trim() || existingApp?.phone?.trim() || "—";
+    const paymentLabel = data.paymentOption === "full" ? "سداد كامل المبلغ 💰" : "سداد الديبوزيت / حجز المقعد";
+    const amountLabel = data.paymentOption === "full" ? "المبلغ المطلوب سداده (بالكامل)" : "المبلغ المطلوب سداده الآن (الديبوزيت)";
 
-    const msgText = `💳 طلب سداد جديد (${data.paymentOption === "deposit" ? "سداد الديبوزيت / حجز المقعد" : "سداد كامل المبلغ 💰"}):
+    const msgText = `💳 طلب سداد جديد (${paymentLabel}):
 • البرنامج: ${data.programTitle}${data.countryName ? ` · ${data.countryName}` : ""}
 • المسار: ${trackLabel}
 • تذكرة الطيران: ${flightLabel}
 • إجمالي تكلفة البرنامج: €${totalEur.toLocaleString("en-US")} (~${totalEgp.toLocaleString("en-US")} ج.م)
-• المبلغ المطلوب سداده الآن: €${data.amountEur.toLocaleString("en-US")} (~${data.amountEgp.toLocaleString("en-US")} ج.م)
+• ${amountLabel}: €${data.amountEur.toLocaleString("en-US")} (~${data.amountEgp.toLocaleString("en-US")} ج.م)
 ${data.paymentOption === "deposit" && data.remainingEur && data.remainingEur > 0 ? `• المتبقي بالتقسيط: €${data.remainingEur.toLocaleString("en-US")} (~${Math.round(data.remainingEur * 54).toLocaleString("en-US")} ج.م) على ${data.installmentsCount || 6} شهور\n` : ""}• وسيلة الدفع المفضلة: ${data.paymentMethod}
 • الاسم: ${resolvedName}
 • الهاتف: ${resolvedPhone}

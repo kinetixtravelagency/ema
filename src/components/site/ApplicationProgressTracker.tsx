@@ -29,12 +29,15 @@ import {
   ArrowRight,
   ArrowLeft,
   ChevronRight,
+  BellRing,
+  AlertTriangle,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { requestPaymentSupport } from "@/lib/account.functions";
 import { useLang } from "@/lib/i18n";
 import { eur, getCountry, getProgram } from "@/lib/catalog";
+import { formatMilitaryStatus } from "@/lib/utils";
 import {
   VodafoneLogo,
   InstaPayLogo,
@@ -118,6 +121,8 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   // Parse notes and rejection metadata
   const { meta: notesData, rejectionReason } = parseTrackerNotes(application.notes, application.user_metadata);
   const isRejected = application.status === "rejected";
+  const isSuspended = application.status === "suspended" || Boolean(notesData["suspended"]);
+  const adminNoticeMessage = notesData["admin_alert_message"] || (isSuspended ? (ar ? "تم تعليق طلبك لعدم استيفاء المستندات أو البيانات المطلوبة. يرجى مراجعة إدارة إيما عبر اللايف شات." : "Your application has been put on hold pending requirements completion.") : null);
 
   // 6 Journey Milestones
   const stage = Number(application.stage ?? 0);
@@ -453,6 +458,63 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 <span>{ar ? "استكشاف برامج أخرى والتقديم مجدداً" : "Browse Other Programs & Re-Apply"}</span>
                 <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
               </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PROMINENT OFFICIAL NOTICE & SUSPENSION BANNER */}
+      {!isRejected && (isSuspended || adminNoticeMessage) && (
+        <div className="relative overflow-hidden rounded-3xl border-2 border-amber-500/80 bg-gradient-to-br from-amber-500/15 via-card to-amber-500/5 p-5 sm:p-6 shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/20 animate-in fade-in">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 pb-4 border-b border-amber-200 dark:border-amber-900/40">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md">
+                <BellRing className="h-6 w-6 stroke-[2.2]" />
+              </div>
+              <div>
+                <span className="inline-block rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-800 dark:text-amber-300">
+                  {ar ? "تنبيه رسمي من إدارة إيما" : "Official Administration Notice"}
+                </span>
+                <h3 className="font-display text-base sm:text-lg font-bold text-amber-900 dark:text-amber-200">
+                  {isSuspended
+                    ? (ar ? "تم تعليق طلبك مؤقتاً لحين استيفاء المطلوب" : "Application Temporarily On Hold")
+                    : (ar ? "تنبيه هام بشأن ملف تقديمك" : "Important Notice Regarding Your Application")}
+                </h3>
+              </div>
+            </div>
+
+            <span className="rounded-full border border-amber-300 bg-amber-100 dark:border-amber-800 dark:bg-amber-950/60 px-3 py-1 text-xs font-bold text-amber-900 dark:text-amber-200 shrink-0">
+              {isSuspended ? (ar ? "الحالة: معلق مؤقتاً ⚠️" : "Status: On Hold ⚠️") : (ar ? "تنبيه نشط ⚠️" : "Active Notice ⚠️")}
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <div className="rounded-2xl border border-amber-300 dark:border-amber-800 bg-amber-50/80 dark:bg-amber-950/40 p-4">
+              <span className="block text-xs font-bold text-amber-900 dark:text-amber-200 mb-1">
+                {ar ? "نص التنبيه من إدارة إيما:" : "Notice from EMA Administration:"}
+              </span>
+              <p className="text-sm font-semibold text-amber-950 dark:text-amber-100 leading-relaxed whitespace-pre-wrap">
+                {adminNoticeMessage}
+              </p>
+            </div>
+
+            {isSuspended && (
+              <p className="text-xs font-medium text-amber-900 dark:text-amber-300 leading-relaxed">
+                {ar
+                  ? "🔒 تم تعليق إمكانية دفع الديبوزيت أو الرسوم في الوقت الحالي حتى يتم استكمال المطلوب في التنبيه أعلاه أو اعتماده من الإدارة. يرجى رفع النواقص أو مراسلتنا عبر اللايف شات."
+                  : "🔒 Fee & deposit payments are paused until requirements in this notice are completed. Please upload required items or contact support via live chat."}
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                className="inline-flex items-center gap-2 rounded-full bg-navy px-4 py-2 text-xs font-bold text-ivory hover:opacity-90 shadow-sm"
+              >
+                <MessageSquare className="h-4 w-4" />
+                <span>{ar ? "التواصل مع الدعم عبر الشات 💬" : "Speak with Advisor via Live Chat 💬"}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -989,7 +1051,7 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 {ar ? "الموقف من التجنيد" : "Military Status"}
               </span>
               <p className="font-bold text-foreground">
-                {notesData["military_status"] || (isMale ? (ar ? "مؤجل دراسياً / تصريح سفر سياحي" : "Student deferment") : (ar ? "معفاة (أنثى)" : "Exempt (Female)"))}
+                {formatMilitaryStatus(notesData["military_status"], isMale ? "male" : "female")}
               </p>
             </div>
 
@@ -1478,12 +1540,12 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                     <button
                       type="button"
                       onClick={() => setPayOption(payOption === "deposit" ? "full" : "deposit")}
-                      className="rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold hover:border-beige"
+                      className="rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold hover:border-beige transition-colors"
                     >
-                      {payOption === "deposit" ? (ar ? "التبديل لسداد كامل" : "Switch to Full") : (ar ? "التبديل للديبوزيت" : "Switch to Deposit")}
+                      {payOption === "deposit" ? (ar ? "التبديل لسداد كامل المبلغ 💰" : "Switch to Full Payment") : (ar ? "التبديل لسداد الديبوزيت" : "Switch to Deposit")}
                     </button>
                     <span className="rounded-full bg-navy/10 dark:bg-ivory/10 text-navy dark:text-ivory px-3 py-1 text-xs font-semibold">
-                      {payOption === "full" ? tr("Full Payment", "سداد كامل") : tr("Deposit Down Payment", "سداد الديبوزيت")}
+                      {payOption === "full" ? tr("Full Payment 💰", "سداد كامل المبلغ 💰") : tr("Deposit Down Payment", "سداد الديبوزيت / حجز المقعد")}
                     </span>
                   </div>
                 </div>
@@ -1491,9 +1553,16 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
 
               {/* 4. Action Buttons & Live Chat Trigger */}
               <div className="space-y-3">
+                {isSuspended && (
+                  <div className="flex items-center gap-2 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 p-3.5 text-xs text-amber-950 dark:text-amber-100">
+                    <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span className="font-semibold">{ar ? "🔒 تم تعليق إمكانية دفع المقدم والرسوم حالياً لوجود تنبيه إداري معلق (راجع التنبيه الرسمي أعلاه)." : "🔒 Payment is paused while an official administrative notice is pending."}</span>
+                  </div>
+                )}
+
                 <button
                   type="button"
-                  disabled={requestingPay}
+                  disabled={requestingPay || isSuspended}
                   onClick={handlePaymentRequest}
                   className="w-full flex items-center justify-center gap-2 rounded-full border-2 border-beige bg-navy py-4 text-sm font-bold text-ivory hover:opacity-90 shadow-lg disabled:opacity-50 transition-all active:scale-98"
                 >
@@ -1507,10 +1576,15 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                       <CheckCircle2 className="h-4 w-4 text-beige" />
                       <span>{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات المباشر")}</span>
                     </>
+                  ) : isSuspended ? (
+                    <>
+                      <AlertTriangle className="h-4 w-4 text-amber-300" />
+                      <span>{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
+                    </>
                   ) : (
                     <>
                       <MessageSquare className="h-4 w-4 text-beige" />
-                      <span>{tr(`Request Payment Details via ${paymentMethod} in Live Chat 💬`, `طلب بيانات التحويل عبر ${paymentMethod} في الشات المباشر 💬`)}</span>
+                      <span>{tr(`Request ${payOption === "full" ? "Full Payment" : "Deposit"} Details via ${paymentMethod} in Live Chat 💬`, `طلب بيانات سداد (${payOption === "full" ? "كامل المبلغ" : "الديبوزيت"}) عبر ${paymentMethod} في الشات 💬`)}</span>
                     </>
                   )}
                 </button>
@@ -1529,13 +1603,13 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                         </p>
                         <p className="mt-1">
                           {ar
-                            ? `تم تسجيل طلبك لدفع (${payOption === "deposit" ? "المقدم" : "دفعة واحدة"}) بمبلغ ${eur(selectedEur)} (~${selectedEgp.toLocaleString()} ج.م) عبر ${paymentMethod}. تم فتح شات الموقع وسيتواصل معك ممثل خدمة العملاء الآن لتزويدك برقم التحويل وتأكيد الحجز.`
-                            : `Your payment request of ${eur(selectedEur)} via ${paymentMethod} has been sent. Live chat is now open for an advisor to assist you.`}
+                            ? `تم تسجيل طلبك لسداد (${payOption === "deposit" ? "الديبوزيت / حجز المقعد" : "كامل المبلغ بالكامل 💰"}) بمبلغ ${eur(selectedEur)} (~${selectedEgp.toLocaleString()} ج.م) عبر ${paymentMethod}. تم فتح شات الموقع وسيتواصل معك ممثل خدمة العملاء الآن لتزويدك برقم التحويل وتأكيد الحجز.`
+                            : `Your payment request of ${eur(selectedEur)} (${payOption === "deposit" ? "Deposit" : "Full Payment"}) via ${paymentMethod} has been sent. Live chat is now open for an advisor to assist you.`}
                         </p>
                         <div className="mt-2.5">
                           <button
                             type="button"
-                            onClick={() =>         window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                            onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
                             className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-beige/30"
                           >
                             <MessageSquare className="h-3.5 w-3.5" />

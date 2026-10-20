@@ -338,10 +338,12 @@ export const sendClientMessage = createServerFn({ method: "POST" })
 // 2. Admin Chat APIs
 // ─────────────────────────────────────────────────────────────
 
-export const getAdminChats = createServerFn({ method: "GET" })
-  .handler(async () => {
+export const getAdminChats = createServerFn({ method: "POST" })
+  .inputValidator((d: { showArchived?: boolean | undefined }) => d)
+  .handler(async ({ data }) => {
     const store = await getStore();
-    
+    const showArchived = data?.showArchived ?? false;
+
     // Automatically inspect all conversations for payment requests
     for (const conv of Object.values(store.conversations)) {
       const msgs = store.messages[conv.id] || [];
@@ -375,12 +377,16 @@ export const getAdminChats = createServerFn({ method: "GET" })
       }
     }
 
-    const list = Object.values(store.conversations)
-      .filter((c) => !c.isDeleted || c.hasPaymentRequest)
+    const allConvs = Object.values(store.conversations);
+    const archivedCount = allConvs.filter((c) => c.isDeleted && !c.hasPaymentRequest).length;
+
+    const list = allConvs
+      .filter((c) => showArchived ? true : (!c.isDeleted || c.hasPaymentRequest))
       .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime());
     return {
       conversations: list,
       totalUnread: list.reduce((acc, c) => acc + (c.unreadCount || 0), 0),
+      archivedCount,
     };
   });
 

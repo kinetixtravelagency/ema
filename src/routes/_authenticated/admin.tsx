@@ -8,7 +8,7 @@ import {
   adminUpdateApplication, adminSetDocumentStatus,
   deleteApplication,
   adminManagePartner, adminAddCommission, adminSetCommission,
-  adminUpdateLevel, adminUpdateCountry, adminSendNotice,
+  adminUpdateLevel, adminUpdateCountry, adminSendNotice, adminClearNotice,
 } from "@/lib/account.functions";
 import { adminDeletePartner, adminSetWithdrawalStatus } from "@/lib/partner.functions";
 import { getAdminChats } from "@/lib/chat.functions";
@@ -24,7 +24,8 @@ import {
   Mail, Phone, MapPin, Calendar, Copy, Check, ExternalLink, Link2, Trash2, RefreshCw,
   Sparkles, Filter, Layers, CheckSquare, Loader2, CreditCard, BookOpen, Send, User,
   FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck, FileBadge,
-  Mic, Info, ArrowRight, Home, Wand2, Building2, Coffee, Clock3, LayoutGrid, List, SlidersHorizontal, type LucideIcon,
+  Mic, Info, ArrowRight, Home, Wand2, Building2, Coffee, Clock3, LayoutGrid, List, SlidersHorizontal,
+  BellRing, AlertTriangle, type LucideIcon,
 } from "lucide-react";
 import { AdminChatTab } from "@/components/admin/AdminChatTab";
 import { AdminMaterialsTab } from "@/components/admin/AdminMaterialsTab";
@@ -56,7 +57,7 @@ function statusColor(s: string) {
     in_review: "bg-blue-100 text-blue-800",
     submitted: "bg-blue-100 text-blue-800",
     documents: "bg-purple-100 text-purple-800",
-    suspended: "bg-red-100 text-red-800",
+    suspended: "bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-200",
     rejected: "bg-red-100 text-red-800",
     paid: "bg-navy text-ivory",
     cancelled: "bg-gray-100 text-gray-500",
@@ -485,6 +486,29 @@ const PREDEFINED_REJECTION_REASONS = [
   },
 ];
 
+const PREDEFINED_NOTICES = [
+  {
+    ar: "تم تعليق طلبك لعدم رفع المستندات المطلوبة، فلا يمكنك دفع المقدم حتى استكمالها.",
+    en: "Your application is on hold: required documents are missing. Please upload them before proceeding with payment.",
+  },
+  {
+    ar: "يرجى تعديل ورفع شهادة الموقف من التجنيد السارية المعتمدة.",
+    en: "Please update and upload a valid certified military service certificate.",
+  },
+  {
+    ar: "يرجى رفع إثبات القيد الجامعي الساري باللغة الإنجليزية أو العربية.",
+    en: "Please upload an active university enrollment certificate.",
+  },
+  {
+    ar: "يرجى توضيح وتحديث بيانات جواز السفر ومحل الإقامة الحالي.",
+    en: "Please verify and update passport details and current residence address.",
+  },
+  {
+    ar: "custom",
+    en: "custom",
+  },
+];
+
 interface ApplicantMeta {
   first_name?: string;
   second_name?: string;
@@ -511,6 +535,13 @@ interface ApplicantMeta {
   flight_included?: boolean | string;
   contract_duration?: string;
   rejection_reason?: string;
+  admin_alert_message?: string;
+  admin_alert_at?: string;
+  suspended?: boolean;
+  payment_method?: string;
+  payment_option?: string;
+  payment_requested_at?: string;
+  payment_summary?: string;
   email?: string;
 }
 
@@ -556,6 +587,8 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const upd         = useServerFn(adminUpdateApplication);
   const setDoc      = useServerFn(adminSetDocumentStatus);
   const delApp      = useServerFn(deleteApplication);
+  const sendNotice  = useServerFn(adminSendNotice);
+  const clearNotice = useServerFn(adminClearNotice);
 
   const [search,      setSearch]      = useState("");
   const [filter,      setFilter]      = useState("all");
@@ -575,12 +608,20 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
   const [rejectionCustomText, setRejectionCustomText] = useState<string>("");
   const [savingRejection, setSavingRejection] = useState(false);
 
+  // Notice / Alert modal state
+  const [noticeModal, setNoticeModal] = useState<{ id: string; name: string; currentNotice?: string } | null>(null);
+  const [noticeSelect, setNoticeSelect] = useState<string>(ar ? PREDEFINED_NOTICES[0]!.ar : PREDEFINED_NOTICES[0]!.en);
+  const [noticeCustomText, setNoticeCustomText] = useState<string>("");
+  const [noticeSuspend, setNoticeSuspend] = useState<boolean>(true);
+  const [savingNotice, setSavingNotice] = useState(false);
+
   const statuses = [
     { key: "all", en: "All", ar: "الكل" },
     { key: "submitted", en: "Submitted", ar: "مستلم" },
     { key: "in_review", en: "In Review", ar: "قيد المراجعة" },
     { key: "documents", en: "Documents", ar: "مطلوب مستندات" },
     { key: "approved", en: "Approved", ar: "مقبول مبدئياً" },
+    { key: "suspended", en: "Suspended", ar: "معلق / تنبيه ⚠️" },
     { key: "rejected", en: "Rejected", ar: "مرفوض" },
   ];
 
@@ -700,6 +741,47 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
       rollback(appId, "status");
     } finally {
       setSavingRejection(false);
+    }
+  };
+
+  const handleConfirmNotice = async () => {
+    if (!noticeModal) return;
+    const isCustom = noticeSelect === "custom" || noticeSelect.includes("custom") || noticeSelect.includes("مخصص") || noticeSelect.includes("Custom");
+    const reason = isCustom
+      ? noticeCustomText.trim()
+      : noticeSelect + (noticeCustomText.trim() ? ` — ${noticeCustomText.trim()}` : "");
+
+    if (!reason) {
+      alert(tr("Please select or write the notice message for the candidate.", "الرجاء اختيار أو كتابة رسالة التنبيه الموجهة للمتقدم"));
+      return;
+    }
+
+    const appId = noticeModal.id;
+    setSavingNotice(true);
+    if (noticeSuspend) patch(appId, { status: "suspended" });
+    try {
+      await sendNotice({ data: { id: appId, message: reason, suspend: noticeSuspend } });
+      setNoticeModal(null);
+      setNoticeCustomText("");
+      onChange();
+    } catch (e: any) {
+      alert(e?.message || tr("Failed to send notice", "فشل إرسال التنبيه"));
+      if (noticeSuspend) rollback(appId, "status");
+    } finally {
+      setSavingNotice(false);
+    }
+  };
+
+  const handleClearNotice = async (appId: string) => {
+    if (!confirm(tr("Clear active notice and resume application review?", "هل تريد إلغاء التنبيه واستئناف مراجعة الطلب؟"))) return;
+    setUpdatingId(appId);
+    try {
+      await clearNotice({ data: { id: appId } });
+      onChange();
+    } catch (e: any) {
+      alert(e?.message || tr("Failed to clear notice", "فشل إلغاء التنبيه"));
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -1005,7 +1087,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                           `🪪 ${meta.national_id || "—"}`,
                           `🌍 ${a.programs?.countries?.name_en || "—"} (${contractDuration})`,
                           meta.current_city ? `📍 ${meta.current_city} — ${meta.current_address || ""}` : "",
-                          meta.military_status ? `🛡️ ${meta.military_status}` : "",
+                          meta.military_status ? `🛡️ ${formatMilitaryStatus(meta.military_status, meta.gender)}` : "",
                         ].filter(Boolean).join("\n");
                         copyText(copyPayload, `quick-${a.id}`);
                       }}
@@ -1042,6 +1124,26 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                     <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
                     <span className="font-bold">{tr("Rejection Reason:", "سبب الرفض الموجه للمتقدم:")}</span>
                     <span className="font-medium break-words flex-1">{rejectionReason}</span>
+                  </div>
+                )}
+
+                {/* Active Notice / Alert Banner in summary if notice sent */}
+                {(eff.status === "suspended" || meta.admin_alert_message) && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 p-3 text-xs text-amber-950 dark:text-amber-100">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <span className="font-bold">{tr("Active Notice / Alert:", "تنبيه إداري نشط موجه للمتقدم:")}</span>
+                      <span className="font-medium break-words flex-1">{meta.admin_alert_message || tr("Application suspended", "تم تعليق الطلب مؤقتاً")}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleClearNotice(a.id)}
+                      className="inline-flex items-center gap-1 rounded-xl bg-amber-200/80 hover:bg-amber-300 dark:bg-amber-900/60 text-amber-950 dark:text-amber-100 px-3 py-1 text-[11px] font-bold transition-colors"
+                      title={tr("Clear notice and allow candidate to resume", "إلغاء التنبيه واستئناف الطلب")}
+                    >
+                      <Check className="h-3 w-3" />
+                      <span>{tr("Clear Notice", "إلغاء التنبيه")}</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -1130,9 +1232,28 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                                 <option value="in_review">{tr("in_review (Active Review)", "in_review (قيد المراجعة)")}</option>
                                 <option value="documents">{tr("documents (Documents Action)", "documents (مطلوب مستندات)")}</option>
                                 <option value="approved">{tr("approved (Passed Screening)", "approved (موافقة مبدئية)")}</option>
+                                <option value="suspended">{tr("suspended (Suspended / On Hold ⚠️)", "suspended (طلب معلق ⚠️)")}</option>
                                 <option value="rejected">{tr("rejected (Reject & Close ✕)", "rejected (رفض الطلب ✕)")}</option>
                               </select>
                             </div>
+
+                            {/* Direct Notice / Warning Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setNoticeModal({
+                                  id: a.id,
+                                  name: candidateName,
+                                  currentNotice: meta.admin_alert_message || "",
+                                });
+                                setNoticeCustomText(meta.admin_alert_message || "");
+                              }}
+                              className="inline-flex items-center gap-1 rounded-xl border border-amber-400 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 px-3 py-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-100 transition-colors"
+                              title={tr("Send Official Notice / Warning to Applicant", "إرسال تنبيه أو تعليق الطلب")}
+                            >
+                              <BellRing className="h-3.5 w-3.5" />
+                              <span>{tr("Send Notice ⚠️", "تنبيه المتقدم ⚠️")}</span>
+                            </button>
 
                             {/* Direct Reject Button */}
                             {eff.status !== "rejected" && (
@@ -1146,17 +1267,30 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                               </button>
                             )}
 
-                            {/* Deposit toggle */}
-                            <button onClick={() => doDeposit(a.id, Boolean(eff.deposit))} disabled={isBusy}
-                              className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 sm:ms-auto ${
-                                eff.deposit
-                                  ? "bg-beige/20 text-navy border-beige/40 hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70"
-                                  : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-beige/40 hover:text-navy/80"
-                              }`}>
-                              {eff.deposit
-                                ? <><CheckCircle2 className="h-3.5 w-3.5 text-beige" /> {tr("Deposit Paid", "الديبوزت مدفوع")} ({eur(due ?? 0)})</>
-                                : <><DollarSign className="h-3.5 w-3.5" /> {tr("Mark Deposit Paid", "تأكيد سداد الديبوزت")} ({eur(due ?? 0)})</>}
-                            </button>
+                            {/* Deposit / Full Payment toggle */}
+                            {(() => {
+                              const isFullPlan = a.payment_plan === "full" || meta.payment_option === "full";
+                              return (
+                                <button onClick={() => doDeposit(a.id, Boolean(eff.deposit))} disabled={isBusy}
+                                  className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-bold transition-all disabled:opacity-50 sm:ms-auto ${
+                                    eff.deposit
+                                      ? "bg-beige/20 text-navy border-beige/40 hover:bg-beige/30 dark:bg-navy/20 dark:text-beige/70"
+                                      : "border-dashed border-muted-foreground/40 text-muted-foreground hover:border-beige/40 hover:text-navy/80"
+                                  }`}>
+                                  {eff.deposit ? (
+                                    <>
+                                      <CheckCircle2 className="h-3.5 w-3.5 text-beige" />
+                                      <span>{isFullPlan ? tr("Full Payment Received ✓", "تم سداد كامل المبلغ ✓") : tr("Deposit Paid ✓", "الديبوزت مدفوع ✓")} ({eur(due ?? 0)})</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <DollarSign className="h-3.5 w-3.5" />
+                                      <span>{isFullPlan ? tr("Mark Full Payment Paid", "تأكيد سداد كامل المبلغ") : tr("Mark Deposit Paid", "تأكيد سداد الديبوزت")} ({eur(due ?? 0)})</span>
+                                    </>
+                                  )}
+                                </button>
+                              );
+                            })()}
                           </div>
 
                           {/* Stage progression buttons */}
@@ -1275,7 +1409,7 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
                             <div className="flex justify-between items-center gap-2">
                               <span className="text-muted-foreground font-medium">{tr("Military Status", "الموقف من التجنيد")}</span>
                               <span className="font-bold text-navy dark:text-beige">
-                                {meta.military_status || (meta.gender === "female" ? tr("Exempt (Female)", "معفاة (أنثى)") : tr("Student deferment", "مؤجل دراسياً / تصريح سفر سياحي"))}
+                                {formatMilitaryStatus(meta.military_status, meta.gender)}
                               </span>
                             </div>
                           </div>
@@ -1672,6 +1806,114 @@ function ApplicationsTab({ apps, onChange }: { apps: any[]; onChange: () => void
               >
                 {savingRejection ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <XCircle className="h-3.5 w-3.5" />}
                 <span>{tr("Confirm Rejection & Close File", "تأكيد رفض الطلب وإغلاقه")}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ NOTICE / ALERT MODAL DIALOG (BILINGUAL) ══ */}
+      {noticeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+                  <BellRing className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-foreground">
+                    {tr(`Send Notice / Warning — ${noticeModal.name}`, `إرسال تنبيه رسمي — ${noticeModal.name}`)}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {tr("This notice will immediately appear in the candidate's dashboard and live chat.", "سيظهر هذا التنبيه فوراً للمتقدم على حسابه وفي اللايف شات الخاص به.")}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setNoticeModal(null)}
+                className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-foreground block mb-1.5">
+                  {tr("1. Quick Predefined Notice Template:", "1. اختر رسالة تنبيه جاهزة:")}
+                </label>
+                <select
+                  value={noticeSelect}
+                  onChange={e => {
+                    setNoticeSelect(e.target.value);
+                    if (e.target.value !== "custom") setNoticeCustomText("");
+                  }}
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs font-medium outline-none focus:border-navy dark:focus:border-beige"
+                >
+                  {PREDEFINED_NOTICES.map((r, i) => {
+                    const label = ar ? r.ar : r.en;
+                    const isCustom = r.ar === "custom";
+                    return (
+                      <option key={i} value={isCustom ? "custom" : label}>
+                        {isCustom ? tr("✏️ Custom Notice (Write your own)...", "✏️ كتابة تنبيه مخصص...") : label}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div>
+                <label className="font-bold text-foreground block mb-1.5">
+                  {tr("2. Notice Message Text (editable):", "2. نص رسالة التنبيه الموجهة للمتقدم:")}
+                </label>
+                <textarea
+                  rows={4}
+                  value={noticeCustomText || (noticeSelect !== "custom" ? noticeSelect : "")}
+                  onChange={e => setNoticeCustomText(e.target.value)}
+                  placeholder={tr(
+                    "e.g. Your application has been suspended due to missing documents. You cannot pay the deposit until all documents are uploaded...",
+                    "مثال: تم تعليق طلبك لعدم رفع المستندات المطلوبة، فلا يمكنك دفع المقدم حتى استكمال رفعها..."
+                  )}
+                  className="w-full rounded-xl border border-input bg-background p-3 text-xs outline-none focus:border-navy dark:focus:border-beige resize-none leading-relaxed"
+                />
+              </div>
+
+              <label className="flex items-center gap-2.5 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/30 p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={noticeSuspend}
+                  onChange={e => setNoticeSuspend(e.target.checked)}
+                  className="rounded border-amber-400 text-amber-600 focus:ring-amber-500 h-4 w-4"
+                />
+                <div className="text-xs">
+                  <span className="font-bold text-amber-950 dark:text-amber-200 block">
+                    {tr("Suspend application & prevent deposit payment", "تعليق الطلب ومنع المتقدم من سداد المقدم والرسوم")}
+                  </span>
+                  <span className="text-[11px] text-amber-800 dark:text-amber-300 block">
+                    {tr("Will put the application into 'suspended' status until requirements are met.", "سيتم تحويل حالة الطلب إلى 'معلق' وحجب الدفع حتى يتم رفع المطلوب.")}
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-border/60">
+              <button
+                type="button"
+                onClick={() => setNoticeModal(null)}
+                className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
+              >
+                {tr("Cancel", "إلغاء")}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmNotice}
+                disabled={savingNotice}
+                className="inline-flex items-center gap-1.5 rounded-full bg-amber-600 hover:bg-amber-700 text-white px-5 py-2 text-xs font-bold shadow-md transition-all disabled:opacity-50"
+              >
+                {savingNotice ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <BellRing className="h-3.5 w-3.5" />}
+                <span>{tr("Send Notice & Alert", "إرسال التنبيه فوراً")}</span>
               </button>
             </div>
           </div>
@@ -5006,22 +5248,65 @@ function PartnersTab({
                     </div>
                   </div>
 
-                  {/* Card 3: Experience & Background */}
+                  {/* Card 3: Academic & Experience */}
                   <div className="rounded-2xl border border-border bg-card p-4 space-y-2.5">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <Briefcase className="h-3.5 w-3.5 text-beige" /> Sales Experience
+                      <GraduationCap className="h-3.5 w-3.5 text-beige" /> Academic & Experience
                     </p>
                     <div className="text-xs space-y-2">
-                      <div>
-                        <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Experience Statement</span>
-                        <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap max-h-32 overflow-y-auto">
-                          {p.experience || "No prior sales experience notes submitted."}
-                        </p>
-                      </div>
-                      <div className="pt-1">
-                        <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Partner User ID</span>
-                        <span className="font-mono text-[10px] text-muted-foreground block truncate">{p.user_id}</span>
-                      </div>
+                      {p.academic_status && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">المرحلة الأكاديمية</span>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-navy/10 px-2.5 py-0.5 text-[11px] font-semibold text-navy dark:bg-navy-soft dark:text-ivory">
+                            {p.academic_status === "student" ? "🎓 طالب جامعي" :
+                             p.academic_status === "graduate" ? "🏛️ خريج جامعي" :
+                             p.academic_status === "postgraduate" ? "📚 دراسات عليا" :
+                             p.academic_status === "highschool" ? "📋 ثانوية / دبلوم" :
+                             p.academic_status}
+                          </span>
+                        </div>
+                      )}
+                      {p.university && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">الجامعة</span>
+                          <span className="font-medium text-foreground">{p.university}</span>
+                        </div>
+                      )}
+                      {p.faculty && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">الكلية / المعهد</span>
+                          <span className="font-medium text-foreground">{p.faculty}</span>
+                        </div>
+                      )}
+                      {p.gender && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">الجنس</span>
+                          <span className="text-foreground">{p.gender === "male" ? "ذكر 👨" : p.gender === "female" ? "أنثى 👩" : p.gender}</span>
+                        </div>
+                      )}
+                      {p.birth_date && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">تاريخ الميلاد</span>
+                          <span className="text-foreground">{p.birth_date}</span>
+                        </div>
+                      )}
+                      {p.governorate && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">المحافظة</span>
+                          <span className="text-foreground">{p.governorate}</span>
+                        </div>
+                      )}
+                      {(p.bio || p.experience_field) && (
+                        <div>
+                          <span className="text-muted-foreground block text-[10px] uppercase font-semibold">خبرة المبيعات</span>
+                          <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap max-h-20 overflow-y-auto">
+                            {p.experience_field || p.bio || "—"}
+                          </p>
+                        </div>
+                      )}
+                      {!p.university && !p.academic_status && !p.bio && !p.experience_field && (
+                        <p className="text-muted-foreground/70 italic text-xs">لم تُرسل بيانات أكاديمية.</p>
+                      )}
                     </div>
                   </div>
 

@@ -130,6 +130,36 @@ function Apply() {
     return () => { isMounted = false; };
   }, [persistedAppId, PERSIST_KEY]);
 
+  // Pre-fill form from existing profile or auth metadata so candidate data is never lost/skipped
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const u = data?.user;
+      if (!u) return;
+      const meta = u.user_metadata || {};
+      const fullName = (meta.full_name || meta.name || "").trim();
+      const parts = fullName ? fullName.split(/\s+/) : [];
+      setF(prev => ({
+        ...prev,
+        first_name: prev.first_name || meta.first_name || parts[0] || "",
+        second_name: prev.second_name || meta.second_name || parts.slice(1).join(" ") || "",
+        phone_number: prev.phone_number || (meta.phone ? String(meta.phone).replace(/^\+20|^0/, "") : "") || "",
+        national_id: prev.national_id || meta.national_id || "",
+        gender: prev.gender || meta.gender || "",
+        birth_date: prev.birth_date || meta.birth_date || "",
+        military_status: prev.military_status || meta.military_status || "",
+        current_city: prev.current_city || meta.current_city || meta.city || "",
+        current_address: prev.current_address || meta.current_address || meta.address || "",
+        hometown_city: prev.hometown_city || meta.hometown_city || meta.origin_city || meta.governorate || "",
+        hometown_address: prev.hometown_address || meta.hometown_address || meta.origin_address || "",
+        education_level: prev.education_level || meta.education_level || (track === "student" ? "student" : "graduate"),
+        university: prev.university || meta.university || "",
+        faculty: prev.faculty || meta.faculty || "",
+        academic_year: prev.academic_year || meta.academic_year || "",
+        graduation_year: prev.graduation_year || meta.graduation_year || "",
+      }));
+    }).catch(() => {});
+  }, [track]);
+
   const country = countries.find((c) => c.slug === countrySlug) ?? countries[0]!;
   const [selectedProgSlug, setSelectedProgSlug] = useState<string>(
     found?.program.slug ?? country.programs.find((p) => p.track === track)?.slug ?? country.programs[0]!.slug

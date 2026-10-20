@@ -75,6 +75,8 @@ export function AdminChatTab() {
   const [selectedGroupFilter, setSelectedGroupFilter] = useState<string>("all");
   const [selectedFlagFilter, setSelectedFlagFilter] = useState<string>("all");
   const [busy, setBusy] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+  const [archivedCount, setArchivedCount] = useState(0);
 
   // Modal states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -96,9 +98,10 @@ export function AdminChatTab() {
     let mounted = true;
     const load = async () => {
       try {
-        const res = await fetchChats();
+        const res = await fetchChats({ data: { showArchived } });
         if (mounted && res && Array.isArray(res.conversations)) {
           setConversations(res.conversations);
+          if (typeof res.archivedCount === "number") setArchivedCount(res.archivedCount);
           const total = res.totalUnread || 0;
 
           if (prevAdminUnreadRef.current !== -1 && total > prevAdminUnreadRef.current) {
@@ -126,7 +129,7 @@ export function AdminChatTab() {
       mounted = false;
       clearInterval(iv);
     };
-  }, [selectedId]);
+  }, [selectedId, showArchived]);
 
   // Poll messages for selected conversation
   useEffect(() => {
@@ -458,6 +461,21 @@ export function AdminChatTab() {
               <option value="resolved">🟢 Resolved</option>
             </select>
           </div>
+
+          {/* Archive toggle */}
+          {archivedCount > 0 && (
+            <button
+              onClick={() => setShowArchived((v) => !v)}
+              className={`w-full flex items-center justify-center gap-2 rounded-xl border py-1.5 text-[11px] font-medium transition-all ${
+                showArchived
+                  ? "bg-navy text-ivory border-navy"
+                  : "border-border text-muted-foreground hover:border-beige hover:text-foreground"
+              }`}
+            >
+              <Trash2 className="h-3 w-3" />
+              {showArchived ? "إخفاء المؤرشفة" : `إظهار المؤرشفة (${archivedCount})`}
+            </button>
+          )}
         </div>
 
         {/* Conversations List Scroll Area */}
