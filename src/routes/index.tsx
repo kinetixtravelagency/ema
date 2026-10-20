@@ -275,10 +275,10 @@ function TrustGateHomeSection() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-beige/15 text-beige border border-beige/30">
-                <Award className="h-7 w-7 text-amber-400" strokeWidth={1.5} />
+                <Award className="h-7 w-7 text-beige" strokeWidth={1.5} />
               </div>
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/20 mb-1">
+                <div className="inline-flex items-center gap-2 rounded-full bg-beige/15 px-3 py-0.5 text-xs font-semibold text-beige border border-beige/30 mb-1">
                   <span>{tr("Official Government License", "اعتماد حكومي رسمي")}</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-semibold font-display text-ivory">

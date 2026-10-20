@@ -21,6 +21,7 @@ import {
   MapPin,
   Clock,
   Sparkles,
+  Globe,
 } from "lucide-react";
 import { Nav, Footer } from "@/components/site/SiteChrome";
 import { Reveal } from "@/components/site/Reveal";
@@ -305,7 +306,7 @@ export function TrustGatePage() {
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
-                <Award className="h-4 w-4 shrink-0 text-amber-500" strokeWidth={1.75} />
+                <Award className="h-4 w-4 shrink-0 text-beige" strokeWidth={1.75} />
                 <span>{tr("Tourism License No. 1339", "الترخيص لدى وزارة السياحة")}</span>
               </button>
 
@@ -424,7 +425,7 @@ export function TrustGatePage() {
                           className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                           title={tr("Copy number", "نسخ الرقم")}
                         >
-                          {copiedKey === "regNum" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
+                          {copiedKey === "regNum" ? <Check className="h-4 w-4 text-beige" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
                         </button>
                       </div>
 
@@ -438,7 +439,7 @@ export function TrustGatePage() {
                           className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                           title={tr("Copy code", "نسخ الرقم")}
                         >
-                          {copiedKey === "natCode" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
+                          {copiedKey === "natCode" ? <Check className="h-4 w-4 text-beige" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
                         </button>
                       </div>
                     </div>
@@ -555,7 +556,7 @@ export function TrustGatePage() {
                           className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors shrink-0"
                           title={tr("Copy number", "نسخ الرقم")}
                         >
-                          {copiedKey === "taxNum" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
+                          {copiedKey === "taxNum" ? <Check className="h-4 w-4 text-beige" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
                         </button>
                       </div>
 
@@ -569,7 +570,7 @@ export function TrustGatePage() {
                           className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors shrink-0"
                           title={tr("Copy file code", "نسخ رقم الملف")}
                         >
-                          {copiedKey === "taxFile" ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
+                          {copiedKey === "taxFile" ? <Check className="h-4 w-4 text-beige" /> : <Copy className="h-4 w-4" strokeWidth={1.5} />}
                         </button>
                       </div>
                     </div>
@@ -636,7 +637,7 @@ export function TrustGatePage() {
                   {/* Left Column / Details */}
                   <div className="lg:col-span-7">
                     <div className="inline-flex items-center gap-2 rounded-full border border-beige/40 bg-beige/10 px-4 py-1.5 text-xs font-semibold text-beige mb-4">
-                      <Award className="h-4 w-4 text-amber-400" />
+                      <Award className="h-4 w-4 text-beige" />
                       <span>{tr("Ministry of Tourism Accreditation", "جمهورية مصر العربية — وزارة السياحة والآثار")}</span>
                     </div>
 
@@ -681,7 +682,7 @@ export function TrustGatePage() {
                       >
                         {copiedKey === "tourismLic" ? (
                           <>
-                            <Check className="h-4 w-4 text-emerald-400" strokeWidth={2} />
+                            <Check className="h-4 w-4 text-beige" strokeWidth={2} />
                             <span>{tr("License 1339 Copied!", "تم نسخ رقم 1339")}</span>
                           </>
                         ) : (
@@ -700,14 +701,14 @@ export function TrustGatePage() {
                       <div className="flex items-center justify-between border-b border-ivory/10 pb-4 mb-5">
                         <div className="flex items-center gap-3">
                           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-beige/15 text-beige border border-beige/30">
-                            <Award className="h-6 w-6 text-amber-400" strokeWidth={1.5} />
+                            <Award className="h-6 w-6 text-beige" strokeWidth={1.5} />
                           </div>
                           <div>
                             <p className="text-[11px] text-ivory/50">{tr("Tourism Entity", "الجهة المانحة للترخيص")}</p>
                             <p className="font-bold text-sm text-ivory">{tr("Ministry of Tourism & Antiquities", "وزارة السياحة والآثار")}</p>
                           </div>
                         </div>
-                        <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/30">
+                        <span className="rounded-full bg-beige/15 px-3 py-1 text-xs font-semibold text-beige border border-beige/30">
                           {tr("Active & Certified", "ساري وموثق")}
                         </span>
                       </div>
@@ -895,15 +896,17 @@ export function TrustGatePage() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               {[
-                { name: "بلغاريا", en: "Bulgaria", flag: "🇧🇬" },
-                { name: "لوكسمبورغ", en: "Luxembourg", flag: "🇱🇺" },
-                { name: "أرمينيا", en: "Armenia", flag: "🇦🇲" },
-                { name: "إيطاليا", en: "Italy", flag: "🇮🇹" },
+                { name: "بلغاريا", en: "Bulgaria" },
+                { name: "لوكسمبورغ", en: "Luxembourg" },
+                { name: "أرمينيا", en: "Armenia" },
+                { name: "إيطاليا", en: "Italy" },
               ].map((c) => (
                 <div key={c.en} className="rounded-2xl border border-border bg-card p-5 text-center shadow-sm hover:border-beige/50 transition-colors">
-                  <span className="text-3xl block mb-2">{c.flag}</span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-beige/15 text-beige border border-beige/30 mx-auto mb-3">
+                    <Globe className="h-5 w-5 text-beige" strokeWidth={1.5} />
+                  </div>
                   <p className="text-sm font-bold text-foreground">{ar ? c.name : c.en}</p>
-                  <p className="text-xs text-beige font-semibold mt-1">{tr("Work Permits", "عقود وتصاريح عمل")}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{tr("Work Permits", "عقود وتصاريح عمل")}</p>
                 </div>
               ))}
             </div>
