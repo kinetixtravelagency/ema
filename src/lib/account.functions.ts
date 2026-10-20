@@ -210,9 +210,10 @@ export const adminUpdateProgramPrice = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { saveProgramOverride } = await import("./program_overrides.server");
 
-    const { data: current } = await supabaseAdmin.from("programs").select("slug").eq("id", data.id).maybeSingle();
+    const client = (process.env['SUPABASE_SERVICE_ROLE_KEY'] ? supabaseAdmin : context.supabase);
+    const { data: current } = await client.from("programs").select("slug").eq("id", data.id).maybeSingle();
 
-    const { error } = await supabaseAdmin.from("programs")
+    const { error } = await client.from("programs")
       .update({ price: data.price, deposit: data.deposit, max_installments: data.max_installments, updated_at: new Date().toISOString() }).eq("id", data.id);
     if (error) throw new Error(error.message);
 
@@ -288,7 +289,8 @@ export const adminCreateProgram = createServerFn({ method: "POST" })
       published: data.published ?? true,
     };
 
-    const { data: item, error } = await supabaseAdmin.from("programs").insert(dbPayload).select("id").single();
+    const client = (process.env['SUPABASE_SERVICE_ROLE_KEY'] ? supabaseAdmin : context.supabase);
+    const { data: item, error } = await client.from("programs").insert(dbPayload).select("id").single();
     if (error) throw new Error(error.message);
 
     saveProgramOverride(slug, {
@@ -357,14 +359,15 @@ export const adminUpdateProgram = createServerFn({ method: "POST" })
     if (data.max_installments !== undefined) patch.max_installments = Math.max(1, Math.min(12, Math.round(Number(data.max_installments) || 6)));
     if (data.published !== undefined) patch.published = data.published;
 
-    const { error } = await supabaseAdmin.from("programs").update(patch).eq("id", data.id);
+    const client = (process.env['SUPABASE_SERVICE_ROLE_KEY'] ? supabaseAdmin : context.supabase);
+    const { error } = await client.from("programs").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
 
     const targetSlug = data.slug?.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-");
     if (targetSlug) {
       saveProgramOverride(targetSlug, data);
     } else {
-      const { data: current } = await supabaseAdmin.from("programs").select("slug").eq("id", data.id).maybeSingle();
+      const { data: current } = await client.from("programs").select("slug").eq("id", data.id).maybeSingle();
       if (current?.slug) {
         saveProgramOverride(current.slug, data);
       }
@@ -383,7 +386,8 @@ export const adminDeleteProgram = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("programs").delete().eq("id", data.id);
+    const client = (process.env['SUPABASE_SERVICE_ROLE_KEY'] ? supabaseAdmin : context.supabase);
+    const { error } = await client.from("programs").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
