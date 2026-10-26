@@ -327,7 +327,7 @@ export function HowPage() {
           {/* Action Box */}
           <div className="mt-16 text-center">
             <Link
-              to="/auth"
+              to="/countries"
               className="inline-flex items-center gap-2 rounded-full bg-navy px-8 py-4 font-semibold text-ivory hover:bg-navy-soft transition-transform hover:-translate-y-0.5 shadow-md"
             >
               {tr("Start Your Application Online", "ابدأ طلب التقديم أونلاين")}

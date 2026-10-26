@@ -8,6 +8,7 @@ export type ChatMessage = {
   sender: MessageSender;
   senderName: string;
   text: string;
+  imageUrl?: string | null | undefined; // public URL for image messages
   isRead: boolean;
   createdAt: string;
 };
@@ -652,3 +653,126 @@ export const adminDeleteConversation = createServerFn({ method: "POST" })
     return { ok: true, conversationId: data.conversationId };
   });
 
+// ─────────────────────────────────────────────────────────────
+// 3. Image Upload & Send (Client)
+// ─────────────────────────────────────────────────────────────
+
+export const sendChatImage = createServerFn({ method: "POST" })
+  .inputValidator(
+    (d: {
+      conversationId?: string | undefined;
+      visitorId?: string | undefined;
+      userId?: string | undefined;
+      clientName?: string | undefined;
+      clientEmail?: string | undefined;
+      clientPhone?: string | undefined;
+      sender?: MessageSender | undefined;
+      senderName?: string | undefined;
+      caption?: string | undefined;
+      /** base64-encoded image data (NO data: prefix) */
+      imageBase64: string;
+      mimeType: string;
+      fileName: string;
+    }) => d
+  )
+  .handler(async ({ data }) => {
+    if (!data.imageBase64) throw new Error("No image data provided");
+
+    // 1. Upload to Supabase Storage
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const buffer = Buffer.from(data.imageBase64, "base64");
+    const ext = data.fileName.split(".").pop()?.toLowerCase() ?? "jpg";
+    const storagePath = `chat-images/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from("documents")
+      .upload(storagePath, buffer, {
+        upsert: false,
+        contentType: data.mimeType || "image/jpeg",
+        cacheControl: "31536000",
+      });
+
+    if (uploadError) throw new Error("Image upload failed: " + uploadError.message);
+
+    const { data: urlData } = supabaseAdmin.storage.from("documents").getPublicUrl(storagePath);
+    const imageUrl = urlData?.publicUrl;
+    if (!imageUrl) throw new Error("Could not get public URL for uploaded image");
+
+    // 2. Find or create conversation
+    const store = await getStore();
+    let conv: ChatConversation | undefined;
+
+    if (data.userId) conv = Object.values(store.conversations).find((c) => c.userId === data.userId);
+    if (!conv && data.conversationId && store.conversations[data.conversationId]) {
+      conv = store.conversations[data.conversationId];
+    } else if (!conv && data.visitorId) {
+      conv = Object.values(store.conversations).find((c) => c.visitorId === data.visitorId);
+    }
+    if (!conv && data.clientEmail) {
+      const em = data.clientEmail.trim().toLowerCase();
+      conv = Object.values(store.conversations).find(
+        (c) => c.clientEmail && c.clientEmail.trim().toLowerCase() === em
+      );
+    }
+
+    const now = new Date().toISOString();
+    const isAdmin = data.sender === "admin";
+    const sender: MessageSender = isAdmin ? "admin" : "client";
+    const caption = (data.caption || "").trim() || "📷 صورة / Image";
+
+    if (!conv) {
+      const convId = "conv_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
+      conv = {
+        id: convId,
+        userId: data.userId ?? null,
+        visitorId: data.visitorId ?? null,
+        clientName: (data.clientName || "").trim() || (isAdmin ? "عميل إيما" : "زائر"),
+        clientEmail: (data.clientEmail || "").trim() || null,
+        clientPhone: (data.clientPhone || "").trim() || null,
+        status: "active",
+        lastMessage: caption,
+        lastMessageAt: now,
+        unreadCount: isAdmin ? 0 : 1,
+        unreadClientCount: isAdmin ? 1 : 0,
+        createdAt: now,
+        updatedAt: now,
+        isDeleted: false,
+        hasPaymentRequest: false,
+      };
+      store.conversations[conv.id] = conv;
+      store.messages[conv.id] = [];
+    } else {
+      conv.lastMessage = caption;
+      conv.lastMessageAt = now;
+      conv.status = "active";
+      if (isAdmin) {
+        conv.unreadClientCount = (conv.unreadClientCount || 0) + 1;
+      } else {
+        conv.unreadCount = (conv.unreadCount || 0) + 1;
+      }
+      conv.updatedAt = now;
+      conv.isDeleted = false;
+    }
+
+    const senderName = isAdmin
+      ? (data.senderName || "إدارة إيما (EMA Admin)")
+      : (conv.clientName || "Client");
+
+    const newMsg: ChatMessage = {
+      id: "msg_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
+      conversationId: conv.id,
+      sender,
+      senderName,
+      text: caption,
+      imageUrl,
+      isRead: false,
+      createdAt: now,
+    };
+
+    const msgList = store.messages[conv.id] ?? [];
+    msgList.push(newMsg);
+    store.messages[conv.id] = msgList;
+    await saveStore(store);
+
+    return { conversationId: conv.id, message: newMsg };
+  });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Check,
   Clock,
@@ -31,6 +31,7 @@ import {
   ChevronRight,
   BellRing,
   AlertTriangle,
+  RotateCcw,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
@@ -231,11 +232,16 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   );
   const [paymentMethod, setPaymentMethod] = useState<string>("InstaPay");
   const [requestingPay, setRequestingPay] = useState(false);
-  const PAYMENT_PERSIST_KEY = `ema_pay_req_${application.id}`;
-  const [requestSuccess, setRequestSuccess] = useState(
-    typeof window !== "undefined" && localStorage.getItem(PAYMENT_PERSIST_KEY) === "yes"
-  );
+  const [requestSuccess, setRequestSuccess] = useState(false);
   const [requestErr, setRequestErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (application.payment_plan === "full") {
+      setPayOption("full");
+    } else if (application.payment_plan === "installments") {
+      setPayOption("deposit");
+    }
+  }, [application.payment_plan]);
 
   const requestPay = useServerFn(requestPaymentSupport);
 
@@ -336,9 +342,9 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
       });
 
       setRequestSuccess(true);
+      if (onDocChange) onDocChange();
       if (typeof window !== "undefined") {
-        localStorage.setItem(PAYMENT_PERSIST_KEY, "yes");
-                window.dispatchEvent(new CustomEvent("open-ema-chat"));
+        window.dispatchEvent(new CustomEvent("open-ema-chat"));
       }
     } catch (e: any) {
       setRequestErr(e.message || (ar ? "حدث خطأ أثناء إرسال طلب الدفع" : "Failed to send payment request"));
@@ -1566,8 +1572,11 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                     <div className="inline-flex p-1 rounded-2xl bg-card border border-border shadow-2xs">
                       <button
                         type="button"
-                        onClick={() => setPayOption("deposit")}
-                        className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                        onClick={() => {
+                          setPayOption("deposit");
+                          setRequestSuccess(false);
+                        }}
+                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                           payOption === "deposit"
                             ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
                             : "text-muted-foreground hover:text-foreground"
@@ -1577,14 +1586,17 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                       </button>
                       <button
                         type="button"
-                        onClick={() => setPayOption("full")}
-                        className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                        onClick={() => {
+                          setPayOption("full");
+                          setRequestSuccess(false);
+                        }}
+                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                           payOption === "full"
                             ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
-                        {ar ? "سداد كامل المبلغ 💰" : "Full Payment"}
+                        {ar ? "سداد كامل المبلغ دفعة واحدة 💰" : "Full Payment"}
                       </button>
                     </div>
                   </div>
@@ -1613,25 +1625,29 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                   {requestingPay ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin text-beige dark:text-navy" />
-                      <span>{tr("Sending Request to Support...", "جاري تجهيز بيانات السداد للشات...")}</span>
-                    </>
-                  ) : requestSuccess ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-beige dark:text-navy" />
-                      <span>{tr("Request Sent ✓ Open Live Chat", "تم إرسال الطلب بنجاح ✓ - فتح الشات")}</span>
+                      <span>{tr("Sending Request to Support...", "جاري إرسال طلب السداد للشات...")}</span>
                     </>
                   ) : isSuspended ? (
                     <>
                       <AlertTriangle className="h-4 w-4 text-amber-500" />
                       <span>{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
                     </>
+                  ) : requestSuccess ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4 text-beige dark:text-navy" />
+                      <span className="text-center leading-normal">
+                        {ar
+                          ? `إعادة إرسال طلب سداد (${payOption === "full" ? "سداد كامل" : "ديبوزيت"}) عبر ${paymentMethod} 🔄`
+                          : `Re-send Payment Request (${payOption === "full" ? "Full" : "Deposit"}) via ${paymentMethod} 🔄`}
+                      </span>
+                    </>
                   ) : (
                     <>
                       <MessageSquare className="h-4 w-4 text-beige dark:text-navy shrink-0" />
                       <span className="text-center leading-normal">
                         {ar
-                          ? `طلب بيانات السداد عبر ${paymentMethod} (${payOption === "full" ? "سداد كامل" : "ديبوزيت"}) 💬`
-                          : `Request Payment Details via ${paymentMethod} in Live Chat 💬`}
+                          ? `طلب بيانات السداد عبر ${paymentMethod} (${payOption === "full" ? "سداد كامل المبلغ" : "ديبوزيت / مقدم"}) 💬`
+                          : `Request Payment Details via ${paymentMethod} (${payOption === "full" ? "Full" : "Deposit"}) in Live Chat 💬`}
                       </span>
                     </>
                   )}
@@ -1642,29 +1658,37 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 )}
 
                 {requestSuccess && (
-                  <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-beige dark:text-beige animate-in fade-in">
+                  <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-beige dark:text-beige animate-in fade-in space-y-3">
                     <div className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 text-beige shrink-0 mt-0.5" />
                       <div className="text-xs leading-relaxed flex-1">
                         <p className="font-bold text-sm">
-                          {ar ? "✓ تم إرسال طلب الدفع بنجاح!" : "✓ Payment request sent successfully!"}
+                          {ar ? "✓ تم إرسال طلب السداد بنجاح!" : "✓ Payment request sent successfully!"}
                         </p>
                         <p className="mt-1">
                           {ar
-                            ? `تم تسجيل طلبك لسداد (${payOption === "deposit" ? "الديبوزيت / حجز المقعد" : "كامل المبلغ بالكامل 💰"}) بمبلغ ${eur(selectedEur)} (~${selectedEgp.toLocaleString()} ج.م) عبر ${paymentMethod}. تم فتح شات الموقع وسيتواصل معك ممثل خدمة العملاء الآن لتزويدك برقم التحويل وتأكيد الحجز.`
-                            : `Your payment request of ${eur(selectedEur)} (${payOption === "deposit" ? "Deposit" : "Full Payment"}) via ${paymentMethod} has been sent. Live chat is now open for an advisor to assist you.`}
+                            ? `تم تسجيل وإرسال طلبك لسداد (${payOption === "deposit" ? "الديبوزيت / مقدم حجز المقعد" : "كامل المبلغ دفعة واحدة 💰"}) بمبلغ ${eur(selectedEur)} (~${selectedEgp.toLocaleString()} ج.م) عبر ${paymentMethod}. تم فتح شات الموقع وسيتواصل معك ممثل خدمة العملاء الآن لتزويدك برقم التحويل وتأكيد الحجز.`
+                            : `Your payment request of ${eur(selectedEur)} (${payOption === "deposit" ? "Deposit" : "Full Payment"}) via ${paymentMethod} has been recorded. Live chat is active to assist you.`}
                         </p>
-                        <div className="mt-2.5">
-                          <button
-                            type="button"
-                            onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-beige/30"
-                          >
-                            <MessageSquare className="h-3.5 w-3.5" />
-                            {ar ? "فتح شات الموقع الآن 💬" : "Open Live Chat Now 💬"}
-                          </button>
-                        </div>
                       </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-beige/20">
+                      <button
+                        type="button"
+                        onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-navy text-ivory px-4 py-2 text-xs font-bold shadow hover:opacity-90"
+                      >
+                        <MessageSquare className="h-3.5 w-3.5" />
+                        {ar ? "فتح شات الموقع الآن ومتابعة السداد 💬" : "Open Live Chat Now 💬"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRequestSuccess(false)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-beige/40 bg-card text-foreground px-3.5 py-2 text-xs font-semibold hover:bg-secondary"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        {ar ? "تغيير النظام أو وسيلة الدفع وإرسال طلب جديد 🔄" : "Change Plan & Send Another Request 🔄"}
+                      </button>
                     </div>
                   </div>
                 )}

@@ -257,7 +257,7 @@ export function Nav({ solid = false }: { solid?: boolean }) {
             ) : (
               <>
                 <Link to="/auth" className="text-sm text-ivory/75 hover:text-beige">{t("signIn")}</Link>
-                <Link to="/auth" className="inline-flex items-center gap-1.5 rounded-full border border-beige/50 px-4 py-2 text-sm transition-colors hover:bg-beige hover:text-navy">
+                <Link to="/countries" className="inline-flex items-center gap-1.5 rounded-full border border-beige/50 px-4 py-2 text-sm transition-colors hover:bg-beige hover:text-navy">
                   {t("applyNow")} <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
                 </Link>
               </>
@@ -296,7 +296,7 @@ export function Nav({ solid = false }: { solid?: boolean }) {
                 {l.label}
               </Link>
             ))}
-            <Link to={user ? "/dashboard" : "/auth"} className="mt-4 block rounded-full bg-beige py-2.5 text-center font-medium text-sm text-navy">
+            <Link to={user ? "/dashboard" : "/countries"} className="mt-4 block rounded-full bg-beige py-2.5 text-center font-medium text-sm text-navy">
               {user ? t("dashboard") : t("applyNow")}
             </Link>
           </div>

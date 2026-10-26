@@ -239,7 +239,7 @@ function Dashboard() {
 
             <div className="flex items-center justify-end shrink-0">
               <Link
-                to="/apply"
+                to="/countries"
                 className="inline-flex w-full sm:w-auto items-center justify-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-bold text-ivory shadow-sm hover:opacity-90"
               >
                 + {t("applyNow")}
@@ -257,10 +257,10 @@ function Dashboard() {
                   <Globe className="mx-auto h-12 w-12 text-muted-foreground/40 mb-3" />
                   <h3 className="font-display text-xl font-bold">{tr("No Active Applications Yet", "لا توجد طلبات تقديم حالية")}</h3>
                   <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-                    {tr("Browse our programs across Germany, Poland, Spain, Italy and apply now to start your journey.", "تصفح برامجنا في ألمانيا، بولندا، إسبانيا، وإيطاليا وابدأ رحلتك الآن.")}
+                    {tr("Browse our programs across European countries and apply now to start your journey.", "تصفح برامجنا في مختلف الدول الأوروبية المعتمدة وابدأ رحلتك الآن.")}
                   </p>
                   <Link
-                    to="/apply"
+                    to="/countries"
                     className="mt-6 inline-flex items-center gap-2 rounded-full bg-navy px-6 py-3 text-sm font-bold text-ivory shadow-md hover:opacity-90 transition-transform active:scale-95"
                   >
                     {tr("Explore Programs & Apply", "استكشاف البرامج والتقديم")} →
@@ -387,7 +387,7 @@ function Dashboard() {
                                 <div className="flex flex-col items-start sm:items-end gap-0.5">
                                   <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/50 px-3 py-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 ring-1 ring-amber-300 dark:ring-amber-700/40">
                                     <Clock className="h-3.5 w-3.5" />
-                                    {ar ? "في انتظار الديبوزت" : "Awaiting Deposit"}
+                                    {a.payment_plan === "full" ? (ar ? "في انتظار كامل المبلغ" : "Awaiting Full Payment") : (ar ? "في انتظار الديبوزت" : "Awaiting Deposit")}
                                   </span>
                                   <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400">
                                     {eur(due ?? 0)}{" "}

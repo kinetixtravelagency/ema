@@ -12,8 +12,11 @@ import {
   AlertCircle,
   CreditCard,
   Bell,
+  ImagePlus,
+  Loader2,
+  XCircle,
 } from "lucide-react";
-import { getClientChat, sendClientMessage, type ChatMessage } from "@/lib/chat.functions";
+import { getClientChat, sendClientMessage, sendChatImage, type ChatMessage } from "@/lib/chat.functions";
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
 import { useSession } from "@/lib/useSession";
 import { useLang } from "@/lib/i18n";
@@ -67,6 +70,12 @@ export function ChatWidget() {
   const [mobileToast, setMobileToast] = useState<{ text: string; time: string } | null>(null);
   const [notifGranted, setNotifGranted] = useState<boolean>(false);
 
+  // Image sending states
+  const [imagePreview, setImagePreview] = useState<string | null>(null); // base64 data URL for preview
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Visitor identity
   const [visitorId, setVisitorId] = useState<string>("");
   const [convId, setConvId] = useState<string>("");
@@ -80,6 +89,7 @@ export function ChatWidget() {
 
   const fetchChat = useServerFn(getClientChat);
   const sendMsg = useServerFn(sendClientMessage);
+  const uploadImage = useServerFn(sendChatImage);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevUnreadRef = useRef(0);
@@ -312,6 +322,65 @@ export function ChatWidget() {
       setBusy(false);
     }
   };
+
+  const handleImageFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Accept only images up to 10MB
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert(ar ? "حجم الصورة يجب أن يكون أقل من 10 ميجابايت" : "Image must be under 10MB");
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  };
+
+  const handleImageSend = async () => {
+    if (!imageFile || !imagePreview || uploadingImage) return;
+    setUploadingImage(true);
+    try {
+      const name = resolvedName();
+      const phone = resolvedPhone();
+      const email = user?.email || undefined;
+
+      // Strip the data:<mime>;base64, prefix
+      const base64 = imagePreview.split(",")[1];
+      if (!base64) throw new Error("Invalid image data");
+
+      const res = await uploadImage({
+        data: {
+          conversationId: convId || undefined,
+          visitorId: !user?.id ? visitorId : undefined,
+          userId: user?.id || undefined,
+          clientName: name,
+          clientPhone: phone,
+          clientEmail: email,
+          imageBase64: base64,
+          mimeType: imageFile.type,
+          fileName: imageFile.name,
+        },
+      });
+
+      if (res.conversationId && res.conversationId !== convId) {
+        setConvId(res.conversationId);
+        localStorage.setItem(CONV_KEY, res.conversationId);
+      }
+
+      setMessages((prev) => [...prev, res.message]);
+      setImagePreview(null);
+      setImageFile(null);
+    } catch (err) {
+      console.error("Failed to send image:", err);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
 
   const handleInfoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -624,7 +693,18 @@ export function ChatWidget() {
                             {m.senderName || "EMA Advisory Team"}
                           </p>
                         )}
-                        <p className="whitespace-pre-wrap text-[12px]">{m.text}</p>
+                        {m.imageUrl ? (
+                          <a href={m.imageUrl} target="_blank" rel="noopener noreferrer" className="block">
+                            <img
+                              src={m.imageUrl}
+                              alt="Chat image"
+                              className="rounded-xl max-w-full max-h-56 object-cover cursor-zoom-in border border-white/10"
+                              loading="lazy"
+                            />
+                          </a>
+                        ) : (
+                          <p className="whitespace-pre-wrap text-[12px]">{m.text}</p>
+                        )}
                         <div className={`mt-1.5 flex items-center justify-end gap-1.5 text-[9.5px] ${isMe ? "text-ivory/70" : "text-muted-foreground"}`}>
                           <span>
                             {new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -662,21 +742,81 @@ export function ChatWidget() {
               </div>
 
               {/* Input Footer */}
-              <div className="border-t border-border bg-card p-3 shrink-0">
+              <div className="border-t border-border bg-card shrink-0">
+                {/* Image preview before sending */}
+                {imagePreview && (
+                  <div className="flex items-center gap-2 p-2.5 border-b border-border bg-secondary/40">
+                    <img
+                      src={imagePreview}
+                      alt="preview"
+                      className="h-16 w-16 rounded-xl object-cover border border-border flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-semibold text-foreground truncate">{imageFile?.name}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {imageFile ? (imageFile.size / 1024).toFixed(0) + " KB" : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={handleImageSend}
+                        disabled={uploadingImage}
+                        className="flex items-center gap-1.5 rounded-full bg-navy text-ivory px-3 py-1.5 text-[11px] font-bold hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
+                      >
+                        {uploadingImage ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Send className="h-3.5 w-3.5 rtl:rotate-180" />
+                        )}
+                        {ar ? "إرسال" : "Send"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setImagePreview(null); setImageFile(null); }}
+                        className="p-1 rounded-full text-muted-foreground hover:text-destructive transition-colors"
+                        title={ar ? "إلغاء" : "Cancel"}
+                      >
+                        <XCircle className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageFileSelect}
+                />
+
                 <form
                   onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 p-3"
                 >
+                  {/* Image attach button */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImage || busy}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary border border-border text-muted-foreground hover:text-navy hover:border-beige transition-all active:scale-95 disabled:opacity-40"
+                    title={ar ? "إرفاق صورة" : "Attach image"}
+                  >
+                    <ImagePlus className="h-4.5 w-4.5" />
+                  </button>
+
                   <input
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder={ar ? "اكتب استفسارك هنا وسيرد عليك المستشار..." : "Type your question here..."}
-                    disabled={busy}
+                    placeholder={ar ? "اكتب استفسارك هنا..." : "Type your question here..."}
+                    disabled={busy || uploadingImage || !!imagePreview}
                     className="flex-1 rounded-full border border-input bg-background px-4 py-2.5 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-beige focus:ring-2 focus:ring-beige/30 disabled:opacity-50 transition-all"
                   />
                   <button
                     type="submit"
-                    disabled={busy || !inputText.trim()}
+                    disabled={busy || !inputText.trim() || uploadingImage || !!imagePreview}
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy text-ivory transition-transform hover:scale-105 active:scale-95 disabled:opacity-40 shadow-sm"
                   >
                     <Send className="h-4 w-4 rtl:rotate-180" strokeWidth={2} />

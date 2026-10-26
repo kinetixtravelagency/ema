@@ -27,11 +27,15 @@ import {
   ChevronDown,
   ArrowLeft,
   Filter,
+  ImagePlus,
+  Loader2,
+  XCircle,
 } from "lucide-react";
 import {
   getAdminChats,
   getAdminConversationMessages,
   sendAdminReply,
+  sendChatImage,
   setAdminChatStatus,
   adminSetConversationFlag,
   adminSetConversationGroup,
@@ -61,6 +65,7 @@ export function AdminChatTab() {
   const fetchChats = useServerFn(getAdminChats);
   const fetchMessages = useServerFn(getAdminConversationMessages);
   const sendReply = useServerFn(sendAdminReply);
+  const sendImage = useServerFn(sendChatImage);
   const setStatus = useServerFn(setAdminChatStatus);
   const setFlag = useServerFn(adminSetConversationFlag);
   const setGroup = useServerFn(adminSetConversationGroup);
@@ -83,6 +88,12 @@ export function AdminChatTab() {
   const [showGroupPicker, setShowGroupPicker] = useState(false);
   const [showFlagPicker, setShowFlagPicker] = useState(false);
   const [customGroupInput, setCustomGroupInput] = useState("");
+
+  // Image upload states
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevAdminUnreadRef = useRef<number>(-1);
@@ -248,6 +259,80 @@ export function AdminChatTab() {
       setMessages((prev) => prev.filter((m) => m.id !== tempId));
     } finally {
       setBusy(false);
+    }
+  };
+
+  const handleImageFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("يرجى اختيار ملف صورة صالح (JPG, PNG, WebP)");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      alert("حجم الصورة كبير جداً، الحد الأقصى 8 ميجابايت");
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleImageSend = async () => {
+    if (!selectedId || !imageFile || !imagePreview || uploadingImage) return;
+
+    setUploadingImage(true);
+    const tempId = "temp_img_" + Date.now();
+    const nowIso = new Date().toISOString();
+
+    const tempMsg: ChatMessage = {
+      id: tempId,
+      conversationId: selectedId,
+      sender: "admin",
+      senderName: "EMA Admin",
+      text: replyText.trim() || "📷 صورة / Image",
+      imageUrl: imagePreview,
+      isRead: false,
+      createdAt: nowIso,
+    };
+
+    setMessages((prev) => [...prev, tempMsg]);
+    const previewToReset = imagePreview;
+    const fileToUpload = imageFile;
+    const captionToSend = replyText.trim();
+    setReplyText("");
+    setImagePreview(null);
+    setImageFile(null);
+
+    try {
+      const base64Data = previewToReset.split(",")[1];
+      const res = await sendImage({
+        data: {
+          conversationId: selectedId,
+          sender: "admin",
+          senderName: "EMA Admin",
+          caption: captionToSend || undefined,
+          imageBase64: base64Data,
+          mimeType: fileToUpload.type,
+          fileName: fileToUpload.name,
+        },
+      });
+
+      if (res?.message) {
+        setMessages((prev) =>
+          prev.map((m) => (m.id === tempId ? res.message : m))
+        );
+      }
+    } catch (err: any) {
+      console.error("Failed to send image:", err);
+      alert(err?.message || "فشل إرسال الصورة");
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -709,7 +794,28 @@ export function AdminChatTab() {
                           : "bg-card border border-border text-foreground rounded-bl-xs"
                       }`}
                     >
-                      <p className="whitespace-pre-line">{m.text}</p>
+                      {m.imageUrl ? (
+                        <div className="space-y-1.5">
+                          <a
+                            href={m.imageUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block overflow-hidden rounded-xl border border-white/10 group cursor-zoom-in"
+                          >
+                            <img
+                              src={m.imageUrl}
+                              alt="Attachment"
+                              className="max-h-64 max-w-full rounded-xl object-cover hover:opacity-95 transition-opacity"
+                              loading="lazy"
+                            />
+                          </a>
+                          {m.text && m.text !== "📷 صورة / Image" && (
+                            <p className="whitespace-pre-line text-xs">{m.text}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="whitespace-pre-line">{m.text}</p>
+                      )}
                     </div>
                     <span className="mt-1 px-1 text-[10px] text-muted-foreground flex items-center gap-1">
                       {new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -736,8 +842,66 @@ export function AdminChatTab() {
               ))}
             </div>
 
+            {/* Image Preview Banner */}
+            {imagePreview && (
+              <div className="flex items-center gap-2.5 p-2.5 border-t border-border bg-secondary/40 shrink-0">
+                <img
+                  src={imagePreview}
+                  alt="preview"
+                  className="h-14 w-14 rounded-xl object-cover border border-border shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-semibold text-foreground truncate">{imageFile?.name}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {imageFile ? (imageFile.size / 1024).toFixed(0) + " KB" : ""}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleImageSend}
+                    disabled={uploadingImage}
+                    className="flex items-center gap-1.5 rounded-full bg-navy text-ivory px-3 py-1.5 text-xs font-semibold hover:bg-navy/90 disabled:opacity-50 transition-all active:scale-95 shadow-xs"
+                  >
+                    {uploadingImage ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Send className="h-3.5 w-3.5" />
+                    )}
+                    <span>إرسال الصورة</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setImagePreview(null); setImageFile(null); }}
+                    className="p-1 rounded-full text-muted-foreground hover:text-destructive transition-colors"
+                    title="Cancel"
+                  >
+                    <XCircle className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageFileSelect}
+            />
+
             {/* Reply Input Box */}
             <div className="p-2.5 sm:p-3 border-t border-border bg-card flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingImage || busy}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-secondary text-muted-foreground hover:text-foreground hover:bg-beige/20 transition-all disabled:opacity-40 shadow-xs"
+                title="إرفاق صورة"
+              >
+                <ImagePlus className="h-4 w-4" />
+              </button>
               <textarea
                 rows={1}
                 value={replyText}
@@ -745,18 +909,22 @@ export function AdminChatTab() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    handleSend();
+                    if (imagePreview) {
+                      handleImageSend();
+                    } else {
+                      handleSend();
+                    }
                   }
                 }}
-                placeholder="Type response… (Enter to send)"
+                placeholder={imagePreview ? "اكتب تعليقاً على الصورة... (اختياري)" : "Type response… (Enter to send)"}
                 className="flex-1 rounded-2xl border border-input bg-background px-3 sm:px-4 py-2 text-xs outline-none focus:border-beige resize-none leading-relaxed"
               />
               <button
-                disabled={!replyText.trim() || busy}
-                onClick={() => handleSend()}
+                disabled={(!replyText.trim() && !imagePreview) || busy || uploadingImage}
+                onClick={() => (imagePreview ? handleImageSend() : handleSend())}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-navy text-ivory hover:bg-navy/90 disabled:opacity-40 transition-all shadow-xs"
               >
-                <Send className="h-4 w-4" />
+                {uploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </button>
             </div>
           </>

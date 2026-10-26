@@ -74,7 +74,7 @@ function Hero() {
           <a href="#countries" className="group inline-flex items-center justify-center gap-2 rounded-full bg-beige px-7 py-4 font-medium text-navy transition-transform hover:-translate-y-0.5">
             {t("exploreCta")} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" strokeWidth={1.5} />
           </a>
-          <Link to="/auth" className="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/30 px-7 py-4 font-medium transition-colors hover:border-beige hover:text-beige">
+          <Link to="/countries" className="inline-flex items-center justify-center gap-2 rounded-full border border-ivory/30 px-7 py-4 font-medium transition-colors hover:border-beige hover:text-beige">
             {t("applyCta")}
           </Link>
         </div>
@@ -659,7 +659,7 @@ function Cta() {
         <p className="eyebrow text-beige">{t("ctaEyebrow")}</p>
         <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold leading-[1.05] md:text-6xl">{t("ctaTitle")}</h2>
         <p className="mx-auto mt-5 max-w-lg text-ivory/65">{t("ctaSub")}</p>
-        <Link to="/auth" className="mt-10 inline-flex items-center gap-2 rounded-full bg-beige px-8 py-4 font-medium text-navy transition-transform hover:-translate-y-0.5">
+        <Link to="/countries" className="mt-10 inline-flex items-center gap-2 rounded-full bg-beige px-8 py-4 font-medium text-navy transition-transform hover:-translate-y-0.5">
           {t("applyCta")} <ArrowRight className="h-4 w-4 rtl:rotate-180" strokeWidth={1.5} />
         </Link>
       </div>
