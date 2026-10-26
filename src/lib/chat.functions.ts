@@ -2,6 +2,23 @@ import { createServerFn } from "@tanstack/react-start";
 
 export type MessageSender = "client" | "admin";
 
+export interface TransferProof {
+  id: string;
+  conversationId: string;
+  applicationId?: string | undefined;
+  clientName: string;
+  clientPhone?: string | undefined;
+  senderAccount: string; // الرقم أو اليوزر المحول منه (مثال: محفظة 010... أو حساب إنستاباي)
+  recipientAccount: string; // الرقم أو الحساب المحول إليه
+  amount?: string | undefined; // المبلغ
+  receiptUrl: string; // رابط أو صورة التحويل
+  notes?: string | undefined;
+  status: "pending" | "approved" | "rejected";
+  adminNotes?: string | undefined;
+  submittedAt: string;
+  reviewedAt?: string | undefined;
+}
+
 export type ChatMessage = {
   id: string;
   conversationId: string;
@@ -9,6 +26,7 @@ export type ChatMessage = {
   senderName: string;
   text: string;
   imageUrl?: string | null | undefined; // public URL for image messages
+  transferProof?: TransferProof | null | undefined;
   isRead: boolean;
   createdAt: string;
 };
@@ -25,6 +43,8 @@ export type ChatConversation = {
   groupName?: string | null | undefined;
   isDeleted?: boolean | undefined;
   hasPaymentRequest?: boolean | undefined;
+  hasTransferProof?: boolean | undefined;
+  transferProofs?: TransferProof[] | undefined;
   lastMessage: string;
   lastMessageAt: string;
   unreadCount: number; // unread by admin
@@ -519,9 +539,21 @@ export const getAdminChats = createServerFn({ method: "POST" })
             conv.lastMessage.toLowerCase().includes("deposit"))
       );
 
+      const hasProofInMsgs = msgs.some(
+        (m) =>
+          Boolean(m.transferProof) ||
+          m.text.includes("إثبات تحويل") ||
+          m.text.includes("إثبات السداد") ||
+          m.text.includes("🧾")
+      );
+
       if (hasPaymentInMsgs || hasPaymentInLast) {
         conv.hasPaymentRequest = true;
-        // Never hide active deposit requests from the admin even if marked deleted in past testing
+        conv.isDeleted = false;
+      }
+
+      if (hasProofInMsgs || (conv.transferProofs && conv.transferProofs.length > 0)) {
+        conv.hasTransferProof = true;
         conv.isDeleted = false;
       }
 
@@ -533,15 +565,22 @@ export const getAdminChats = createServerFn({ method: "POST" })
     }
 
     const allConvs = Object.values(store.conversations);
-    const archivedCount = allConvs.filter((c) => c.isDeleted && !c.hasPaymentRequest).length;
+    const archivedCount = allConvs.filter((c) => c.isDeleted && !c.hasPaymentRequest && !c.hasTransferProof).length;
 
     const list = allConvs
-      .filter((c) => showArchived ? true : (!c.isDeleted || c.hasPaymentRequest))
+      .filter((c) => showArchived ? true : (!c.isDeleted || c.hasPaymentRequest || c.hasTransferProof))
       .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime());
+
+    const pendingProofsCount = list.reduce((acc, c) => {
+      const pendingInList = (c.transferProofs || []).filter((p) => p.status === "pending").length;
+      return acc + (pendingInList > 0 ? pendingInList : c.hasTransferProof && !c.transferProofs ? 1 : 0);
+    }, 0);
+
     return {
       conversations: list,
       totalUnread: list.reduce((acc, c) => acc + (c.unreadCount || 0), 0),
       archivedCount,
+      pendingProofsCount,
     };
   });
 
@@ -678,25 +717,7 @@ export const sendChatImage = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (!data.imageBase64) throw new Error("No image data provided");
 
-    // 1. Upload to Supabase Storage
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const buffer = Buffer.from(data.imageBase64, "base64");
-    const ext = data.fileName.split(".").pop()?.toLowerCase() ?? "jpg";
-    const storagePath = `chat-images/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
-
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from("documents")
-      .upload(storagePath, buffer, {
-        upsert: false,
-        contentType: data.mimeType || "image/jpeg",
-        cacheControl: "31536000",
-      });
-
-    if (uploadError) throw new Error("Image upload failed: " + uploadError.message);
-
-    const { data: urlData } = supabaseAdmin.storage.from("documents").getPublicUrl(storagePath);
-    const imageUrl = urlData?.publicUrl;
-    if (!imageUrl) throw new Error("Could not get public URL for uploaded image");
+    const imageUrl = await saveUploadedImage(data.imageBase64, data.mimeType, data.fileName);
 
     // 2. Find or create conversation
     const store = await getStore();
@@ -775,4 +796,303 @@ export const sendChatImage = createServerFn({ method: "POST" })
     await saveStore(store);
 
     return { conversationId: conv.id, message: newMsg };
+  });
+
+/** Shared resilient image storage (Supabase documents bucket -> local disk -> Data URI) */
+async function saveUploadedImage(imageBase64: string, mimeType?: string, fileName?: string): Promise<string> {
+  let imageUrl = "";
+
+  // 1. Try Supabase Storage upload
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const buffer = Buffer.from(imageBase64, "base64");
+    const ext = (fileName || "receipt.jpg").split(".").pop()?.toLowerCase() ?? "jpg";
+    const storagePath = `chat-images/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from("documents")
+      .upload(storagePath, buffer, {
+        upsert: true,
+        contentType: mimeType || "image/jpeg",
+        cacheControl: "31536000",
+      });
+
+    if (!uploadError) {
+      const { data: signedUrlData } = await supabaseAdmin.storage
+        .from("documents")
+        .createSignedUrl(storagePath, 31536000); // 1 year
+      if (signedUrlData?.signedUrl) {
+        imageUrl = signedUrlData.signedUrl;
+      }
+    }
+  } catch (err) {
+    console.warn("[saveUploadedImage] Supabase upload failed, using fallback:", err);
+  }
+
+  // 2. Local filesystem & Data URI Fallback
+  if (!imageUrl) {
+    try {
+      const fs = await import("node:fs");
+      const path = await import("node:path");
+      const ext = (fileName || "receipt.jpg").split(".").pop()?.toLowerCase() ?? "jpg";
+      const fname = `chat_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+      const uploadDir = path.resolve(process.cwd(), "public", "chat-uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      const filePath = path.join(uploadDir, fname);
+      fs.writeFileSync(filePath, Buffer.from(imageBase64, "base64"));
+      imageUrl = `/chat-uploads/${fname}`;
+    } catch {
+      // In-memory data URL fallback
+      imageUrl = `data:${mimeType || "image/jpeg"};base64,${imageBase64}`;
+    }
+  }
+
+  return imageUrl;
+}
+
+// ─────────────────────────────────────────────────────────────
+// 4. Transfer Proof Submission (Client)
+// ─────────────────────────────────────────────────────────────
+
+export const submitTransferProof = createServerFn({ method: "POST" })
+  .inputValidator(
+    (d: {
+      conversationId?: string | undefined;
+      visitorId?: string | undefined;
+      userId?: string | undefined;
+      clientName?: string | undefined;
+      clientEmail?: string | undefined;
+      clientPhone?: string | undefined;
+      applicationId?: string | undefined;
+      senderAccount: string; // الرقم أو اليوزر المحول منه (محفظة أو إنستاباي)
+      recipientAccount: string; // الرقم أو الحساب المحول إليه
+      amount?: string | undefined;
+      notes?: string | undefined;
+      imageBase64: string; // صورة التحويل
+      mimeType?: string | undefined;
+      fileName?: string | undefined;
+    }) => d
+  )
+  .handler(async ({ data }) => {
+    if (!data.senderAccount?.trim()) throw new Error("Sender account/phone is required");
+    if (!data.recipientAccount?.trim()) throw new Error("Recipient account is required");
+    if (!data.imageBase64) throw new Error("Receipt image is required");
+
+    const imageUrl = await saveUploadedImage(
+      data.imageBase64,
+      data.mimeType,
+      data.fileName || "transfer-proof.jpg"
+    );
+
+    const store = await getStore();
+    let conv: ChatConversation | undefined;
+
+    if (data.userId) conv = Object.values(store.conversations).find((c) => c.userId === data.userId);
+    if (!conv && data.conversationId && store.conversations[data.conversationId]) {
+      conv = store.conversations[data.conversationId];
+    } else if (!conv && data.visitorId) {
+      conv = Object.values(store.conversations).find((c) => c.visitorId === data.visitorId);
+    }
+    if (!conv && data.clientPhone) {
+      const clean = data.clientPhone.replace(/[^0-9]/g, "");
+      if (clean.length >= 8) {
+        conv = Object.values(store.conversations).find((c) => {
+          if (!c.clientPhone) return false;
+          const cp = c.clientPhone.replace(/[^0-9]/g, "");
+          return cp.includes(clean) || clean.includes(cp);
+        });
+      }
+    }
+
+    const now = new Date().toISOString();
+    const senderClean = data.senderAccount.trim();
+    const recipientClean = data.recipientAccount.trim();
+
+    if (!conv) {
+      const convId = "conv_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
+      conv = {
+        id: convId,
+        userId: data.userId ?? null,
+        visitorId: data.visitorId ?? null,
+        clientName: (data.clientName || "").trim() || "عميل إيما",
+        clientEmail: (data.clientEmail || "").trim() || null,
+        clientPhone: (data.clientPhone || "").trim() || null,
+        status: "active",
+        lastMessage: `🧾 إثبات تحويل: ${senderClean}`,
+        lastMessageAt: now,
+        unreadCount: 1,
+        unreadClientCount: 0,
+        createdAt: now,
+        updatedAt: now,
+        isDeleted: false,
+        hasPaymentRequest: true,
+        hasTransferProof: true,
+        flag: "urgent",
+      };
+      store.conversations[conv.id] = conv;
+      store.messages[conv.id] = [];
+    } else {
+      conv.status = "active";
+      conv.unreadCount = (conv.unreadCount || 0) + 1;
+      conv.updatedAt = now;
+      conv.isDeleted = false;
+      conv.hasPaymentRequest = true;
+      conv.hasTransferProof = true;
+      conv.flag = "urgent";
+      conv.lastMessage = `🧾 إثبات تحويل: ${senderClean}`;
+      conv.lastMessageAt = now;
+      if (data.clientName && (!conv.clientName || conv.clientName.includes("Visitor") || conv.clientName.includes("زائر"))) {
+        conv.clientName = data.clientName;
+      }
+      if (data.clientPhone && (!conv.clientPhone || conv.clientPhone === "—")) {
+        conv.clientPhone = data.clientPhone;
+      }
+    }
+
+    const proof: TransferProof = {
+      id: "proof_" + Math.random().toString(36).substring(2, 9) + "_" + Date.now(),
+      conversationId: conv.id,
+      applicationId: data.applicationId,
+      clientName: conv.clientName,
+      clientPhone: conv.clientPhone || data.clientPhone,
+      senderAccount: senderClean,
+      recipientAccount: recipientClean,
+      amount: data.amount?.trim() || undefined,
+      notes: data.notes?.trim() || undefined,
+      receiptUrl: imageUrl,
+      status: "pending",
+      submittedAt: now,
+    };
+
+    if (!conv.transferProofs) conv.transferProofs = [];
+    conv.transferProofs.push(proof);
+
+    const messageText = `🧾 تم إرسال إثبات تحويل:\n• المحول منه: ${senderClean}\n• المحول إليه: ${recipientClean}${proof.amount ? `\n• المبلغ: ${proof.amount}` : ""}${proof.notes ? `\n• ملاحظة: ${proof.notes}` : ""}\n• الحالة: قيد المراجعة والتحقق ⏳`;
+
+    const newMsg: ChatMessage = {
+      id: "msg_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
+      conversationId: conv.id,
+      sender: "client",
+      senderName: conv.clientName || "Client",
+      text: messageText,
+      imageUrl: imageUrl,
+      transferProof: proof,
+      isRead: false,
+      createdAt: now,
+    };
+
+    const msgList = store.messages[conv.id] ?? [];
+    msgList.push(newMsg);
+    store.messages[conv.id] = msgList;
+    await saveStore(store);
+
+    return { ok: true, conversationId: conv.id, proof, message: newMsg };
+  });
+
+// ─────────────────────────────────────────────────────────────
+// 5. Transfer Proof Review (Admin)
+// ─────────────────────────────────────────────────────────────
+
+export const adminReviewTransferProof = createServerFn({ method: "POST" })
+  .inputValidator(
+    (d: {
+      conversationId: string;
+      proofId: string;
+      status: "approved" | "rejected";
+      adminNotes?: string | undefined;
+    }) => d
+  )
+  .handler(async ({ data }) => {
+    const store = await getStore();
+    const conv = store.conversations[data.conversationId];
+    if (!conv) throw new Error("Conversation not found");
+
+    const now = new Date().toISOString();
+    if (conv.transferProofs) {
+      const p = conv.transferProofs.find((item) => item.id === data.proofId);
+      if (p) {
+        p.status = data.status;
+        p.adminNotes = data.adminNotes?.trim() || undefined;
+        p.reviewedAt = now;
+      }
+    }
+
+    const msgs = store.messages[data.conversationId] || [];
+    for (const m of msgs) {
+      if (m.transferProof && m.transferProof.id === data.proofId) {
+        m.transferProof.status = data.status;
+        m.transferProof.adminNotes = data.adminNotes?.trim() || undefined;
+        m.transferProof.reviewedAt = now;
+      }
+    }
+
+    const isApprove = data.status === "approved";
+    const statusText = isApprove
+      ? `✅ تم اعتماد وتأكيد إثبات التحويل بنجاح من قبل الإدارة! شكراً لك. جاري متابعة واستكمال ملفك وحجز برنامجك.`
+      : `⚠️ تنبيه من الإدارة بخصوص إثبات التحويل:\n${data.adminNotes?.trim() || "تعذر التحقق من الإيصال. يرجى التأكد من بيانات التحويل وإعادة إرسال صورة واضحة ومقروءة للإيصال."}`;
+
+    const adminMsg: ChatMessage = {
+      id: "msg_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
+      conversationId: conv.id,
+      sender: "admin",
+      senderName: "إدارة إيما (EMA Admin)",
+      text: statusText,
+      isRead: false,
+      createdAt: now,
+    };
+
+    msgs.push(adminMsg);
+    conv.lastMessage = statusText;
+    conv.lastMessageAt = now;
+    conv.unreadClientCount = (conv.unreadClientCount || 0) + 1;
+    conv.updatedAt = now;
+    if (isApprove) {
+      conv.flag = "resolved";
+    }
+
+    await saveStore(store);
+    return { ok: true, conversationId: conv.id, status: data.status, message: adminMsg };
+  });
+
+// ─────────────────────────────────────────────────────────────
+// 6. Get All Transfer Proofs for Admin Dashboard
+// ─────────────────────────────────────────────────────────────
+
+export const getAllTransferProofs = createServerFn({ method: "POST" })
+  .handler(async () => {
+    const store = await getStore();
+    const proofsMap = new Map<string, TransferProof & { clientEmail?: string | null; lastMessageAt?: string }>();
+
+    for (const conv of Object.values(store.conversations)) {
+      if (conv.transferProofs && conv.transferProofs.length > 0) {
+        for (const p of conv.transferProofs) {
+          proofsMap.set(p.id, {
+            ...p,
+            clientName: p.clientName || conv.clientName,
+            clientPhone: p.clientPhone || conv.clientPhone || undefined,
+            clientEmail: conv.clientEmail,
+            lastMessageAt: conv.lastMessageAt,
+          });
+        }
+      }
+
+      // Also scan conversation messages for any transferProof
+      const msgs = store.messages[conv.id] || [];
+      for (const m of msgs) {
+        if (m.transferProof && !proofsMap.has(m.transferProof.id)) {
+          proofsMap.set(m.transferProof.id, {
+            ...m.transferProof,
+            clientName: m.transferProof.clientName || conv.clientName,
+            clientPhone: m.transferProof.clientPhone || conv.clientPhone || undefined,
+            clientEmail: conv.clientEmail,
+            lastMessageAt: conv.lastMessageAt,
+          });
+        }
+      }
+    }
+
+    const proofs = Array.from(proofsMap.values());
+    return proofs.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
   });

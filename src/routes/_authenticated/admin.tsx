@@ -25,11 +25,12 @@ import {
   Sparkles, Filter, Layers, CheckSquare, Loader2, CreditCard, BookOpen, Send, User,
   FileText, GraduationCap, Search, Tag, ClipboardList, DollarSign, Plane, FileCheck, FileBadge,
   Mic, Info, ArrowRight, Home, Wand2, Building2, Coffee, Clock3, LayoutGrid, List, SlidersHorizontal,
-  BellRing, AlertTriangle, type LucideIcon,
+  BellRing, AlertTriangle, Receipt, type LucideIcon,
 } from "lucide-react";
 import { AdminChatTab } from "@/components/admin/AdminChatTab";
 import { AdminMaterialsTab } from "@/components/admin/AdminMaterialsTab";
 import { AdminBroadcastTab } from "@/components/admin/AdminBroadcastTab";
+import { AdminTransferProofsTab } from "@/components/admin/AdminTransferProofsTab";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin Dashboard — EMA" }] }),
@@ -43,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   ),
 });
 
-type Tab = "overview" | "chat" | "applications" | "programs" | "countries" | "partners" | "partner_settings" | "materials" | "broadcast";
+type Tab = "overview" | "chat" | "transfer_proofs" | "applications" | "programs" | "countries" | "partners" | "partner_settings" | "materials" | "broadcast";
 
 const inp = "w-full rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none focus:border-beige";
 const pill = "rounded-full px-3 py-1 text-xs font-medium";
@@ -99,6 +100,8 @@ function Admin() {
   const { data, isLoading, error } = useQuery({ queryKey: ["admin-full"], queryFn: fetchAdmin, retry: false });
   const [tab, setTab] = useState<Tab>("overview");
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  const [pendingProofsCount, setPendingProofsCount] = useState(0);
+  const [selectedChatConvId, setSelectedChatConvId] = useState<string | null>(null);
   const [latestIncomingChat, setLatestIncomingChat] = useState<{ clientName: string; text: string; convId: string } | null>(null);
   const prevUnreadCountRef = useRef(-1);
 
@@ -122,6 +125,9 @@ function Admin() {
         if (!mounted || !res) return;
         const total = res.totalUnread || 0;
         setUnreadChatCount(total);
+        if (typeof res.pendingProofsCount === "number") {
+          setPendingProofsCount(res.pendingProofsCount);
+        }
 
         if (prevUnreadCountRef.current !== -1 && total > prevUnreadCountRef.current) {
           playChatChime("admin");
@@ -160,6 +166,7 @@ function Admin() {
   const tabs: [Tab, string, typeof Globe][] = [
     ["overview", tr("Overview", "نظرة عامة"), LayoutDashboard],
     ["chat", tr("Live Chat", "الدردشة الحية"), MessageSquare],
+    ["transfer_proofs", tr("Transfer Proofs", "إثباتات التحويل"), Receipt],
     ["applications", tr("Applications", "الطلبات والتقديمات"), Briefcase],
     ["programs", "Programs & Roles", TrendingUp],
     ["countries", tr("Countries", "الدول والوجهات"), Globe],
@@ -200,6 +207,11 @@ function Admin() {
               {k === "chat" && unreadChatCount > 0 && (
                 <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white shadow-xs animate-bounce">
                   {unreadChatCount}
+                </span>
+              )}
+              {k === "transfer_proofs" && pendingProofsCount > 0 && (
+                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-white shadow-xs animate-pulse">
+                  {pendingProofsCount}
                 </span>
               )}
             </button>
@@ -352,6 +364,36 @@ function Admin() {
               );
             })()}
 
+            {/* Pending Transfer Proofs Alert */}
+            {pendingProofsCount > 0 && (
+              <div className="rounded-3xl border-2 border-amber-500/50 bg-gradient-to-r from-amber-500/15 via-card to-amber-500/5 p-5 sm:p-6 shadow-sm space-y-3 animate-in fade-in">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md">
+                      <Receipt className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h2 className="font-display text-base sm:text-lg font-bold text-amber-950 dark:text-amber-200 flex items-center gap-2">
+                        <span>🧾 {tr("Pending Transfer Proofs from Clients", "إثباتات تحويل جديدة بانتظار التحقق")}</span>
+                        <span className="rounded-full bg-amber-600 text-white text-xs px-2 py-0.5 font-bold">
+                          {pendingProofsCount}
+                        </span>
+                      </h2>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {tr("Clients submitted payment transfer proofs in live chat requiring your review and approval.", "قام عملاء برفع إيصالات تحويل بنكي / إنستاباي / فودافون كاش في الشات وبانتظار اعتمادك.")}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setTab("transfer_proofs")}
+                    className="self-start sm:self-auto inline-flex items-center gap-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 text-xs font-bold shadow-md transition-all active:scale-95"
+                  >
+                    <span>{tr("Review Proofs Now", "مراجعة إثباتات التحويل الآن ←")}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Application statuses breakdown */}
             <div className="rounded-3xl border border-border bg-card p-6">
               <h2 className="mb-4 font-display text-lg font-semibold">Applications by Status</h2>
@@ -369,7 +411,20 @@ function Admin() {
         )}
 
         {/* ── LIVE CHAT ── */}
-        {tab === "chat" && <AdminChatTab />}
+        {tab === "chat" && <AdminChatTab initialConversationId={selectedChatConvId} />}
+
+        {/* ── TRANSFER PROOFS ── */}
+        {tab === "transfer_proofs" && (
+          <AdminTransferProofsTab
+            onOpenChat={(convId) => {
+              setSelectedChatConvId(convId);
+              setTab("chat");
+            }}
+            onOpenApplication={(appId) => {
+              setTab("applications");
+            }}
+          />
+        )}
 
         {/* ── APPLICATIONS ── */}
         {tab === "applications" && (

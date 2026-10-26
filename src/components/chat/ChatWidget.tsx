@@ -15,8 +15,19 @@ import {
   ImagePlus,
   Loader2,
   XCircle,
+  Download,
+  Receipt,
+  UploadCloud,
+  Check,
 } from "lucide-react";
-import { getClientChat, sendClientMessage, sendChatImage, type ChatMessage } from "@/lib/chat.functions";
+import {
+  getClientChat,
+  sendClientMessage,
+  sendChatImage,
+  submitTransferProof,
+  type ChatMessage,
+  type TransferProof,
+} from "@/lib/chat.functions";
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
 import { useSession } from "@/lib/useSession";
 import { useLang } from "@/lib/i18n";
@@ -74,7 +85,34 @@ export function ChatWidget() {
   const [imagePreview, setImagePreview] = useState<string | null>(null); // base64 data URL for preview
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDownload = async (url: string, id?: string) => {
+    try {
+      if (url.startsWith("data:")) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `chat-image-${id || Date.now()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `chat-image-${id || Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(url, "_blank");
+    }
+  };
 
   // Visitor identity
   const [visitorId, setVisitorId] = useState<string>("");
@@ -90,6 +128,21 @@ export function ChatWidget() {
   const fetchChat = useServerFn(getClientChat);
   const sendMsg = useServerFn(sendClientMessage);
   const uploadImage = useServerFn(sendChatImage);
+  const submitProof = useServerFn(submitTransferProof);
+
+  // Transfer Proof modal states
+  const [showProofModal, setShowProofModal] = useState(false);
+  const [proofSenderAccount, setProofSenderAccount] = useState("");
+  const [proofRecipientAccount, setProofRecipientAccount] = useState("");
+  const [proofAmount, setProofAmount] = useState("");
+  const [proofNotes, setProofNotes] = useState("");
+  const [proofAppId, setProofAppId] = useState<string | undefined>(undefined);
+  const [proofImageFile, setProofImageFile] = useState<File | null>(null);
+  const [proofImagePreview, setProofImagePreview] = useState<string | null>(null);
+  const [proofSubmitting, setProofSubmitting] = useState(false);
+  const [proofError, setProofError] = useState("");
+  const [proofSuccessToast, setProofSuccessToast] = useState(false);
+  const proofFileInputRef = useRef<HTMLInputElement>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevUnreadRef = useRef(0);
@@ -381,6 +434,89 @@ export function ChatWidget() {
     }
   };
 
+  const handleProofImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 10 * 1024 * 1024) {
+      setProofError(ar ? "حجم الصورة يجب أن يكون أقل من 10 ميجابايت" : "Image must be under 10MB");
+      return;
+    }
+    setProofImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setProofImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = "";
+    setProofError("");
+  };
+
+  const handleProofSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!proofSenderAccount.trim()) {
+      setProofError(ar ? "يرجى كتابة الرقم أو اليوزر المحول منه" : "Sender phone / account is required");
+      return;
+    }
+    if (!proofRecipientAccount.trim()) {
+      setProofError(ar ? "يرجى كتابة الرقم أو الحساب المحول إليه" : "Recipient account is required");
+      return;
+    }
+    if (!proofImagePreview || !proofImageFile) {
+      setProofError(ar ? "يرجى إرفاق صورة إيصال التحويل" : "Transfer receipt image is required");
+      return;
+    }
+
+    setProofSubmitting(true);
+    setProofError("");
+    try {
+      const name = resolvedName();
+      const phone = resolvedPhone();
+      const email = user?.email || undefined;
+      const base64 = proofImagePreview.split(",")[1];
+      if (!base64) throw new Error("Invalid image data");
+
+      const res = await submitProof({
+        data: {
+          conversationId: convId || undefined,
+          visitorId: !user?.id ? visitorId : undefined,
+          userId: user?.id || undefined,
+          clientName: name,
+          clientPhone: phone,
+          clientEmail: email,
+          applicationId: proofAppId,
+          senderAccount: proofSenderAccount.trim(),
+          recipientAccount: proofRecipientAccount.trim(),
+          amount: proofAmount.trim() || undefined,
+          notes: proofNotes.trim() || undefined,
+          imageBase64: base64,
+          mimeType: proofImageFile.type,
+          fileName: proofImageFile.name,
+        },
+      });
+
+      if (res.conversationId && res.conversationId !== convId) {
+        setConvId(res.conversationId);
+        localStorage.setItem(CONV_KEY, res.conversationId);
+      }
+
+      setMessages((prev) => [...prev, res.message]);
+      setShowProofModal(false);
+      setProofSenderAccount("");
+      setProofRecipientAccount("");
+      setProofAmount("");
+      setProofNotes("");
+      setProofImageFile(null);
+      setProofImagePreview(null);
+      setProofSuccessToast(true);
+      playChatChime("client");
+      setTimeout(() => setProofSuccessToast(false), 6000);
+    } catch (err: any) {
+      console.error("Failed to submit transfer proof:", err);
+      setProofError(err?.message || (ar ? "فشل إرسال إثبات التحويل، يرجى المحاولة ثانية" : "Failed to submit proof"));
+    } finally {
+      setProofSubmitting(false);
+    }
+  };
+
 
   const handleInfoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -668,10 +804,106 @@ export function ChatWidget() {
                   const isMe = m.sender === "client";
                   const isPayment = m.text.includes("طلب سداد") || m.text.includes("💳");
 
+                  if (m.transferProof) {
+                    const tp = m.transferProof;
+                    const isApproved = tp.status === "approved";
+                    const isRejected = tp.status === "rejected";
+                    return (
+                      <div key={m.id} className="flex justify-end my-2">
+                        <div className="w-full max-w-sm rounded-2xl border-2 border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-card to-background p-4 shadow-md space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                            <div className="flex items-center gap-1.5 font-bold text-xs text-amber-900 dark:text-amber-200">
+                              <Receipt className="h-4 w-4 text-amber-600 shrink-0" />
+                              <span>{ar ? "إثبات تحويل / سداد" : "Proof of Transfer"}</span>
+                            </div>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                                isApproved
+                                  ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-950/40 dark:text-green-300"
+                                  : isRejected
+                                  ? "bg-red-100 text-red-800 border-red-300 dark:bg-red-950/40 dark:text-red-300"
+                                  : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300"
+                              }`}
+                            >
+                              {isApproved
+                                ? (ar ? "تم الاعتماد ✓" : "Approved ✓")
+                                : isRejected
+                                ? (ar ? "مرفوض ✕" : "Rejected ✕")
+                                : (ar ? "قيد المراجعة ⏳" : "Pending ⏳")}
+                            </span>
+                          </div>
+
+                          <div className="space-y-1.5 text-xs text-foreground/90">
+                            <div className="flex justify-between items-center text-[11.5px] bg-secondary/50 rounded-lg p-2">
+                              <span className="text-muted-foreground">{ar ? "المحول منه:" : "From Account:"}</span>
+                              <span className="font-mono font-bold text-foreground text-xs">{tp.senderAccount}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-[11.5px] bg-secondary/50 rounded-lg p-2">
+                              <span className="text-muted-foreground">{ar ? "المحول إليه:" : "To Account:"}</span>
+                              <span className="font-mono font-bold text-foreground text-xs">{tp.recipientAccount}</span>
+                            </div>
+                            {tp.amount && (
+                              <div className="flex justify-between items-center text-[11.5px] px-2 py-1">
+                                <span className="text-muted-foreground">{ar ? "المبلغ:" : "Amount:"}</span>
+                                <span className="font-bold text-amber-700 dark:text-amber-300">{tp.amount}</span>
+                              </div>
+                            )}
+                            {tp.notes && (
+                              <div className="text-[11px] text-muted-foreground px-2 italic">
+                                "{tp.notes}"
+                              </div>
+                            )}
+                          </div>
+
+                          {tp.receiptUrl && (
+                            <div className="relative group overflow-hidden rounded-xl border border-border bg-black/10">
+                              <img
+                                src={tp.receiptUrl}
+                                alt="Transfer Receipt"
+                                className="rounded-xl w-full max-h-48 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                                loading="lazy"
+                                onClick={() => setLightboxImg(tp.receiptUrl)}
+                              />
+                              <div className="absolute top-2 end-2 flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDownload(tp.receiptUrl, tp.id);
+                                  }}
+                                  className="inline-flex items-center gap-1 rounded-lg bg-navy/90 hover:bg-navy text-ivory px-2 py-1 text-[10px] font-bold shadow-md border border-white/20 transition-all hover:scale-105"
+                                  title={ar ? "تحميل الإيصال" : "Download receipt"}
+                                >
+                                  <Download className="h-3 w-3" />
+                                  <span>{ar ? "تحميل" : "Save"}</span>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="pt-1 flex items-center justify-between text-[9.5px] text-muted-foreground border-t border-border/50">
+                            <span>{new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                            <span className="flex items-center gap-1">
+                              <CheckCheck className="h-3 w-3 text-beige" />
+                              {ar ? "مرسل للإدارة" : "Delivered"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
                   if (isPayment) {
                     return (
                       <div key={m.id} className="flex justify-start my-2">
-                        <ApplicationChatCard text={m.text} createdAt={m.createdAt} />
+                        <ApplicationChatCard
+                          text={m.text}
+                          createdAt={m.createdAt}
+                          onUploadProof={(appId) => {
+                            if (appId) setProofAppId(appId);
+                            setShowProofModal(true);
+                          }}
+                        />
                       </div>
                     );
                   }
@@ -694,14 +926,32 @@ export function ChatWidget() {
                           </p>
                         )}
                         {m.imageUrl ? (
-                          <a href={m.imageUrl} target="_blank" rel="noopener noreferrer" className="block">
-                            <img
-                              src={m.imageUrl}
-                              alt="Chat image"
-                              className="rounded-xl max-w-full max-h-56 object-cover cursor-zoom-in border border-white/10"
-                              loading="lazy"
-                            />
-                          </a>
+                          <div className="space-y-1.5">
+                            <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-black/10">
+                              <img
+                                src={m.imageUrl}
+                                alt="Chat attachment"
+                                className="rounded-xl max-w-full max-h-60 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                                loading="lazy"
+                                onClick={() => setLightboxImg(m.imageUrl || null)}
+                              />
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (m.imageUrl) handleDownload(m.imageUrl, m.id);
+                                }}
+                                className="absolute top-2 end-2 inline-flex items-center gap-1 rounded-lg bg-navy/90 hover:bg-navy text-ivory px-2 py-1 text-[10px] font-bold shadow-md border border-white/20 transition-all hover:scale-105"
+                                title={ar ? "تحميل الصورة إلى جهازك" : "Download image to device"}
+                              >
+                                <Download className="h-3 w-3" />
+                                <span>{ar ? "تحميل" : "Save"}</span>
+                              </button>
+                            </div>
+                            {m.text && m.text !== "📷 صورة / Image" && (
+                              <p className="whitespace-pre-wrap text-[12px]">{m.text}</p>
+                            )}
+                          </div>
                         ) : (
                           <p className="whitespace-pre-wrap text-[12px]">{m.text}</p>
                         )}
@@ -740,6 +990,41 @@ export function ChatWidget() {
                   </div>
                 )}
               </div>
+
+              {/* Payment Proof Quick Action Banner */}
+              {messages.some(
+                (m) =>
+                  m.text.includes("طلب سداد") ||
+                  m.text.includes("💳") ||
+                  m.text.includes("طلب دفع") ||
+                  m.text.includes("ديبوزيت") ||
+                  m.text.toLowerCase().includes("deposit") ||
+                  Boolean(m.transferProof)
+              ) && (
+                <div className="bg-amber-500/10 border-t border-amber-500/30 px-3.5 py-2 flex items-center justify-between gap-2 shrink-0">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-800 dark:text-amber-200 text-sm font-bold shadow-xs">
+                      🧾
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-amber-950 dark:text-amber-200 truncate">
+                        {ar ? "قمت بالتحويل؟ أرسل إثبات السداد" : "Transferred? Upload proof"}
+                      </p>
+                      <p className="text-[10px] text-amber-800/80 dark:text-amber-300/80 truncate">
+                        {ar ? "سجل رقم المحول منه وإليه مع صورة الإيصال" : "Sender/recipient & receipt image"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowProofModal(true)}
+                    className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white px-3.5 py-1 text-xs font-bold shadow-xs transition-all active:scale-95"
+                  >
+                    <CreditCard className="h-3 w-3" />
+                    {ar ? "إثبات تحويل" : "Send Proof"}
+                  </button>
+                </div>
+              )}
 
               {/* Input Footer */}
               <div className="border-t border-border bg-card shrink-0">
@@ -870,6 +1155,272 @@ export function ChatWidget() {
             </button>
           </div>
         </aside>
+      )}
+
+      {/* ── TRANSFER PROOF MODAL ── */}
+      {showProofModal && (
+        <div
+          onClick={() => setShowProofModal(false)}
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            dir={ar ? "rtl" : "ltr"}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 pb-3 border-b border-border">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-600 text-xl font-bold">
+                  🧾
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-base text-foreground">
+                    {ar ? "إثبات تحويل / تأكيد السداد" : "Proof of Transfer / Payment"}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {ar ? "سجل بيانات التحويل لاعتماد الإدارة لطلبك فوراً" : "Submit transfer details to verify payment"}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowProofModal(false)}
+                className="p-1.5 rounded-full text-muted-foreground hover:bg-secondary transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Error banner */}
+            {proofError && (
+              <div className="p-3 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2 font-medium">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{proofError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleProofSubmit} className="space-y-3.5">
+              {/* Sender Account */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1">
+                  {ar ? "الرقم أو اليوزر المحول منه *" : "Sender Phone / Username *"}
+                </label>
+                <input
+                  value={proofSenderAccount}
+                  onChange={(e) => setProofSenderAccount(e.target.value)}
+                  placeholder={ar ? "مثال: 01012345678 أو username@instapay" : "e.g. 01012345678 or username@instapay"}
+                  className="w-full rounded-2xl border border-input bg-background px-3.5 py-2.5 text-xs outline-none focus:border-beige focus:ring-1 focus:ring-beige"
+                  required
+                />
+                <span className="text-[10px] text-muted-foreground mt-0.5 block">
+                  {ar ? "رقم المحفظة، حساب إنستاباي، أو اسم صاحب الحساب البنكي" : "Wallet number, InstaPay address or bank account"}
+                </span>
+              </div>
+
+              {/* Recipient Account */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1">
+                  {ar ? "الرقم أو الحساب المحول إليه *" : "Recipient Account / Phone *"}
+                </label>
+                <input
+                  value={proofRecipientAccount}
+                  onChange={(e) => setProofRecipientAccount(e.target.value)}
+                  placeholder={ar ? "مثال: محفظة فودافون كاش أو معرف إنستاباي الشركة" : "e.g. Company Vodafone Cash or InstaPay address"}
+                  className="w-full rounded-2xl border border-input bg-background px-3.5 py-2.5 text-xs outline-none focus:border-beige focus:ring-1 focus:ring-beige"
+                  required
+                />
+                <span className="text-[10px] text-muted-foreground mt-0.5 block">
+                  {ar ? "الرقم أو المعرف الذي قمت بالتحويل إليه" : "The company account or wallet you sent funds to"}
+                </span>
+              </div>
+
+              {/* Amount */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1">
+                  {ar ? "المبلغ المحول (اختياري)" : "Transferred Amount (Optional)"}
+                </label>
+                <input
+                  value={proofAmount}
+                  onChange={(e) => setProofAmount(e.target.value)}
+                  placeholder={ar ? "مثال: 5,000 ج.م أو €100" : "e.g. 5,000 EGP or €100"}
+                  className="w-full rounded-2xl border border-input bg-background px-3.5 py-2.5 text-xs outline-none focus:border-beige focus:ring-1 focus:ring-beige"
+                />
+              </div>
+
+              {/* Receipt Image Upload */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1">
+                  {ar ? "صورة إيصال التحويل / السكرين شوت *" : "Receipt Screenshot / Image *"}
+                </label>
+                <input
+                  ref={proofFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProofImageSelect}
+                  className="hidden"
+                />
+
+                {proofImagePreview ? (
+                  <div className="relative rounded-2xl border border-border p-2.5 bg-secondary/30 flex items-center gap-3">
+                    <img
+                      src={proofImagePreview}
+                      alt="Receipt preview"
+                      className="h-16 w-16 rounded-xl object-cover border border-border shrink-0 cursor-pointer"
+                      onClick={() => setLightboxImg(proofImagePreview)}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-foreground truncate">
+                        {proofImageFile?.name || "receipt.jpg"}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {proofImageFile ? (proofImageFile.size / 1024).toFixed(0) + " KB" : ""}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => proofFileInputRef.current?.click()}
+                        className="mt-1 text-[11px] font-bold text-beige hover:underline"
+                      >
+                        {ar ? "تغيير الصورة" : "Change image"}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProofImageFile(null);
+                        setProofImagePreview(null);
+                      }}
+                      className="p-1 text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                      title={ar ? "إلغاء الصورة" : "Remove image"}
+                    >
+                      <XCircle className="h-5 w-5" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => proofFileInputRef.current?.click()}
+                    className="w-full rounded-2xl border-2 border-dashed border-border hover:border-beige/70 bg-secondary/15 hover:bg-beige/5 p-4 flex flex-col items-center justify-center gap-2 text-center transition-all cursor-pointer group"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-muted-foreground group-hover:text-beige group-hover:bg-beige/10 transition-colors">
+                      <UploadCloud className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground">
+                        {ar ? "اضغط لاختيار صورة إيصال التحويل" : "Click to select receipt screenshot"}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        PNG, JPG, WebP {ar ? "حتى 10 ميجابايت" : "up to 10MB"}
+                      </p>
+                    </div>
+                  </button>
+                )}
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-xs font-bold text-foreground mb-1">
+                  {ar ? "ملاحظات إضافية (اختياري)" : "Additional Notes (Optional)"}
+                </label>
+                <textarea
+                  value={proofNotes}
+                  onChange={(e) => setProofNotes(e.target.value)}
+                  placeholder={ar ? "أي تفاصيل أخرى بخصوص عملية التحويل..." : "Any other transfer details..."}
+                  rows={2}
+                  className="w-full rounded-2xl border border-input bg-background px-3.5 py-2 text-xs outline-none focus:border-beige focus:ring-1 focus:ring-beige resize-none"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setShowProofModal(false)}
+                  className="rounded-full px-4 py-2 text-xs font-bold text-muted-foreground hover:bg-secondary transition-colors"
+                >
+                  {ar ? "إلغاء" : "Cancel"}
+                </button>
+                <button
+                  type="submit"
+                  disabled={proofSubmitting}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white px-5 py-2 text-xs font-bold shadow-md transition-all active:scale-95"
+                >
+                  {proofSubmitting ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <span>{ar ? "جاري الإرسال..." : "Submitting..."}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      <span>{ar ? "إرسال إثبات التحويل" : "Submit Proof"}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Success Notification Banner */}
+      {proofSuccessToast && (
+        <div className="fixed top-5 start-1/2 -translate-x-1/2 z-[120] max-w-sm w-full px-4 animate-in fade-in slide-in-from-top-3">
+          <div className="rounded-2xl bg-emerald-600 text-white p-3.5 shadow-xl flex items-center gap-2.5 border border-emerald-400/40">
+            <Check className="h-5 w-5 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold">
+                {ar ? "تم إرسال إثبات التحويل بنجاح!" : "Proof submitted successfully!"}
+              </p>
+              <p className="text-[10.5px] opacity-90 truncate">
+                {ar ? "جاري مراجعته واعتماد سدادك من قبل الإدارة." : "Admin team is reviewing your transfer now."}
+              </p>
+            </div>
+            <button
+              onClick={() => setProofSuccessToast(false)}
+              className="p-1 rounded-full text-white/70 hover:text-white"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox / Full-screen Image Modal */}
+      {lightboxImg && (
+        <div
+          onClick={() => setLightboxImg(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl max-h-[90vh] flex flex-col items-center"
+          >
+            <div className="absolute top-3 end-3 flex items-center gap-2 z-10">
+              <button
+                type="button"
+                onClick={() => handleDownload(lightboxImg)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-navy/90 hover:bg-navy text-ivory px-3.5 py-1.5 text-xs font-bold shadow-lg border border-white/20 transition-all hover:scale-105"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>{ar ? "تحميل الصورة" : "Download Image"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setLightboxImg(null)}
+                className="p-1.5 rounded-full bg-black/60 text-white hover:bg-black/90 transition-all"
+                title="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <img
+              src={lightboxImg}
+              alt="Enlarged view"
+              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+            />
+          </div>
+        </div>
       )}
     </>
   );

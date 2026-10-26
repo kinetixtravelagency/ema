@@ -158,11 +158,13 @@ export function ApplicationChatCard({
   createdAt,
   isAdmin = false,
   onOpenApp,
+  onUploadProof,
 }: {
   text: string;
   createdAt: string;
   isAdmin?: boolean;
   onOpenApp?: (appId: string) => void;
+  onUploadProof?: (appId?: string) => void;
 }) {
   const { lang } = useLang();
   const ar = lang === "ar";
@@ -304,13 +306,25 @@ export function ApplicationChatCard({
             </button>
           ) : null
         ) : (
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center gap-1 rounded-full bg-navy px-3 py-1 text-[11px] font-medium text-ivory hover:opacity-90 transition-opacity"
-          >
-            <CheckCircle2 className="h-3 w-3" strokeWidth={1.5} />
-            {tr("My Applications", "متابعة في لوحة التحكم")}
-          </Link>
+          <div className="flex items-center gap-1.5 flex-wrap justify-end">
+            {onUploadProof && (
+              <button
+                type="button"
+                onClick={() => onUploadProof(parsed.applicationId)}
+                className="inline-flex items-center gap-1 rounded-full bg-amber-500 hover:bg-amber-600 px-3 py-1 text-[11px] font-bold text-white shadow-xs transition-all active:scale-95"
+              >
+                <CreditCard className="h-3 w-3" />
+                {tr("Proof of Transfer", "إثبات تحويل")}
+              </button>
+            )}
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-1 rounded-full bg-navy px-2.5 py-1 text-[11px] font-medium text-ivory hover:opacity-90 transition-opacity"
+            >
+              <CheckCircle2 className="h-3 w-3" strokeWidth={1.5} />
+              {tr("My Applications", "متابعة الطلب")}
+            </Link>
+          </div>
         )}
       </div>
     </div>

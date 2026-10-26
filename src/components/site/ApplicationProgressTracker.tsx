@@ -226,22 +226,18 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
   const isMale = (application.gender || notesData["gender"] || "").toLowerCase() === "male" ||
     (application.notes ?? "").includes("[GENDER:male]");
 
-  // Payment state
-  const [payOption, setPayOption] = useState<"deposit" | "full">(
-    application.payment_plan === "full" ? "full" : "deposit"
+  // Payment state — payOption is LOCKED to the original application choice (no UI switcher)
+  const payOption: "deposit" | "full" = application.payment_plan === "full" ? "full" : "deposit";
+  const alreadyRequestedPayment = Boolean(
+    notesData["payment_requested_at"] ||
+    notesData["payment_method"] ||
+    (application.notes && application.notes.includes("طلب سداد"))
   );
-  const [paymentMethod, setPaymentMethod] = useState<string>("InstaPay");
+  const initialPaymentMethod = (notesData["payment_method"] as string) || "InstaPay";
+  const [paymentMethod, setPaymentMethod] = useState<string>(initialPaymentMethod);
   const [requestingPay, setRequestingPay] = useState(false);
-  const [requestSuccess, setRequestSuccess] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(alreadyRequestedPayment);
   const [requestErr, setRequestErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (application.payment_plan === "full") {
-      setPayOption("full");
-    } else if (application.payment_plan === "installments") {
-      setPayOption("deposit");
-    }
-  }, [application.payment_plan]);
 
   const requestPay = useServerFn(requestPaymentSupport);
 
@@ -1496,203 +1492,209 @@ export function ApplicationProgressTracker({ application, onDocChange }: Applica
                 </div>
               </div>
 
-              {/* 3. Interactive Payment Method Selector */}
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-4">
-                <div>
-                  <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                    <CreditCard className="h-4 w-4 text-beige" strokeWidth={1.5} />
-                    {tr("Choose Payment Method", "اختر طريقة الدفع المناسبة لك")}
-                  </h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {tr("Select your preferred transfer method to receive details and complete payment in Live Chat.", "حدد وسيلة التحويل المفضلة لاستلام تفاصيل السداد والتواصل المباشر مع الدعم.")}
-                  </p>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {paymentMethods.map((m) => {
-                    const isSelected = paymentMethod === m.id;
-                    const Logo = m.LogoComponent;
-                    return (
-                      <button
-                        key={m.id}
-                        type="button"
-                        onClick={() => {
-                          setPaymentMethod(m.id);
-                          setRequestSuccess(false);
-                        }}
-                        className={`relative flex items-center gap-3.5 rounded-2xl border-2 p-3.5 text-start transition-all ${
-                          isSelected
-                            ? m.activeBg
-                            : `border-border bg-card hover:border-beige/70 hover:shadow-sm ${m.accent}`
-                        }`}
-                      >
-                        <Logo className="h-10 w-10 shrink-0" />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-bold text-sm text-foreground truncate">
-                              {ar ? m.nameAr : m.nameEn}
-                            </span>
-                            <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground border border-border">
-                              {ar ? m.badgeAr : m.badgeEn}
-                            </span>
-                          </div>
-                          <p className="mt-0.5 text-xs text-muted-foreground truncate">
-                            {ar ? m.subAr : m.subEn}
-                          </p>
-                        </div>
-                        {isSelected && (
-                          <span className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-white text-[10px] font-bold shadow-md">
-                            ✓
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Selected Method & Amount Banner with Clean Segmented Control */}
-                <div className="rounded-2xl bg-secondary/40 p-4 sm:p-5 border border-border flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <span className="text-xs text-muted-foreground block font-medium">
-                      {tr("Selected payment amount via", "المبلغ المحدد للسداد عبر")}{" "}
-                      <strong className="text-foreground">{paymentMethod}</strong>:
-                    </span>
-                    <div className="flex flex-wrap items-baseline gap-2 mt-1">
-                      <span className="font-display text-2xl sm:text-3xl font-bold text-navy dark:text-beige">
-                        {eur(selectedEur)}
-                      </span>
-                      <span className="text-xs font-semibold text-muted-foreground">
-                        ≈ {selectedEgp.toLocaleString()} {tr("EGP", "جنيه مصري")}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Segmented plan switcher */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 self-stretch md:self-auto">
-                    <div className="inline-flex p-1 rounded-2xl bg-card border border-border shadow-2xs">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPayOption("deposit");
-                          setRequestSuccess(false);
-                        }}
-                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                          payOption === "deposit"
-                            ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {ar ? "سداد الديبوزيت (حجز المقعد)" : "Deposit Only"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPayOption("full");
-                          setRequestSuccess(false);
-                        }}
-                        className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                          payOption === "full"
-                            ? "bg-navy text-ivory shadow-xs dark:bg-beige dark:text-navy"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {ar ? "سداد كامل المبلغ دفعة واحدة 💰" : "Full Payment"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 4. Action Buttons & Live Chat Trigger */}
-              <div className="space-y-3">
-                {isSuspended && (
-                  <div className="flex items-center gap-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-3.5 text-xs text-amber-900 dark:text-amber-200">
-                    <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <span className="font-semibold">{ar ? "🔒 تم تعليق إمكانية دفع المقدم والرسوم حالياً لوجود تنبيه إداري معلق (راجع التنبيه الرسمي أعلاه)." : "🔒 Payment is paused while an official administrative notice is pending."}</span>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  disabled={requestingPay || isSuspended}
-                  onClick={handlePaymentRequest}
-                  className={`w-full flex items-center justify-center gap-2.5 rounded-2xl border-2 px-5 py-4 text-sm font-bold shadow-md transition-all active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed ${
-                    isSuspended
-                      ? "border-border bg-secondary text-muted-foreground opacity-60"
-                      : "border-beige/50 bg-navy dark:bg-beige text-ivory dark:text-navy hover:opacity-95 shadow-navy/10"
-                  }`}
-                >
-                  {requestingPay ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin text-beige dark:text-navy" />
-                      <span>{tr("Sending Request to Support...", "جاري إرسال طلب السداد للشات...")}</span>
-                    </>
-                  ) : isSuspended ? (
-                    <>
-                      <AlertTriangle className="h-4 w-4 text-amber-500" />
-                      <span>{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
-                    </>
-                  ) : requestSuccess ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-beige dark:text-navy" />
-                      <span className="text-center leading-normal">
-                        {ar
-                          ? `إعادة إرسال طلب سداد (${payOption === "full" ? "سداد كامل" : "ديبوزيت"}) عبر ${paymentMethod} 🔄`
-                          : `Re-send Payment Request (${payOption === "full" ? "Full" : "Deposit"}) via ${paymentMethod} 🔄`}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <MessageSquare className="h-4 w-4 text-beige dark:text-navy shrink-0" />
-                      <span className="text-center leading-normal">
-                        {ar
-                          ? `طلب بيانات السداد عبر ${paymentMethod} (${payOption === "full" ? "سداد كامل المبلغ" : "ديبوزيت / مقدم"}) 💬`
-                          : `Request Payment Details via ${paymentMethod} (${payOption === "full" ? "Full" : "Deposit"}) in Live Chat 💬`}
-                      </span>
-                    </>
-                  )}
-                </button>
-
-                {requestErr && (
-                  <p className="text-xs text-destructive font-medium text-center">{requestErr}</p>
-                )}
-
-                {requestSuccess && (
-                  <div className="rounded-2xl border border-beige/40 bg-beige/100/10 p-4 text-beige dark:text-beige animate-in fade-in space-y-3">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-beige shrink-0 mt-0.5" />
-                      <div className="text-xs leading-relaxed flex-1">
-                        <p className="font-bold text-sm">
-                          {ar ? "✓ تم إرسال طلب السداد بنجاح!" : "✓ Payment request sent successfully!"}
-                        </p>
-                        <p className="mt-1">
+              {/* If request already sent (or just sent), LOCK IT completely */}
+              {requestSuccess || alreadyRequestedPayment ? (
+                <div className="rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-50/40 via-card to-card dark:from-emerald-950/20 p-6 shadow-md space-y-4 animate-in fade-in">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/80 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-sm">
+                        <CheckCircle2 className="h-6 w-6" strokeWidth={2} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base text-foreground">
+                          {ar ? "تم إرسال طلب السداد وقفل التعديل ✓" : "Payment Request Submitted & Locked ✓"}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
                           {ar
-                            ? `تم تسجيل وإرسال طلبك لسداد (${payOption === "deposit" ? "الديبوزيت / مقدم حجز المقعد" : "كامل المبلغ دفعة واحدة 💰"}) بمبلغ ${eur(selectedEur)} (~${selectedEgp.toLocaleString()} ج.م) عبر ${paymentMethod}. تم فتح شات الموقع وسيتواصل معك ممثل خدمة العملاء الآن لتزويدك برقم التحويل وتأكيد الحجز.`
-                            : `Your payment request of ${eur(selectedEur)} (${payOption === "deposit" ? "Deposit" : "Full Payment"}) via ${paymentMethod} has been recorded. Live chat is active to assist you.`}
+                            ? "تم تسجيل وسيلة السداد بنجاح وقفل الخيارات لمنع تكرار الإرسال"
+                            : "Your preferred payment method is locked and registered with support"}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-beige/20">
-                      <button
-                        type="button"
-                        onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-navy text-ivory px-4 py-2 text-xs font-bold shadow hover:opacity-90"
-                      >
-                        <MessageSquare className="h-3.5 w-3.5" />
-                        {ar ? "فتح شات الموقع الآن ومتابعة السداد 💬" : "Open Live Chat Now 💬"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setRequestSuccess(false)}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-beige/40 bg-card text-foreground px-3.5 py-2 text-xs font-semibold hover:bg-secondary"
-                      >
-                        <RotateCcw className="h-3.5 w-3.5" />
-                        {ar ? "تغيير النظام أو وسيلة الدفع وإرسال طلب جديد 🔄" : "Change Plan & Send Another Request 🔄"}
-                      </button>
+                    <span className="rounded-full bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 px-3 py-1 text-xs font-bold border border-emerald-300/40">
+                      🔒 {ar ? "الطلب مسجّل ومعتمد" : "Recorded & Locked"}
+                    </span>
+                  </div>
+
+                  {/* Summary of locked submission */}
+                  <div className="grid gap-3 sm:grid-cols-3 text-xs bg-secondary/30 p-4 rounded-2xl border border-border/70">
+                    <div>
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">{tr("Payment Method", "وسيلة الدفع المختارة")}</span>
+                      <span className="font-bold text-foreground flex items-center gap-1.5 text-sm">
+                        <CreditCard className="h-4 w-4 text-beige" />
+                        {paymentMethod}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">{tr("Payment Plan", "نظام السداد (محدد في الطلب)")}</span>
+                      <span className="font-bold text-navy dark:text-beige flex items-center gap-1.5 text-sm">
+                        <ShieldCheck className="h-4 w-4 text-beige" />
+                        {payOption === "full"
+                          ? tr("Full Payment Plan", "سداد كامل المبلغ")
+                          : tr("Deposit Only (Down Payment)", "سداد الديبوزيت (مقدم الحجز)")}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="text-muted-foreground block text-[11px] mb-0.5">{tr("Amount to Pay", "المبلغ المطلوب سداده")}</span>
+                      <span className="font-bold text-base text-navy dark:text-beige">
+                        {eur(selectedEur)}{" "}
+                        <span className="text-xs font-normal text-muted-foreground">
+                          (≈ {selectedEgp.toLocaleString()} {tr("EGP", "ج.م")})
+                        </span>
+                      </span>
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {ar
+                      ? `تم تزويد فريق الدعم ببيانات طلبك للسداد عبر ${paymentMethod}. يمكنك فتح شات الموقع في أي وقت لاستلام رقم الحساب/المحفظة وتأكيد التحويل فوراً.`
+                      : `Support team has been notified of your payment via ${paymentMethod}. Open live chat below to get account details and confirm your transfer.`}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/60">
+                    <button
+                      type="button"
+                      onClick={() => window.dispatchEvent(new CustomEvent("open-ema-chat"))}
+                      className="inline-flex items-center gap-2 rounded-2xl bg-navy text-ivory px-5 py-3 text-xs font-bold shadow-md hover:bg-navy/90 transition-all active:scale-95"
+                    >
+                      <MessageSquare className="h-4 w-4 text-beige" />
+                      <span>{ar ? "متابعة بيانات التحويل في الشات الفوري 💬" : "Follow Up in Live Chat 💬"}</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* 3. Interactive Payment Method Selector */}
+                  <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-4">
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                        <CreditCard className="h-4 w-4 text-beige" strokeWidth={1.5} />
+                        {tr("Choose Payment Method", "اختر طريقة الدفع المناسبة لك")}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {tr("Select your preferred transfer method to receive details and complete payment in Live Chat.", "حدد وسيلة التحويل المفضلة لاستلام تفاصيل السداد والتواصل المباشر مع الدعم.")}
+                      </p>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {paymentMethods.map((m) => {
+                        const isSelected = paymentMethod === m.id;
+                        const Logo = m.LogoComponent;
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => {
+                              setPaymentMethod(m.id);
+                              setRequestSuccess(false);
+                            }}
+                            className={`relative flex items-center gap-3.5 rounded-2xl border-2 p-3.5 text-start transition-all ${
+                              isSelected
+                                ? m.activeBg
+                                : `border-border bg-card hover:border-beige/70 hover:shadow-sm ${m.accent}`
+                            }`}
+                          >
+                            <Logo className="h-10 w-10 shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="font-bold text-sm text-foreground truncate">
+                                  {ar ? m.nameAr : m.nameEn}
+                                </span>
+                                <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground border border-border">
+                                  {ar ? m.badgeAr : m.badgeEn}
+                                </span>
+                              </div>
+                              <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                                {ar ? m.subAr : m.subEn}
+                              </p>
+                            </div>
+                            {isSelected && (
+                              <span className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-white text-[10px] font-bold shadow-md">
+                                ✓
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Payment Summary Banner — LOCKED to the plan chosen during application */}
+                    <div className="rounded-2xl bg-secondary/40 p-4 sm:p-5 border border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <span className="text-xs text-muted-foreground block font-medium mb-1">
+                          {tr("Amount to pay now via", "المبلغ المطلوب سداده عبر")}{" "}
+                          <strong className="text-foreground">{paymentMethod}</strong>:
+                        </span>
+                        <div className="flex flex-wrap items-baseline gap-2">
+                          <span className="font-display text-2xl sm:text-3xl font-bold text-navy dark:text-beige">
+                            {eur(selectedEur)}
+                          </span>
+                          <span className="text-xs font-semibold text-muted-foreground">
+                            ≈ {selectedEgp.toLocaleString()} {tr("EGP", "جنيه مصري")}
+                          </span>
+                        </div>
+                      </div>
+                      {/* Locked plan badge */}
+                      <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 text-xs font-bold text-foreground shrink-0">
+                        <ShieldCheck className="h-3.5 w-3.5 text-beige shrink-0" />
+                        <span>
+                          {payOption === "full"
+                            ? tr("Full Payment Plan", "خطة سداد كامل المبلغ")
+                            : tr("Deposit + Installments Plan", "مقدم + أقساط شهرية")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. Action Buttons & Live Chat Trigger */}
+                  <div className="space-y-3">
+                    {isSuspended && (
+                      <div className="flex items-center gap-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-3.5 text-xs text-amber-900 dark:text-amber-200">
+                        <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                        <span className="font-semibold">{ar ? "🔒 تم تعليق إمكانية دفع المقدم والرسوم حالياً لوجود تنبيه إداري معلق (راجع التنبيه الرسمي أعلاه)." : "🔒 Payment is paused while an official administrative notice is pending."}</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={requestingPay || isSuspended}
+                      onClick={handlePaymentRequest}
+                      className={`w-full flex items-center justify-center gap-2.5 rounded-2xl border-2 px-5 py-4 text-sm font-bold shadow-md transition-all active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed ${
+                        isSuspended
+                          ? "border-border bg-secondary text-muted-foreground opacity-60"
+                          : "border-beige/50 bg-navy dark:bg-beige text-ivory dark:text-navy hover:opacity-95 shadow-navy/10"
+                      }`}
+                    >
+                      {requestingPay ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin text-beige dark:text-navy" />
+                          <span>{tr("Sending Request to Support...", "جاري إرسال طلب السداد للشات...")}</span>
+                        </>
+                      ) : isSuspended ? (
+                        <>
+                          <AlertTriangle className="h-4 w-4 text-amber-500" />
+                          <span>{tr("Payment Paused (See Admin Notice Above)", "الدفع معلق مؤقتاً (راجع تنبيه الإدارة أعلاه)")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <MessageSquare className="h-4 w-4 text-beige dark:text-navy shrink-0" />
+                          <span className="text-center leading-normal">
+                            {ar
+                              ? `طلب بيانات السداد عبر ${paymentMethod} (${payOption === "full" ? "سداد كامل المبلغ" : "ديبوزيت / مقدم"}) 💬`
+                              : `Request Payment Details via ${paymentMethod} (${payOption === "full" ? "Full" : "Deposit"}) in Live Chat 💬`}
+                          </span>
+                        </>
+                      )}
+                    </button>
+
+                    {requestErr && (
+                      <p className="text-xs text-destructive font-medium text-center">{requestErr}</p>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
 

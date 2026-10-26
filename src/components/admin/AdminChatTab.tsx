@@ -30,6 +30,12 @@ import {
   ImagePlus,
   Loader2,
   XCircle,
+  Download,
+  Receipt,
+  ThumbsUp,
+  ThumbsDown,
+  Eye,
+  ZoomIn,
 } from "lucide-react";
 import {
   getAdminChats,
@@ -40,8 +46,11 @@ import {
   adminSetConversationFlag,
   adminSetConversationGroup,
   adminDeleteConversation,
+  adminReviewTransferProof,
+  getAllTransferProofs,
   type ChatConversation,
   type ChatMessage,
+  type TransferProof,
 } from "@/lib/chat.functions";
 import { ApplicationChatCard } from "@/components/chat/ApplicationChatCard";
 import { playChatChime, sendBrowserNotification, requestNotificationPermission } from "@/lib/chatSound";
@@ -61,7 +70,7 @@ const FLAGS: { id: "urgent" | "important" | "follow_up" | "resolved"; label: str
   { id: "resolved", label: "Resolved", color: "text-beige", badgeCls: "bg-beige/20 text-navy dark:bg-navy/20 dark:text-beige/70 border-beige/40" },
 ];
 
-export function AdminChatTab() {
+export function AdminChatTab({ initialConversationId }: { initialConversationId?: string | null } = {}) {
   const fetchChats = useServerFn(getAdminChats);
   const fetchMessages = useServerFn(getAdminConversationMessages);
   const sendReply = useServerFn(sendAdminReply);
@@ -70,18 +79,34 @@ export function AdminChatTab() {
   const setFlag = useServerFn(adminSetConversationFlag);
   const setGroup = useServerFn(adminSetConversationGroup);
   const deleteConv = useServerFn(adminDeleteConversation);
+  const reviewProof = useServerFn(adminReviewTransferProof);
+  const fetchAllProofs = useServerFn(getAllTransferProofs);
 
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(initialConversationId || null);
+
+  useEffect(() => {
+    if (initialConversationId) {
+      setSelectedId(initialConversationId);
+    }
+  }, [initialConversationId]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [replyText, setReplyText] = useState("");
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "active" | "payments" | "resolved">("all");
+  const [filter, setFilter] = useState<"all" | "active" | "payments" | "proofs" | "resolved">("all");
   const [selectedGroupFilter, setSelectedGroupFilter] = useState<string>("all");
   const [selectedFlagFilter, setSelectedFlagFilter] = useState<string>("all");
   const [busy, setBusy] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [archivedCount, setArchivedCount] = useState(0);
+
+  // Transfer Proof state
+  const [allProofs, setAllProofs] = useState<(TransferProof & { clientEmail?: string | null; lastMessageAt?: string })[]>([]);
+  const [proofLightbox, setProofLightbox] = useState<string | null>(null);
+  const [reviewingProofId, setReviewingProofId] = useState<string | null>(null);
+  const [reviewNotes, setReviewNotes] = useState("");
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const [proofFilter, setProofFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
 
   // Modal states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -93,7 +118,34 @@ export function AdminChatTab() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDownload = async (url: string, id?: string) => {
+    try {
+      if (url.startsWith("data:")) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `chat-image-${id || Date.now()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `chat-image-${id || Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      window.open(url, "_blank");
+    }
+  };
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevAdminUnreadRef = useRef<number>(-1);
@@ -141,6 +193,27 @@ export function AdminChatTab() {
       clearInterval(iv);
     };
   }, [selectedId, showArchived]);
+
+  // Poll all transfer proofs for the dedicated proof dashboard
+  useEffect(() => {
+    let mounted = true;
+    const loadProofs = async () => {
+      try {
+        const proofs = await fetchAllProofs({});
+        if (mounted && Array.isArray(proofs)) {
+          setAllProofs(proofs);
+        }
+      } catch {
+        // silently ignore
+      }
+    };
+    loadProofs();
+    const piv = setInterval(loadProofs, 5000);
+    return () => {
+      mounted = false;
+      clearInterval(piv);
+    };
+  }, []);
 
   // Poll messages for selected conversation
   useEffect(() => {
@@ -401,7 +474,16 @@ export function AdminChatTab() {
           c.lastMessage.toLowerCase().includes("deposit")))
     );
 
+  const isProofConv = (c: ChatConversation) =>
+    Boolean(
+      c.hasTransferProof ||
+      (c.transferProofs && c.transferProofs.length > 0) ||
+      (c.lastMessage && (c.lastMessage.includes("🧾") || c.lastMessage.includes("إثبات تحويل")))
+    );
+
   const paymentCount = conversations.filter(isPaymentConv).length;
+  const proofCount = conversations.filter(isProofConv).length;
+  const pendingProofCount = allProofs.filter((p) => p.status === "pending").length;
 
   const existingGroups = Array.from(
     new Set([...PRESET_GROUPS, ...conversations.map((c) => c.groupName).filter(Boolean)])
@@ -410,6 +492,8 @@ export function AdminChatTab() {
   const filtered = conversations.filter((c) => {
     if (filter === "payments") {
       if (!isPaymentConv(c)) return false;
+    } else if (filter === "proofs") {
+      if (!isProofConv(c)) return false;
     } else if (filter !== "all" && c.status !== filter) {
       return false;
     }
@@ -504,6 +588,22 @@ export function AdminChatTab() {
               {paymentCount > 0 && (
                 <span className="rounded-full bg-amber-600 px-1.5 py-0.2 text-[10px] text-white">
                   {paymentCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setFilter("proofs")}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 font-bold transition-all ${
+                filter === "proofs"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20"
+              }`}
+            >
+              <Receipt className="h-3.5 w-3.5" />
+              إثباتات التحويل
+              {pendingProofCount > 0 && (
+                <span className="rounded-full bg-emerald-700 px-1.5 py-0.2 text-[10px] text-white">
+                  {pendingProofCount}
                 </span>
               )}
             </button>
@@ -774,6 +874,226 @@ export function AdminChatTab() {
                 const isAdmin = m.sender === "admin";
                 const isPayment = m.text.includes("طلب سداد") || m.text.includes("💳 طلب سداد");
 
+                // Transfer Proof Card (admin view with review actions)
+                if (m.transferProof) {
+                  const tp = m.transferProof;
+                  const isApproved = tp.status === "approved";
+                  const isRejected = tp.status === "rejected";
+                  const isPending = tp.status === "pending";
+                  const isReviewing = reviewingProofId === tp.id;
+
+                  return (
+                    <div key={m.id} className="flex justify-start my-3">
+                      <div className="w-full max-w-md rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-50/80 via-card to-background dark:from-emerald-950/20 p-4 shadow-md space-y-3">
+                        {/* Header */}
+                        <div className="flex items-center justify-between pb-2 border-b border-border/60">
+                          <div className="flex items-center gap-1.5">
+                            <Receipt className="h-4 w-4 text-emerald-600 shrink-0" />
+                            <span className="font-bold text-xs text-emerald-900 dark:text-emerald-200">
+                              إثبات تحويل من: <span className="text-foreground">{tp.clientName}</span>
+                            </span>
+                          </div>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                            isApproved
+                              ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-950/40 dark:text-green-300"
+                              : isRejected
+                              ? "bg-red-100 text-red-800 border-red-300 dark:bg-red-950/40 dark:text-red-300"
+                              : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 animate-pulse"
+                          }`}>
+                            {isApproved ? "تم الاعتماد ✓" : isRejected ? "مرفوض ✕" : "قيد المراجعة ⏳"}
+                          </span>
+                        </div>
+
+                        {/* Transfer details grid */}
+                        <div className="grid grid-cols-2 gap-2 text-[11.5px]">
+                          <div className="bg-secondary/60 rounded-xl p-2 space-y-0.5">
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">المحول منه</p>
+                            <p className="font-mono font-bold text-foreground break-all">{tp.senderAccount}</p>
+                          </div>
+                          <div className="bg-secondary/60 rounded-xl p-2 space-y-0.5">
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">المحول إليه</p>
+                            <p className="font-mono font-bold text-foreground break-all">{tp.recipientAccount}</p>
+                          </div>
+                          {tp.amount && (
+                            <div className="bg-emerald-500/10 rounded-xl p-2 space-y-0.5">
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">المبلغ</p>
+                              <p className="font-bold text-emerald-700 dark:text-emerald-300 text-sm">{tp.amount}</p>
+                            </div>
+                          )}
+                          <div className="rounded-xl p-2 space-y-0.5">
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">الهاتف</p>
+                            <p className="font-mono text-xs text-foreground">{tp.clientPhone || "—"}</p>
+                          </div>
+                        </div>
+
+                        {tp.notes && (
+                          <p className="text-[11px] text-muted-foreground bg-secondary/40 rounded-lg px-2.5 py-1.5 italic">
+                            "{tp.notes}"
+                          </p>
+                        )}
+
+                        {/* Receipt Image */}
+                        {tp.receiptUrl && (
+                          <div className="relative overflow-hidden rounded-xl border border-border group cursor-pointer"
+                               onClick={() => setProofLightbox(tp.receiptUrl)}>
+                            <img
+                              src={tp.receiptUrl}
+                              alt="إيصال التحويل"
+                              className="w-full max-h-52 object-cover hover:opacity-90 transition-opacity"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-xs">
+                              <div className="flex items-center gap-2 text-white font-bold text-xs bg-navy/80 rounded-xl px-3 py-2">
+                                <ZoomIn className="h-4 w-4" />
+                                <span>عرض الإيصال</span>
+                              </div>
+                            </div>
+                            <div className="absolute top-2 end-2 flex gap-1.5">
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); handleDownload(tp.receiptUrl, tp.id); }}
+                                className="inline-flex items-center gap-1 rounded-lg bg-navy/90 hover:bg-navy text-ivory px-2 py-1 text-[10px] font-bold shadow-md border border-white/20"
+                                title="تحميل الإيصال"
+                              >
+                                <Download className="h-3 w-3" />
+                                <span>تحميل</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Admin review actions */}
+                        {isPending && !isReviewing && (
+                          <div className="flex items-center gap-2 pt-1 border-t border-border/50">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setReviewingProofId(tp.id);
+                                setReviewNotes("");
+                              }}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 text-xs font-bold transition-all active:scale-95"
+                            >
+                              <ThumbsUp className="h-3.5 w-3.5" />
+                              اعتماد وتأكيد السداد
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setReviewingProofId(tp.id + ":reject");
+                                setReviewNotes("");
+                              }}
+                              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 px-3 py-2 text-xs font-bold transition-all active:scale-95"
+                            >
+                              <ThumbsDown className="h-3.5 w-3.5" />
+                              رفض
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Review form (approve or reject) */}
+                        {isReviewing && (
+                          <div className="space-y-2 pt-2 border-t border-border/50">
+                            <p className="text-xs font-bold text-foreground">
+                              {reviewingProofId?.endsWith(":reject")
+                                ? "سبب الرفض (اختياري):"
+                                : "ملاحظة للعميل (اختياري):"}
+                            </p>
+                            <textarea
+                              value={reviewNotes}
+                              onChange={(e) => setReviewNotes(e.target.value)}
+                              placeholder={reviewingProofId?.endsWith(":reject")
+                                ? "أدخل سبب الرفض أو تعليماتك للعميل..."
+                                : "رسالة تأكيد اختيارية للعميل..."}
+                              rows={2}
+                              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-xs outline-none focus:border-beige resize-none"
+                            />
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                disabled={reviewBusy}
+                                onClick={async () => {
+                                  const isReject = reviewingProofId?.endsWith(":reject");
+                                  const proofId = isReject ? reviewingProofId!.replace(":reject", "") : reviewingProofId!;
+                                  setReviewBusy(true);
+                                  try {
+                                    const res = await reviewProof({
+                                      data: {
+                                        conversationId: m.conversationId,
+                                        proofId: proofId,
+                                        status: isReject ? "rejected" : "approved",
+                                        adminNotes: reviewNotes.trim() || undefined,
+                                      },
+                                    });
+                                    // Update local message state
+                                    setMessages((prev) =>
+                                      prev.map((msg) => {
+                                        if (msg.transferProof && msg.transferProof.id === proofId) {
+                                          return {
+                                            ...msg,
+                                            transferProof: {
+                                              ...msg.transferProof,
+                                              status: isReject ? "rejected" : "approved",
+                                              adminNotes: reviewNotes.trim() || undefined,
+                                            },
+                                          };
+                                        }
+                                        return msg;
+                                      })
+                                    );
+                                    if (res.message) {
+                                      setMessages((prev) => [...prev, res.message]);
+                                    }
+                                    // Update proof list
+                                    setAllProofs((prev) =>
+                                      prev.map((p) =>
+                                        p.id === proofId
+                                          ? { ...p, status: isReject ? "rejected" : "approved", adminNotes: reviewNotes.trim() }
+                                          : p
+                                      )
+                                    );
+                                    setReviewingProofId(null);
+                                    setReviewNotes("");
+                                  } catch (err) {
+                                    console.error("Review failed:", err);
+                                  } finally {
+                                    setReviewBusy(false);
+                                  }
+                                }}
+                                className={`flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all disabled:opacity-60 ${
+                                  reviewingProofId?.endsWith(":reject")
+                                    ? "bg-red-600 hover:bg-red-700 text-white"
+                                    : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                                }`}
+                              >
+                                {reviewBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                                {reviewingProofId?.endsWith(":reject") ? "تأكيد الرفض" : "تأكيد الاعتماد"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => { setReviewingProofId(null); setReviewNotes(""); }}
+                                className="px-3 py-2 rounded-xl text-xs text-muted-foreground hover:bg-secondary transition-colors"
+                              >
+                                إلغاء
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Reviewed admin notes */}
+                        {(isApproved || isRejected) && tp.adminNotes && (
+                          <div className={`rounded-xl p-2.5 text-xs border ${isApproved ? "bg-green-50 border-green-200 text-green-800 dark:bg-green-950/20 dark:text-green-300" : "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/20 dark:text-red-300"}`}>
+                            <span className="font-bold">ملاحظة الإدارة: </span>{tp.adminNotes}
+                          </div>
+                        )}
+
+                        <div className="text-[9px] text-muted-foreground">
+                          {new Date(m.createdAt).toLocaleString("ar-EG", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
                 if (isPayment) {
                   return (
                     <div key={m.id} className="flex justify-start my-2">
@@ -796,19 +1116,27 @@ export function AdminChatTab() {
                     >
                       {m.imageUrl ? (
                         <div className="space-y-1.5">
-                          <a
-                            href={m.imageUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block overflow-hidden rounded-xl border border-white/10 group cursor-zoom-in"
-                          >
+                          <div className="relative group overflow-hidden rounded-xl border border-white/10 bg-black/10">
                             <img
                               src={m.imageUrl}
                               alt="Attachment"
-                              className="max-h-64 max-w-full rounded-xl object-cover hover:opacity-95 transition-opacity"
+                              className="max-h-64 max-w-full rounded-xl object-cover hover:opacity-95 transition-opacity cursor-pointer"
                               loading="lazy"
+                              onClick={() => setLightboxImg(m.imageUrl || null)}
                             />
-                          </a>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (m.imageUrl) handleDownload(m.imageUrl, m.id);
+                              }}
+                              className="absolute top-2 end-2 inline-flex items-center gap-1 rounded-lg bg-navy/90 hover:bg-navy text-ivory px-2 py-1 text-[10px] font-bold shadow-md border border-white/20 transition-all hover:scale-105"
+                              title="تحميل الصورة"
+                            >
+                              <Download className="h-3 w-3" />
+                              <span>تحميل</span>
+                            </button>
+                          </div>
                           {m.text && m.text !== "📷 صورة / Image" && (
                             <p className="whitespace-pre-line text-xs">{m.text}</p>
                           )}
@@ -1074,6 +1402,43 @@ export function AdminChatTab() {
                 Confirm Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox / Full-screen Image Modal */}
+      {lightboxImg && (
+        <div
+          onClick={() => setLightboxImg(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl max-h-[90vh] flex flex-col items-center"
+          >
+            <div className="absolute top-3 end-3 flex items-center gap-2 z-10">
+              <button
+                type="button"
+                onClick={() => handleDownload(lightboxImg)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-navy/90 hover:bg-navy text-ivory px-3.5 py-1.5 text-xs font-bold shadow-lg border border-white/20 transition-all hover:scale-105"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>تحميل الصورة</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setLightboxImg(null)}
+                className="p-1.5 rounded-full bg-black/60 text-white hover:bg-black/90 transition-all"
+                title="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <img
+              src={lightboxImg}
+              alt="Enlarged view"
+              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+            />
           </div>
         </div>
       )}

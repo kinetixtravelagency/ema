@@ -4,7 +4,9 @@ import {
   Sparkles, ArrowRight, ArrowUpRight, MapPin, Search, ShieldCheck, Briefcase,
   Building2, PlaneTakeoff, Filter, Globe, GraduationCap, SlidersHorizontal,
   CheckCircle2, Clock, Check, X, LayoutGrid, List, Utensils, Home, DollarSign,
-  ArrowUpDown, Plane, ChevronRight,
+  ArrowUpDown, Plane, ChevronRight, Stethoscope, Cpu, Hotel, Package, Monitor,
+  Factory, HardHat, Landmark, Leaf, ShoppingBag, Palette, Scale, Truck,
+  Wrench, Users,
 } from "lucide-react";
 import { Nav, Footer } from "@/components/site/SiteChrome";
 import { Reveal } from "@/components/site/Reveal";
@@ -45,13 +47,21 @@ export function CountriesPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const categories = [
-    { id: "all", labelEn: "All Fields", labelAr: "جميع المجالات", icon: "🌐" },
-    { id: "Healthcare", labelEn: "Healthcare & Nursing", labelAr: "الرعاية الصحية والتمريض", icon: "🩺" },
-    { id: "Engineering", labelEn: "Engineering & Tech", labelAr: "الهندسة والتقنية", icon: "⚙️" },
-    { id: "Hospitality", labelEn: "Hospitality & Tourism", labelAr: "السياحة والضيافة", icon: "🏨" },
-    { id: "Logistics", labelEn: "Logistics & Transport", labelAr: "اللوجستيات والمخازن", icon: "📦" },
-    { id: "Technology", labelEn: "IT & Software", labelAr: "تكنولوجيا المعلومات", icon: "💻" },
-    { id: "Manufacturing", labelEn: "Industry & Production", labelAr: "الصناعة والتصنيع", icon: "🏗️" },
+    { id: "all",          labelEn: "All Fields",              labelAr: "جميع المجالات",           Icon: Globe },
+    { id: "Healthcare",   labelEn: "Healthcare & Nursing",    labelAr: "رعاية صحية وتمريض",       Icon: Stethoscope },
+    { id: "Engineering",  labelEn: "Engineering & Tech",      labelAr: "هندسة وتقنية",             Icon: Wrench },
+    { id: "Hospitality",  labelEn: "Hospitality & Tourism",   labelAr: "ضيافة وسياحة",            Icon: Hotel },
+    { id: "Logistics",    labelEn: "Logistics & Transport",   labelAr: "لوجستيات ومواصلات",       Icon: Truck },
+    { id: "Technology",   labelEn: "IT & Software",           labelAr: "تكنولوجيا وبرمجيات",      Icon: Monitor },
+    { id: "Manufacturing",labelEn: "Industry & Production",   labelAr: "صناعة وتصنيع",            Icon: Factory },
+    { id: "Construction", labelEn: "Construction & Civil",    labelAr: "مقاولات وبناء",           Icon: HardHat },
+    { id: "Finance",      labelEn: "Finance & Banking",       labelAr: "مالية ومصرفية",           Icon: Landmark },
+    { id: "Agriculture",  labelEn: "Agriculture & Farming",   labelAr: "زراعة وحصاد",             Icon: Leaf },
+    { id: "Education",    labelEn: "Education & Academia",    labelAr: "تعليم ودراسة",            Icon: GraduationCap },
+    { id: "Customer",     labelEn: "Customer Service",        labelAr: "خدمة عملاء",              Icon: Users },
+    { id: "Retail",       labelEn: "Retail & Sales",          labelAr: "تجزئة ومبيعات",           Icon: ShoppingBag },
+    { id: "Creative",     labelEn: "Creative & Media",        labelAr: "إبداع وإعلام",            Icon: Palette },
+    { id: "Legal",        labelEn: "Legal & Administrative",  labelAr: "قانوني وإداري",           Icon: Scale },
   ];
 
   // Flatten all programs with country info
@@ -88,17 +98,73 @@ export function CountriesPage() {
 
         // Category filter
         if (selectedCategory !== "all") {
-          const catLower = selectedCategory.toLowerCase();
-          const matchesCat =
-            p.category.toLowerCase().includes(catLower) ||
-            (p.categoryAr && p.categoryAr.toLowerCase().includes(catLower)) ||
-            (selectedCategory === "Healthcare" && (
-              p.category.includes("Healthcare") || p.category.includes("Nursing") || p.category.includes("Medicine") ||
-              p.categoryAr.includes("طب") || p.categoryAr.includes("تمريض") || p.categoryAr.includes("صحي")
-            )) ||
-            (selectedCategory === "Engineering" && (
-              p.category.includes("Engineering") || p.categoryAr.includes("هندسة")
-            ));
+          const cat = selectedCategory;
+          const pCat = (p.category || "").toLowerCase();
+          const pCatAr = (p.categoryAr || "").toLowerCase();
+          const pTitle = (p.title || "").toLowerCase();
+          const pTitleAr = (p.titleAr || "").toLowerCase();
+
+          const matchesCat = (() => {
+            switch (cat) {
+              case "Healthcare":
+                return pCat.includes("health") || pCat.includes("nurs") || pCat.includes("medic") || pCat.includes("physician") ||
+                       pCatAr.includes("صح") || pCatAr.includes("تمريض") || pCatAr.includes("طب") ||
+                       pTitle.includes("health") || pTitle.includes("nurs") || pTitle.includes("medic") || pTitleAr.includes("طب") || pTitleAr.includes("تمريض");
+              case "Engineering":
+                return pCat.includes("engineer") || pCat.includes("tech") || pCat.includes("solar") || pCat.includes("electric") || pCat.includes("mechanic") ||
+                       pCatAr.includes("هندس") || pCatAr.includes("تقن") || pCatAr.includes("طاقة") || pCatAr.includes("كهرب") ||
+                       pTitle.includes("engineer") || pTitleAr.includes("مهندس");
+              case "Hospitality":
+                return pCat.includes("hospit") || pCat.includes("resort") || pCat.includes("hotel") || pCat.includes("f&b") || pCat.includes("culinary") || pCat.includes("touris") ||
+                       pCatAr.includes("ضياف") || pCatAr.includes("فندق") || pCatAr.includes("سياح") || pCatAr.includes("منتجع") || pCatAr.includes("مطاعم") ||
+                       pTitle.includes("hotel") || pTitle.includes("resort") || pTitle.includes("hospitality") || pTitleAr.includes("فندق") || pTitleAr.includes("ضيافة");
+              case "Logistics":
+                return pCat.includes("logist") || pCat.includes("warehous") || pCat.includes("supply") || pCat.includes("freight") || pCat.includes("transport") || pCat.includes("ground") || pCat.includes("aviation") ||
+                       pCatAr.includes("لوجست") || pCatAr.includes("مستودع") || pCatAr.includes("نقل") || pCatAr.includes("شحن") || pCatAr.includes("طيران") || pCatAr.includes("مناولة") ||
+                       pTitle.includes("logistics") || pTitle.includes("warehouse") || pTitleAr.includes("لوجستي") || pTitleAr.includes("مستودع");
+              case "Technology":
+                return pCat.includes("it") || pCat.includes("softwar") || pCat.includes("tech") || pCat.includes("cyber") || pCat.includes("data") || pCat.includes("develop") ||
+                       pCatAr.includes("برمج") || pCatAr.includes("تكنولوج") || pCatAr.includes("تقنية") || pCatAr.includes("حاسب") ||
+                       pTitle.includes("it") || pTitle.includes("software") || pTitle.includes("developer") || pTitleAr.includes("برمج");
+              case "Manufacturing":
+                return pCat.includes("manufactur") || pCat.includes("product") || pCat.includes("factor") || pCat.includes("industr") || pCat.includes("assembl") ||
+                       pCatAr.includes("تصنيع") || pCatAr.includes("إنتاج") || pCatAr.includes("صناع") || pCatAr.includes("مصانع") ||
+                       pTitle.includes("manufactur") || pTitle.includes("production") || pTitleAr.includes("إنتاج") || pTitleAr.includes("تصنيع");
+              case "Construction":
+                return pCat.includes("construct") || pCat.includes("civil") || pCat.includes("build") || pCat.includes("trade") || pCat.includes("craft") ||
+                       pCatAr.includes("بناء") || pCatAr.includes("مقاول") || pCatAr.includes("تشييد") || pCatAr.includes("حرف") ||
+                       pTitle.includes("construct") || pTitleAr.includes("بناء") || pTitleAr.includes("مقاولات");
+              case "Finance":
+                return pCat.includes("financ") || pCat.includes("bank") || pCat.includes("account") || pCat.includes("audit") ||
+                       pCatAr.includes("مال") || pCatAr.includes("بنوك") || pCatAr.includes("محاسب") ||
+                       pTitle.includes("financ") || pTitle.includes("bank") || pTitleAr.includes("مالي") || pTitleAr.includes("محاسب");
+              case "Agriculture":
+                return pCat.includes("agri") || pCat.includes("farm") || pCat.includes("harvest") || pCat.includes("greenhouse") ||
+                       pCatAr.includes("زراع") || pCatAr.includes("حصاد") || pCatAr.includes("بيوت محمية") ||
+                       pTitle.includes("agri") || pTitle.includes("harvest") || pTitleAr.includes("زراع");
+              case "Education":
+                return pCat.includes("educat") || pCat.includes("academ") || pCat.includes("univers") || pCat.includes("study") || pCat.includes("student") ||
+                       pCatAr.includes("تعليم") || pCatAr.includes("جامع") || pCatAr.includes("دراس") || pCatAr.includes("طلاب") ||
+                       pTitle.includes("study") || pTitle.includes("education") || pTitle.includes("university") || pTitleAr.includes("جامع") || pTitleAr.includes("دراس");
+              case "Customer":
+                return pCat.includes("customer") || pCat.includes("support") || pCat.includes("call") || pCat.includes("relation") ||
+                       pCatAr.includes("خدمة عملاء") || pCatAr.includes("دعم") ||
+                       pTitle.includes("customer") || pTitleAr.includes("عملاء");
+              case "Retail":
+                return pCat.includes("retail") || pCat.includes("sales") || pCat.includes("store") || pCat.includes("cashier") ||
+                       pCatAr.includes("تجزئ") || pCatAr.includes("مبيع") || pCatAr.includes("متجر") ||
+                       pTitle.includes("sales") || pTitle.includes("retail") || pTitleAr.includes("مبيعات");
+              case "Creative":
+                return pCat.includes("creat") || pCat.includes("design") || pCat.includes("media") || pCat.includes("content") || pCat.includes("market") ||
+                       pCatAr.includes("إبداع") || pCatAr.includes("تصميم") || pCatAr.includes("إعلام") || pCatAr.includes("تسويق");
+              case "Legal":
+                return pCat.includes("legal") || pCat.includes("admin") || pCat.includes("office") ||
+                       pCatAr.includes("قانون") || pCatAr.includes("إدار") || pCatAr.includes("مكتبي");
+              default:
+                return pCat.includes(cat.toLowerCase()) || pCatAr.includes(cat.toLowerCase()) || pTitle.includes(cat.toLowerCase());
+            }
+          })();
+
           if (!matchesCat) return false;
         }
 
@@ -390,34 +456,34 @@ export function CountriesPage() {
                   <button
                     type="button"
                     onClick={() => setFilterAccommodation(!filterAccommodation)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-semibold border transition-all ${
+                    className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 font-semibold border transition-all ${
                       filterAccommodation
-                        ? "bg-beige/20 border-beige text-navy dark:text-beige font-bold"
-                        : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
+                        ? "bg-navy text-ivory border-navy dark:bg-beige dark:text-navy dark:border-beige shadow-xs"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-beige/60 hover:bg-secondary/40"
                     }`}
                   >
                     <Home className="h-3.5 w-3.5 text-beige" />
-                    <span>{tr("Free Accommodation", "سكن مجاني مؤمن 🏡")}</span>
+                    <span>{tr("Free Housing", "سكن مجاني مؤمن")}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFilterMeals(!filterMeals)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-semibold border transition-all ${
+                    className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 font-semibold border transition-all ${
                       filterMeals
-                        ? "bg-beige/20 border-beige text-navy dark:text-beige font-bold"
-                        : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
+                        ? "bg-navy text-ivory border-navy dark:bg-beige dark:text-navy dark:border-beige shadow-xs"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-beige/60 hover:bg-secondary/40"
                     }`}
                   >
                     <Utensils className="h-3.5 w-3.5 text-beige" />
-                    <span>{tr("Meals Provided", "وجبات مؤمنة 🍽️")}</span>
+                    <span>{tr("Meals Provided", "وجبات مؤمنة")}</span>
                   </button>
 
                   {activeFiltersCount > 0 && (
                     <button
                       type="button"
                       onClick={resetAllFilters}
-                      className="inline-flex items-center gap-1 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 px-3 py-1.5 font-bold hover:bg-red-500/20 transition-colors"
+                      className="inline-flex items-center gap-1 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 px-3 py-1.5 font-bold hover:bg-destructive/20 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                       <span>{tr("Reset Filters", "مسح الفلاتر")} ({activeFiltersCount})</span>
@@ -426,7 +492,7 @@ export function CountriesPage() {
                 </div>
               </div>
 
-              {/* Row 2: Country Pills */}
+              {/* Row 2: Country Selector Buttons */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 <span className="text-xs font-bold text-muted-foreground whitespace-nowrap pe-1">
                   {tr("Country:", "الدولة:")}
@@ -434,30 +500,35 @@ export function CountriesPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedCountry("all")}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap border transition-all ${
                     selectedCountry === "all"
-                      ? "bg-navy text-ivory dark:bg-beige dark:text-navy"
-                      : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                      ? "bg-navy text-ivory border-navy dark:bg-beige dark:text-navy dark:border-beige shadow-xs"
+                      : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-beige/60 hover:bg-secondary/40"
                   }`}
                 >
-                  {tr("All Countries", "جميع الدول")} ({allPrograms.length})
+                  <Globe className="h-3.5 w-3.5 text-beige shrink-0" />
+                  <span>{tr("All Countries", "جميع الدول")}</span>
+                  <span className="opacity-60 text-[10px] font-mono">({allPrograms.length})</span>
                 </button>
-                {countries.map((c) => (
-                  <button
-                    key={c.slug}
-                    type="button"
-                    onClick={() => setSelectedCountry(selectedCountry === c.slug ? "all" : c.slug)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
-                      selectedCountry === c.slug
-                        ? "bg-navy text-ivory dark:bg-beige dark:text-navy shadow-xs"
-                        : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
-                    }`}
-                  >
-                    <span>{c.flag}</span>
-                    <span>{ar ? c.nameAr : c.name}</span>
-                    <span className="opacity-60 text-[10px]">({c.programs.length})</span>
-                  </button>
-                ))}
+                {countries.map((c) => {
+                  const isSelected = selectedCountry === c.slug;
+                  return (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => setSelectedCountry(isSelected ? "all" : c.slug)}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap border transition-all ${
+                        isSelected
+                          ? "bg-navy text-ivory border-navy dark:bg-beige dark:text-navy dark:border-beige shadow-xs"
+                          : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-beige/60 hover:bg-secondary/40"
+                      }`}
+                    >
+                      <MapPin className="h-3.5 w-3.5 text-beige shrink-0" />
+                      <span>{ar ? c.nameAr : c.name}</span>
+                      <span className="opacity-60 text-[10px] font-mono">({c.programs.length})</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Row 3: Industry / Category Pills */}
@@ -465,21 +536,25 @@ export function CountriesPage() {
                 <span className="text-xs font-bold text-muted-foreground whitespace-nowrap pe-1">
                   {tr("Field:", "المجال:")}
                 </span>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
-                      selectedCategory === cat.id
-                        ? "bg-navy text-ivory dark:bg-beige dark:text-navy shadow-xs"
-                        : "bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80"
-                    }`}
-                  >
-                    <span>{cat.icon}</span>
-                    <span>{ar ? cat.labelAr : cat.labelEn}</span>
-                  </button>
-                ))}
+                {categories.map((cat) => {
+                  const CatIcon = cat.Icon;
+                  const isSelected = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat.id)}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap border transition-all ${
+                        isSelected
+                          ? "bg-navy text-ivory border-navy dark:bg-beige dark:text-navy dark:border-beige shadow-xs"
+                          : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-beige/60 hover:bg-secondary/40"
+                      }`}
+                    >
+                      <CatIcon className="h-3.5 w-3.5 shrink-0 text-beige" />
+                      <span>{ar ? cat.labelAr : cat.labelEn}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Row 4: Controls & Results Summary Bar */}
@@ -563,7 +638,7 @@ export function CountriesPage() {
                             params={{ slug: p.country.slug }}
                             className="flex items-center gap-1.5 font-bold text-foreground hover:text-beige transition-colors"
                           >
-                            <span className="text-base leading-none">{p.country.flag}</span>
+                            <MapPin className="h-3.5 w-3.5 text-beige shrink-0" />
                             <span>{ar ? p.country.nameAr : p.country.name}</span>
                           </Link>
 
@@ -686,8 +761,8 @@ export function CountriesPage() {
                     >
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
-                          <span className="font-bold text-foreground flex items-center gap-1">
-                            <span>{p.country.flag}</span>
+                          <span className="font-bold text-foreground flex items-center gap-1.5">
+                            <MapPin className="h-3.5 w-3.5 text-beige shrink-0" />
                             <span>{ar ? p.country.nameAr : p.country.name}</span>
                           </span>
                           <span className="opacity-40">·</span>
